@@ -1,0 +1,12 @@
+language: rust
+sudo: false
+rust:
+  - nightly
+script:
+  - rustup install stable
+  - cargo +stable build --color always --features "func-types user"
+  - cargo build --color always --features "func-types user nightly"
+  - cargo package --color always
+  - cargo doc --color always
+notifications:
+  email: false

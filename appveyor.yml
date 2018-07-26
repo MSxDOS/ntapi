@@ -1,0 +1,21 @@
+environment:
+  matrix:
+  - TARGET: nightly-x86_64-pc-windows-msvc
+  - TARGET: nightly-i686-pc-windows-msvc
+  - TARGET: nightly-x86_64-pc-windows-gnu
+  - TARGET: nightly-i686-pc-windows-gnu
+  - TARGET: 1.28.0-x86_64-pc-windows-msvc
+  - TARGET: 1.28.0-i686-pc-windows-msvc
+install:
+  - appveyor-retry appveyor DownloadFile "https://static.rust-lang.org/dist/rust-%TARGET%.exe" -FileName "rust-install.exe"
+  - rust-install.exe /VERYSILENT /NORESTART /DIR="C:\rust" > NUL
+  - set PATH=%PATH%;C:\rust\bin
+  - rustc -vV
+  - cargo -vV
+build: false
+test_script:
+  - if "%TARGET:~0,7%"=="nightly" (
+      cargo test --verbose --color always --features "func-types impl-default nightly user"
+    ) else (
+      cargo test --verbose --color always --features "func-types impl-default user"
+    )
