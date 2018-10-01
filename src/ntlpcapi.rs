@@ -6,7 +6,7 @@
 use core::mem::size_of;
 use ntapi_base::{CLIENT_ID, CLIENT_ID64};
 use winapi::ctypes::c_double;
-use winapi::shared::basetsd::{ULONG64, PSIZE_T, SIZE_T, ULONG_PTR};
+use winapi::shared::basetsd::{PSIZE_T, SIZE_T, ULONG64, ULONG_PTR};
 use winapi::shared::ntdef::{
     BOOLEAN, CSHORT, HANDLE, LARGE_INTEGER, NTSTATUS, OBJ_CASE_INSENSITIVE, PHANDLE,
     PLARGE_INTEGER, POBJECT_ATTRIBUTES, PULONG, PUNICODE_STRING, PVOID, ULONG, ULONGLONG,

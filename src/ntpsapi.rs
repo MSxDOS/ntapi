@@ -7,7 +7,7 @@ use ntapi_base::{CLIENT_ID, KPRIORITY, PCLIENT_ID};
 use ntexapi::{PROCESS_DISK_COUNTERS, PROCESS_ENERGY_VALUES};
 use ntpebteb::{PPEB, PTEB};
 use winapi::ctypes::c_void;
-use winapi::shared::basetsd::{ULONG64, PSIZE_T, SIZE_T, ULONG_PTR};
+use winapi::shared::basetsd::{PSIZE_T, SIZE_T, ULONG64, ULONG_PTR};
 use winapi::shared::ntdef::{
     BOOLEAN, HANDLE, LARGE_INTEGER, LIST_ENTRY, LONG, LONGLONG, NTSTATUS, NT_PRODUCT_TYPE,
     PHANDLE, PLARGE_INTEGER, POBJECT_ATTRIBUTES, PROCESSOR_NUMBER, PSINGLE_LIST_ENTRY, PULONG,

@@ -4,16 +4,16 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 use core::mem::size_of;
+use ntapi_base::CLIENT_ID32;
 use ntldr::{LDR_DDAG_STATE, LDR_DLL_LOAD_REASON};
 use ntpsapi::GDI_HANDLE_BUFFER32;
 use ntrtl::RTL_MAX_DRIVE_LETTERS;
-use ntapi_base::CLIENT_ID32;
-use string::{UTF8Const, UTF16Const};
+use string::{UTF16Const, UTF8Const};
 use winapi::shared::guiddef::GUID;
 use winapi::shared::ntdef::{
-    LIST_ENTRY32, SINGLE_LIST_ENTRY32, STRING32, UNICODE_STRING32, BOOLEAN, CHAR, LARGE_INTEGER,
-    LCID, LONG, NTSTATUS, PROCESSOR_NUMBER, UCHAR, ULARGE_INTEGER, ULONG, ULONGLONG,
-    UNICODE_STRING, USHORT, WCHAR,
+    BOOLEAN, CHAR, LARGE_INTEGER, LCID, LIST_ENTRY32, LONG, NTSTATUS, PROCESSOR_NUMBER,
+    SINGLE_LIST_ENTRY32, STRING32, UCHAR, ULARGE_INTEGER, ULONG, ULONGLONG, UNICODE_STRING,
+    UNICODE_STRING32, USHORT, WCHAR,
 };
 use winapi::um::winnt::{FLS_MAXIMUM_AVAILABLE, NT_TIB32};
 pub const WOW64_SYSTEM_DIRECTORY: UTF8Const = UTF8Const("SysWOW64\0");
