@@ -926,7 +926,9 @@ EXTERN!{extern "system" {
         ShareAccess: ULONG,
         OpenOptions: ULONG,
     ) -> NTSTATUS;
-    fn NtDeleteFile(ObjectAttributes: POBJECT_ATTRIBUTES) -> NTSTATUS;
+    fn NtDeleteFile(
+        ObjectAttributes: POBJECT_ATTRIBUTES,
+    ) -> NTSTATUS;
     fn NtFlushBuffersFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
@@ -1135,8 +1137,12 @@ EXTERN!{extern "system" {
         CompletionFilter: ULONG,
         WatchTree: BOOLEAN,
     ) -> NTSTATUS;
-    fn NtLoadDriver(DriverServiceName: PUNICODE_STRING) -> NTSTATUS;
-    fn NtUnloadDriver(DriverServiceName: PUNICODE_STRING) -> NTSTATUS;
+    fn NtLoadDriver(
+        DriverServiceName: PUNICODE_STRING,
+    ) -> NTSTATUS;
+    fn NtUnloadDriver(
+        DriverServiceName: PUNICODE_STRING,
+    ) -> NTSTATUS;
 }}
 pub const IO_COMPLETION_QUERY_STATE: u32 = 0x0001;
 ENUM!{enum IO_COMPLETION_INFORMATION_CLASS {

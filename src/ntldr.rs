@@ -215,7 +215,9 @@ EXTERN!{extern "system" {
         DllName: PUNICODE_STRING,
         DllHandle: *mut PVOID,
     ) -> NTSTATUS;
-    fn LdrUnloadDll(DllHandle: PVOID) -> NTSTATUS;
+    fn LdrUnloadDll(
+        DllHandle: PVOID,
+    ) -> NTSTATUS;
     fn LdrGetDllHandle(
         DllPath: PWSTR,
         DllCharacteristics: PULONG,
@@ -246,8 +248,12 @@ EXTERN!{extern "system" {
         DllHandle: PVOID,
         FullDllName: PUNICODE_STRING,
     ) -> NTSTATUS;
-    fn LdrGetDllDirectory(DllDirectory: PUNICODE_STRING) -> NTSTATUS;
-    fn LdrSetDllDirectory(DllDirectory: PUNICODE_STRING) -> NTSTATUS;
+    fn LdrGetDllDirectory(
+        DllDirectory: PUNICODE_STRING,
+    ) -> NTSTATUS;
+    fn LdrSetDllDirectory(
+        DllDirectory: PUNICODE_STRING,
+    ) -> NTSTATUS;
 }}
 pub const LDR_ADDREF_DLL_PIN: ULONG = 0x00000001;
 EXTERN!{extern "system" {
@@ -409,7 +415,9 @@ EXTERN!{extern "system" {
         Context: PVOID,
         Cookie: *mut PVOID,
     ) -> NTSTATUS;
-    fn LdrUnregisterDllNotification(Cookie: PVOID) -> NTSTATUS;
+    fn LdrUnregisterDllNotification(
+        Cookie: PVOID,
+    ) -> NTSTATUS;
 }}
 STRUCT!{struct PS_MITIGATION_OPTIONS_MAP {
     Map: [ULONG_PTR; 2],
@@ -456,7 +464,9 @@ EXTERN!{extern "system" {
         Module: PVOID,
         pFileNamePrt: *mut PVOID,
     ) -> NTSTATUS;
-    fn LdrDisableThreadCalloutsForDll(DllImageBase: PVOID) -> NTSTATUS;
+    fn LdrDisableThreadCalloutsForDll(
+        DllImageBase: PVOID,
+    ) -> NTSTATUS;
     fn LdrAccessResource(
         DllHandle: PVOID,
         ResourceDataEntry: PIMAGE_RESOURCE_DATA_ENTRY,
@@ -644,9 +654,13 @@ EXTERN!{extern "system" {
         TargetDllName: PCSTR,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn LdrSetDefaultDllDirectories(DirectoryFlags: ULONG) -> NTSTATUS;
+    fn LdrSetDefaultDllDirectories(
+        DirectoryFlags: ULONG,
+    ) -> NTSTATUS;
     fn LdrShutdownProcess() -> NTSTATUS;
     fn LdrShutdownThread() -> NTSTATUS;
-    fn LdrSetImplicitPathOptions(ImplicitPathOptions: ULONG) -> NTSTATUS;
+    fn LdrSetImplicitPathOptions(
+        ImplicitPathOptions: ULONG,
+    ) -> NTSTATUS;
     fn LdrControlFlowGuardEnforced() -> BOOLEAN;
 }}

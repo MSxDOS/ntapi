@@ -40,7 +40,9 @@ EXTERN!{extern "system" {
         TransactionManagerHandle: HANDLE,
         TmVirtualClock: PLARGE_INTEGER,
     ) -> NTSTATUS;
-    fn NtRecoverTransactionManager(TransactionManagerHandle: HANDLE) -> NTSTATUS;
+    fn NtRecoverTransactionManager(
+        TransactionManagerHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtQueryInformationTransactionManager(
         TransactionManagerHandle: HANDLE,
         TransactionManagerInformationClass: TRANSACTIONMANAGER_INFORMATION_CLASS,
@@ -191,7 +193,9 @@ EXTERN!{extern "system" {
         ResourceManagerGuid: LPGUID,
         ObjectAttributes: POBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
-    fn NtRecoverResourceManager(ResourceManagerHandle: HANDLE) -> NTSTATUS;
+    fn NtRecoverResourceManager(
+        ResourceManagerHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtGetNotificationResourceManager(
         ResourceManagerHandle: HANDLE,
         TransactionNotification: PTRANSACTION_NOTIFICATION,

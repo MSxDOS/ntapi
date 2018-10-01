@@ -29,7 +29,9 @@ EXTERN!{extern "system" {
         PoolReturn: *mut PTP_POOL,
         Reserved: PVOID,
     ) -> NTSTATUS;
-    fn TpReleasePool(Pool: PTP_POOL);
+    fn TpReleasePool(
+        Pool: PTP_POOL,
+    );
     fn TpSetPoolMaxThreads(
         Pool: PTP_POOL,
         MaxThreads: LONG,
@@ -46,8 +48,12 @@ EXTERN!{extern "system" {
         Pool: PTP_POOL,
         PoolStackInformation: PTP_POOL_STACK_INFORMATION,
     ) -> NTSTATUS;
-    fn TpAllocCleanupGroup(CleanupGroupReturn: *mut PTP_CLEANUP_GROUP) -> NTSTATUS;
-    fn TpReleaseCleanupGroup(CleanupGroup: PTP_CLEANUP_GROUP);
+    fn TpAllocCleanupGroup(
+        CleanupGroupReturn: *mut PTP_CLEANUP_GROUP,
+    ) -> NTSTATUS;
+    fn TpReleaseCleanupGroup(
+        CleanupGroup: PTP_CLEANUP_GROUP,
+    );
     fn TpReleaseCleanupGroupMembers(
         CleanupGroup: PTP_CLEANUP_GROUP,
         CancelPendingCallbacks: LOGICAL,
@@ -74,8 +80,12 @@ EXTERN!{extern "system" {
         Instance: PTP_CALLBACK_INSTANCE,
         DllHandle: PVOID,
     );
-    fn TpCallbackMayRunLong(Instance: PTP_CALLBACK_INSTANCE) -> NTSTATUS;
-    fn TpDisassociateCallback(Instance: PTP_CALLBACK_INSTANCE);
+    fn TpCallbackMayRunLong(
+        Instance: PTP_CALLBACK_INSTANCE,
+    ) -> NTSTATUS;
+    fn TpDisassociateCallback(
+        Instance: PTP_CALLBACK_INSTANCE,
+    );
     fn TpSimpleTryPost(
         Callback: PTP_SIMPLE_CALLBACK,
         Context: PVOID,
@@ -87,8 +97,12 @@ EXTERN!{extern "system" {
         Context: PVOID,
         CallbackEnviron: PTP_CALLBACK_ENVIRON,
     ) -> NTSTATUS;
-    fn TpReleaseWork(Work: PTP_WORK);
-    fn TpPostWork(Work: PTP_WORK);
+    fn TpReleaseWork(
+        Work: PTP_WORK,
+    );
+    fn TpPostWork(
+        Work: PTP_WORK,
+    );
     fn TpWaitForWork(
         Work: PTP_WORK,
         CancelPendingCallbacks: LOGICAL,
@@ -99,14 +113,18 @@ EXTERN!{extern "system" {
         Context: PVOID,
         CallbackEnviron: PTP_CALLBACK_ENVIRON,
     ) -> NTSTATUS;
-    fn TpReleaseTimer(Timer: PTP_TIMER);
+    fn TpReleaseTimer(
+        Timer: PTP_TIMER,
+    );
     fn TpSetTimer(
         Timer: PTP_TIMER,
         DueTime: PLARGE_INTEGER,
         Period: LONG,
         WindowLength: LONG,
     );
-    fn TpIsTimerSet(Timer: PTP_TIMER) -> LOGICAL;
+    fn TpIsTimerSet(
+        Timer: PTP_TIMER,
+    ) -> LOGICAL;
     fn TpWaitForTimer(
         Timer: PTP_TIMER,
         CancelPendingCallbacks: LOGICAL,
@@ -117,7 +135,9 @@ EXTERN!{extern "system" {
         Context: PVOID,
         CallbackEnviron: PTP_CALLBACK_ENVIRON,
     ) -> NTSTATUS;
-    fn TpReleaseWait(Wait: PTP_WAIT);
+    fn TpReleaseWait(
+        Wait: PTP_WAIT,
+    );
     fn TpSetWait(
         Wait: PTP_WAIT,
         Handle: HANDLE,
@@ -143,9 +163,15 @@ EXTERN!{extern "system" {
         Context: PVOID,
         CallbackEnviron: PTP_CALLBACK_ENVIRON,
     ) -> NTSTATUS;
-    fn TpReleaseIoCompletion(Io: PTP_IO);
-    fn TpStartAsyncIoOperation(Io: PTP_IO);
-    fn TpCancelAsyncIoOperation(Io: PTP_IO);
+    fn TpReleaseIoCompletion(
+        Io: PTP_IO,
+    );
+    fn TpStartAsyncIoOperation(
+        Io: PTP_IO,
+    );
+    fn TpCancelAsyncIoOperation(
+        Io: PTP_IO,
+    );
     fn TpWaitForIoCompletion(
         Io: PTP_IO,
         CancelPendingCallbacks: LOGICAL,
@@ -164,8 +190,12 @@ EXTERN!{extern "system" {
         Context: PVOID,
         CallbackEnviron: PTP_CALLBACK_ENVIRON,
     ) -> NTSTATUS;
-    fn TpReleaseAlpcCompletion(Alpc: PTP_ALPC);
-    fn TpWaitForAlpcCompletion(Alpc: PTP_ALPC);
+    fn TpReleaseAlpcCompletion(
+        Alpc: PTP_ALPC,
+    );
+    fn TpWaitForAlpcCompletion(
+        Alpc: PTP_ALPC,
+    );
 }}
 ENUM!{enum TP_TRACE_TYPE {
     TpTraceThreadPriority = 1,
@@ -173,6 +203,10 @@ ENUM!{enum TP_TRACE_TYPE {
     MaxTpTraceType = 3,
 }}
 EXTERN!{extern "system" {
-    fn TpCaptureCaller(Type: TP_TRACE_TYPE);
-    fn TpCheckTerminateWorker(Thread: HANDLE);
+    fn TpCaptureCaller(
+        Type: TP_TRACE_TYPE,
+    );
+    fn TpCheckTerminateWorker(
+        Thread: HANDLE,
+    );
 }}

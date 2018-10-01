@@ -886,8 +886,12 @@ EXTERN!{extern "system" {
         ProcessHandle: HANDLE,
         ExitStatus: NTSTATUS,
     ) -> NTSTATUS;
-    fn NtSuspendProcess(ProcessHandle: HANDLE) -> NTSTATUS;
-    fn NtResumeProcess(ProcessHandle: HANDLE) -> NTSTATUS;
+    fn NtSuspendProcess(
+        ProcessHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtResumeProcess(
+        ProcessHandle: HANDLE,
+    ) -> NTSTATUS;
 }}
 pub const NtCurrentProcess: HANDLE = -1isize as *mut c_void;
 pub const ZwCurrentProcess: HANDLE = NtCurrentProcess;
@@ -991,7 +995,9 @@ EXTERN!{extern "system" {
         ThreadInformation: PVOID,
         ThreadInformationLength: ULONG,
     ) -> NTSTATUS;
-    fn NtAlertThread(ThreadHandle: HANDLE) -> NTSTATUS;
+    fn NtAlertThread(
+        ThreadHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtAlertResumeThread(
         ThreadHandle: HANDLE,
         PreviousSuspendCount: PULONG,
@@ -1002,7 +1008,9 @@ EXTERN!{extern "system" {
         ClientThreadHandle: HANDLE,
         SecurityQos: PSECURITY_QUALITY_OF_SERVICE,
     ) -> NTSTATUS;
-    fn NtRegisterThreadTerminatePort(PortHandle: HANDLE) -> NTSTATUS;
+    fn NtRegisterThreadTerminatePort(
+        PortHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtSetLdtEntries(
         Selector0: ULONG,
         Entry0Low: ULONG,
@@ -1036,7 +1044,9 @@ EXTERN!{extern "system" {
         ApcArgument2: PVOID,
         ApcArgument3: PVOID,
     ) -> NTSTATUS;
-    fn NtAlertThreadByThreadId(ThreadId: HANDLE) -> NTSTATUS;
+    fn NtAlertThreadByThreadId(
+        ThreadId: HANDLE,
+    ) -> NTSTATUS;
     fn NtWaitForAlertByThreadId(
         Address: PVOID,
         Timeout: PLARGE_INTEGER,

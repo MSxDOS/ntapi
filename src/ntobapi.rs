@@ -114,8 +114,12 @@ EXTERN!{extern "system" {
         HandleAttributes: ULONG,
         Options: ULONG,
     ) -> NTSTATUS;
-    fn NtMakeTemporaryObject(Handle: HANDLE) -> NTSTATUS;
-    fn NtMakePermanentObject(Handle: HANDLE) -> NTSTATUS;
+    fn NtMakeTemporaryObject(
+        Handle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtMakePermanentObject(
+        Handle: HANDLE,
+    ) -> NTSTATUS;
     fn NtSignalAndWaitForSingleObject(
         SignalHandle: HANDLE,
         WaitHandle: HANDLE,
@@ -153,7 +157,9 @@ EXTERN!{extern "system" {
         Length: ULONG,
         LengthNeeded: PULONG,
     ) -> NTSTATUS;
-    fn NtClose(Handle: HANDLE) -> NTSTATUS;
+    fn NtClose(
+        Handle: HANDLE,
+    ) -> NTSTATUS;
     fn NtCompareObjects(
         FirstObjectHandle: HANDLE,
         SecondObjectHandle: HANDLE,
@@ -203,7 +209,9 @@ EXTERN!{extern "system" {
         ObjectAttributes: POBJECT_ATTRIBUTES,
         BoundaryDescriptor: PVOID,
     ) -> NTSTATUS;
-    fn NtDeletePrivateNamespace(NamespaceHandle: HANDLE) -> NTSTATUS;
+    fn NtDeletePrivateNamespace(
+        NamespaceHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtCreateSymbolicLinkObject(
         LinkHandle: PHANDLE,
         DesiredAccess: ACCESS_MASK,

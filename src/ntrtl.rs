@@ -229,8 +229,12 @@ EXTERN!{extern "system" {
         Table: PRTL_AVL_TABLE,
         I: ULONG,
     ) -> PVOID;
-    fn RtlNumberGenericTableElementsAvl(Table: PRTL_AVL_TABLE) -> ULONG;
-    fn RtlIsGenericTableEmptyAvl(Table: PRTL_AVL_TABLE) -> BOOLEAN;
+    fn RtlNumberGenericTableElementsAvl(
+        Table: PRTL_AVL_TABLE,
+    ) -> ULONG;
+    fn RtlIsGenericTableEmptyAvl(
+        Table: PRTL_AVL_TABLE,
+    ) -> BOOLEAN;
 }}
 STRUCT!{struct RTL_SPLAY_LINKS {
     Parent: *mut RTL_SPLAY_LINKS,
@@ -285,16 +289,28 @@ pub fn RtlInsertAsRightChild(
     ChildLinks.Parent = ParentLinks;
 }
 EXTERN!{extern "system" {
-    fn RtlSplay(Links: PRTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS;
-    fn RtlDelete(Links: PRTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS;
+    fn RtlSplay(
+        Links: PRTL_SPLAY_LINKS,
+    ) -> PRTL_SPLAY_LINKS;
+    fn RtlDelete(
+        Links: PRTL_SPLAY_LINKS,
+    ) -> PRTL_SPLAY_LINKS;
     fn RtlDeleteNoSplay(
         Links: PRTL_SPLAY_LINKS,
         Root: *mut PRTL_SPLAY_LINKS,
     );
-    fn RtlSubtreeSuccessor(Links: PRTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS;
-    fn RtlSubtreePredecessor(Links: PRTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS;
-    fn RtlRealSuccessor(Links: PRTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS;
-    fn RtlRealPredecessor(Links: PRTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS;
+    fn RtlSubtreeSuccessor(
+        Links: PRTL_SPLAY_LINKS,
+    ) -> PRTL_SPLAY_LINKS;
+    fn RtlSubtreePredecessor(
+        Links: PRTL_SPLAY_LINKS,
+    ) -> PRTL_SPLAY_LINKS;
+    fn RtlRealSuccessor(
+        Links: PRTL_SPLAY_LINKS,
+    ) -> PRTL_SPLAY_LINKS;
+    fn RtlRealPredecessor(
+        Links: PRTL_SPLAY_LINKS,
+    ) -> PRTL_SPLAY_LINKS;
 }}
 FN!{stdcall PRTL_GENERIC_COMPARE_ROUTINE(
     Table: *mut RTL_GENERIC_TABLE,
@@ -369,8 +385,12 @@ EXTERN!{extern "system" {
         Table: PRTL_GENERIC_TABLE,
         I: ULONG,
     ) -> PVOID;
-    fn RtlNumberGenericTableElements(Table: PRTL_GENERIC_TABLE) -> ULONG;
-    fn RtlIsGenericTableEmpty(Table: PRTL_GENERIC_TABLE) -> BOOLEAN;
+    fn RtlNumberGenericTableElements(
+        Table: PRTL_GENERIC_TABLE,
+    ) -> ULONG;
+    fn RtlIsGenericTableEmpty(
+        Table: PRTL_GENERIC_TABLE,
+    ) -> BOOLEAN;
 }}
 STRUCT!{struct RTL_RB_TREE {
     Root: PRTL_BALANCED_NODE,
@@ -464,7 +484,9 @@ EXTERN!{extern "system" {
         Shift: ULONG,
         Flags: ULONG,
     ) -> BOOLEAN;
-    fn RtlDeleteHashTable(HashTable: PRTL_DYNAMIC_HASH_TABLE);
+    fn RtlDeleteHashTable(
+        HashTable: PRTL_DYNAMIC_HASH_TABLE,
+    );
     fn RtlInsertEntryHashTable(
         HashTable: PRTL_DYNAMIC_HASH_TABLE,
         Entry: PRTL_DYNAMIC_HASH_TABLE_ENTRY,
@@ -509,8 +531,12 @@ EXTERN!{extern "system" {
         HashTable: PRTL_DYNAMIC_HASH_TABLE,
         Enumerator: PRTL_DYNAMIC_HASH_TABLE_ENUMERATOR,
     );
-    fn RtlExpandHashTable(HashTable: PRTL_DYNAMIC_HASH_TABLE) -> BOOLEAN;
-    fn RtlContractHashTable(HashTable: PRTL_DYNAMIC_HASH_TABLE) -> BOOLEAN;
+    fn RtlExpandHashTable(
+        HashTable: PRTL_DYNAMIC_HASH_TABLE,
+    ) -> BOOLEAN;
+    fn RtlContractHashTable(
+        HashTable: PRTL_DYNAMIC_HASH_TABLE,
+    ) -> BOOLEAN;
     fn RtlInitStrongEnumerationHashTable(
         HashTable: PRTL_DYNAMIC_HASH_TABLE,
         Enumerator: PRTL_DYNAMIC_HASH_TABLE_ENUMERATOR,
@@ -523,24 +549,44 @@ EXTERN!{extern "system" {
         HashTable: PRTL_DYNAMIC_HASH_TABLE,
         Enumerator: PRTL_DYNAMIC_HASH_TABLE_ENUMERATOR,
     );
-    fn RtlInitializeCriticalSection(CriticalSection: PRTL_CRITICAL_SECTION) -> NTSTATUS;
+    fn RtlInitializeCriticalSection(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> NTSTATUS;
     fn RtlInitializeCriticalSectionAndSpinCount(
         CriticalSection: PRTL_CRITICAL_SECTION,
         SpinCount: ULONG,
     ) -> NTSTATUS;
-    fn RtlDeleteCriticalSection(CriticalSection: PRTL_CRITICAL_SECTION) -> NTSTATUS;
-    fn RtlEnterCriticalSection(CriticalSection: PRTL_CRITICAL_SECTION) -> NTSTATUS;
-    fn RtlLeaveCriticalSection(CriticalSection: PRTL_CRITICAL_SECTION) -> NTSTATUS;
-    fn RtlTryEnterCriticalSection(CriticalSection: PRTL_CRITICAL_SECTION) -> LOGICAL;
-    fn RtlIsCriticalSectionLocked(CriticalSection: PRTL_CRITICAL_SECTION) -> LOGICAL;
-    fn RtlIsCriticalSectionLockedByThread(CriticalSection: PRTL_CRITICAL_SECTION) -> LOGICAL;
-    fn RtlGetCriticalSectionRecursionCount(CriticalSection: PRTL_CRITICAL_SECTION) -> ULONG;
+    fn RtlDeleteCriticalSection(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> NTSTATUS;
+    fn RtlEnterCriticalSection(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> NTSTATUS;
+    fn RtlLeaveCriticalSection(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> NTSTATUS;
+    fn RtlTryEnterCriticalSection(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> LOGICAL;
+    fn RtlIsCriticalSectionLocked(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> LOGICAL;
+    fn RtlIsCriticalSectionLockedByThread(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> LOGICAL;
+    fn RtlGetCriticalSectionRecursionCount(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    ) -> ULONG;
     fn RtlSetCriticalSectionSpinCount(
         CriticalSection: PRTL_CRITICAL_SECTION,
         SpinCount: ULONG,
     ) -> ULONG;
-    fn RtlQueryCriticalSectionOwner(EventHandle: HANDLE) -> HANDLE;
-    fn RtlCheckForOrphanedCriticalSections(ThreadHandle: HANDLE);
+    fn RtlQueryCriticalSectionOwner(
+        EventHandle: HANDLE,
+    ) -> HANDLE;
+    fn RtlCheckForOrphanedCriticalSections(
+        ThreadHandle: HANDLE,
+    );
 }}
 STRUCT!{struct RTL_RESOURCE {
     CriticalSection: RTL_CRITICAL_SECTION,
@@ -556,8 +602,12 @@ STRUCT!{struct RTL_RESOURCE {
 pub type PRTL_RESOURCE = *mut RTL_RESOURCE;
 pub const RTL_RESOURCE_FLAG_LONG_TERM: ULONG = 0x00000001;
 EXTERN!{extern "system" {
-    fn RtlInitializeResource(Resource: PRTL_RESOURCE);
-    fn RtlDeleteResource(Resource: PRTL_RESOURCE);
+    fn RtlInitializeResource(
+        Resource: PRTL_RESOURCE,
+    );
+    fn RtlDeleteResource(
+        Resource: PRTL_RESOURCE,
+    );
     fn RtlAcquireResourceShared(
         Resource: PRTL_RESOURCE,
         Wait: BOOLEAN,
@@ -566,18 +616,42 @@ EXTERN!{extern "system" {
         Resource: PRTL_RESOURCE,
         Wait: BOOLEAN,
     ) -> BOOLEAN;
-    fn RtlReleaseResource(Resource: PRTL_RESOURCE);
-    fn RtlConvertSharedToExclusive(Resource: PRTL_RESOURCE);
-    fn RtlConvertExclusiveToShared(Resource: PRTL_RESOURCE);
-    fn RtlInitializeSRWLock(SRWLock: PRTL_SRWLOCK);
-    fn RtlAcquireSRWLockExclusive(SRWLock: PRTL_SRWLOCK);
-    fn RtlAcquireSRWLockShared(SRWLock: PRTL_SRWLOCK);
-    fn RtlReleaseSRWLockExclusive(SRWLock: PRTL_SRWLOCK);
-    fn RtlReleaseSRWLockShared(SRWLock: PRTL_SRWLOCK);
-    fn RtlTryAcquireSRWLockExclusive(SRWLock: PRTL_SRWLOCK) -> BOOLEAN;
-    fn RtlTryAcquireSRWLockShared(SRWLock: PRTL_SRWLOCK) -> BOOLEAN;
-    fn RtlAcquireReleaseSRWLockExclusive(SRWLock: PRTL_SRWLOCK);
-    fn RtlInitializeConditionVariable(ConditionVariable: PRTL_CONDITION_VARIABLE);
+    fn RtlReleaseResource(
+        Resource: PRTL_RESOURCE,
+    );
+    fn RtlConvertSharedToExclusive(
+        Resource: PRTL_RESOURCE,
+    );
+    fn RtlConvertExclusiveToShared(
+        Resource: PRTL_RESOURCE,
+    );
+    fn RtlInitializeSRWLock(
+        SRWLock: PRTL_SRWLOCK,
+    );
+    fn RtlAcquireSRWLockExclusive(
+        SRWLock: PRTL_SRWLOCK,
+    );
+    fn RtlAcquireSRWLockShared(
+        SRWLock: PRTL_SRWLOCK,
+    );
+    fn RtlReleaseSRWLockExclusive(
+        SRWLock: PRTL_SRWLOCK,
+    );
+    fn RtlReleaseSRWLockShared(
+        SRWLock: PRTL_SRWLOCK,
+    );
+    fn RtlTryAcquireSRWLockExclusive(
+        SRWLock: PRTL_SRWLOCK,
+    ) -> BOOLEAN;
+    fn RtlTryAcquireSRWLockShared(
+        SRWLock: PRTL_SRWLOCK,
+    ) -> BOOLEAN;
+    fn RtlAcquireReleaseSRWLockExclusive(
+        SRWLock: PRTL_SRWLOCK,
+    );
+    fn RtlInitializeConditionVariable(
+        ConditionVariable: PRTL_CONDITION_VARIABLE,
+    );
     fn RtlSleepConditionVariableCS(
         ConditionVariable: PRTL_CONDITION_VARIABLE,
         CriticalSection: PRTL_CRITICAL_SECTION,
@@ -589,8 +663,12 @@ EXTERN!{extern "system" {
         Timeout: PLARGE_INTEGER,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn RtlWakeConditionVariable(ConditionVariable: PRTL_CONDITION_VARIABLE);
-    fn RtlWakeAllConditionVariable(ConditionVariable: PRTL_CONDITION_VARIABLE);
+    fn RtlWakeConditionVariable(
+        ConditionVariable: PRTL_CONDITION_VARIABLE,
+    );
+    fn RtlWakeAllConditionVariable(
+        ConditionVariable: PRTL_CONDITION_VARIABLE,
+    );
 }}
 pub const RTL_BARRIER_FLAGS_SPIN_ONLY: ULONG = 0x00000001;
 pub const RTL_BARRIER_FLAGS_BLOCK_ONLY: ULONG = 0x00000002;
@@ -601,7 +679,9 @@ EXTERN!{extern "system" {
         TotalThreads: ULONG,
         SpinCount: ULONG,
     ) -> NTSTATUS;
-    fn RtlDeleteBarrier(Barrier: PRTL_BARRIER) -> NTSTATUS;
+    fn RtlDeleteBarrier(
+        Barrier: PRTL_BARRIER,
+    ) -> NTSTATUS;
     fn RtlBarrier(
         Barrier: PRTL_BARRIER,
         Flags: ULONG,
@@ -616,8 +696,12 @@ EXTERN!{extern "system" {
         AddressSize: SIZE_T,
         Timeout: PLARGE_INTEGER,
     ) -> NTSTATUS;
-    fn RtlWakeAddressAll(Address: PVOID);
-    fn RtlWakeAddressSingle(Address: PVOID);
+    fn RtlWakeAddressAll(
+        Address: PVOID,
+    );
+    fn RtlWakeAddressSingle(
+        Address: PVOID,
+    );
     fn RtlInitString(
         DestinationString: PSTRING,
         SourceString: PCSZ,
@@ -634,13 +718,19 @@ EXTERN!{extern "system" {
         DestinationString: PANSI_STRING,
         SourceString: PCSZ,
     ) -> NTSTATUS;
-    fn RtlFreeAnsiString(AnsiString: PANSI_STRING);
-    fn RtlFreeOemString(OemString: POEM_STRING);
+    fn RtlFreeAnsiString(
+        AnsiString: PANSI_STRING,
+    );
+    fn RtlFreeOemString(
+        OemString: POEM_STRING,
+    );
     fn RtlCopyString(
         DestinationString: PSTRING,
         SourceString: *const STRING,
     );
-    fn RtlUpperChar(Character: CHAR) -> CHAR;
+    fn RtlUpperChar(
+        Character: CHAR,
+    ) -> CHAR;
     fn RtlCompareString(
         String1: *const STRING,
         String2: *const STRING,
@@ -700,7 +790,9 @@ EXTERN!{extern "system" {
         DestinationString: PUNICODE_STRING,
         SourceString: PSTR,
     ) -> BOOLEAN;
-    fn RtlFreeUnicodeString(UnicodeString: PUNICODE_STRING);
+    fn RtlFreeUnicodeString(
+        UnicodeString: PUNICODE_STRING,
+    );
 }}
 pub const RTL_DUPLICATE_UNICODE_STRING_NULL_TERMINATE: ULONG = 0x00000001;
 pub const RTL_DUPLICATE_UNICODE_STRING_ALLOCATE_NULL_STRING: ULONG = 0x00000002;
@@ -714,8 +806,12 @@ EXTERN!{extern "system" {
         DestinationString: PUNICODE_STRING,
         SourceString: PCUNICODE_STRING,
     );
-    fn RtlUpcaseUnicodeChar(SourceCharacter: WCHAR) -> WCHAR;
-    fn RtlDowncaseUnicodeChar(SourceCharacter: WCHAR) -> WCHAR;
+    fn RtlUpcaseUnicodeChar(
+        SourceCharacter: WCHAR,
+    ) -> WCHAR;
+    fn RtlDowncaseUnicodeChar(
+        SourceCharacter: WCHAR,
+    ) -> WCHAR;
     fn RtlCompareUnicodeString(
         String1: PCUNICODE_STRING,
         String2: PCUNICODE_STRING,
@@ -792,7 +888,9 @@ EXTERN!{extern "system" {
         SourceString: PCUNICODE_STRING,
         AllocateDestinationString: BOOLEAN,
     ) -> NTSTATUS;
-    fn RtlEraseUnicodeString(String: PUNICODE_STRING);
+    fn RtlEraseUnicodeString(
+        String: PUNICODE_STRING,
+    );
     fn RtlAnsiStringToUnicodeString(
         DestinationString: PUNICODE_STRING,
         SourceString: PCANSI_STRING,
@@ -803,7 +901,9 @@ EXTERN!{extern "system" {
         SourceString: PCUNICODE_STRING,
         AllocateDestinationString: BOOLEAN,
     ) -> NTSTATUS;
-    fn RtlAnsiCharToUnicodeChar(SourceCharacter: *mut PUCHAR) -> WCHAR;
+    fn RtlAnsiCharToUnicodeChar(
+        SourceCharacter: *mut PUCHAR,
+    ) -> WCHAR;
     fn RtlUpcaseUnicodeStringToAnsiString(
         DestinationString: PANSI_STRING,
         SourceString: PUNICODE_STRING,
@@ -942,7 +1042,9 @@ EXTERN!{extern "system" {
         LanguageNlsBase: PUSHORT,
         TableInfo: PNLSTABLEINFO,
     );
-    fn RtlResetRtlTranslations(TableInfo: PNLSTABLEINFO);
+    fn RtlResetRtlTranslations(
+        TableInfo: PNLSTABLEINFO,
+    );
     fn RtlIsTextUnicode(
         Buffer: PVOID,
         Size: ULONG,
@@ -1056,7 +1158,9 @@ STRUCT!{struct PREFIX_TABLE {
 }}
 pub type PPREFIX_TABLE = *mut PREFIX_TABLE;
 EXTERN!{extern "system" {
-    fn PfxInitialize(PrefixTable: PPREFIX_TABLE);
+    fn PfxInitialize(
+        PrefixTable: PPREFIX_TABLE,
+    );
     fn PfxInsertPrefix(
         PrefixTable: PPREFIX_TABLE,
         Prefix: PSTRING,
@@ -1088,7 +1192,9 @@ STRUCT!{struct UNICODE_PREFIX_TABLE {
 }}
 pub type PUNICODE_PREFIX_TABLE = *mut UNICODE_PREFIX_TABLE;
 EXTERN!{extern "system" {
-    fn RtlInitializeUnicodePrefix(PrefixTable: PUNICODE_PREFIX_TABLE);
+    fn RtlInitializeUnicodePrefix(
+        PrefixTable: PUNICODE_PREFIX_TABLE,
+    );
     fn RtlInsertUnicodePrefix(
         PrefixTable: PUNICODE_PREFIX_TABLE,
         Prefix: PUNICODE_STRING,
@@ -1371,7 +1477,9 @@ EXTERN!{extern "system" {
         TokenHandle: HANDLE,
         ProcessInformation: PRTL_USER_PROCESS_INFORMATION,
     ) -> NTSTATUS;
-    fn RtlExitUserProcess(ExitStatus: NTSTATUS);
+    fn RtlExitUserProcess(
+        ExitStatus: NTSTATUS,
+    );
 }}
 pub const RTL_CLONE_PROCESS_FLAGS_CREATE_SUSPENDED: ULONG = 0x00000001;
 pub const RTL_CLONE_PROCESS_FLAGS_INHERIT_HANDLES: ULONG = 0x00000002;
@@ -1384,7 +1492,9 @@ EXTERN!{extern "system" {
         DebugPort: HANDLE,
         ProcessInformation: PRTL_USER_PROCESS_INFORMATION,
     ) -> NTSTATUS;
-    fn RtlUpdateClonedCriticalSection(CriticalSection: PRTL_CRITICAL_SECTION);
+    fn RtlUpdateClonedCriticalSection(
+        CriticalSection: PRTL_CRITICAL_SECTION,
+    );
     fn RtlUpdateClonedSRWLock(
         SRWLock: PRTL_SRWLOCK,
         Shared: LOGICAL,
@@ -1420,13 +1530,19 @@ EXTERN!{extern "C" {
     ) -> NTSTATUS;
 }}
 EXTERN!{extern "system" {
-    fn RtlValidProcessProtection(ProcessProtection: PS_PROTECTION) -> BOOLEAN;
+    fn RtlValidProcessProtection(
+        ProcessProtection: PS_PROTECTION,
+    ) -> BOOLEAN;
     fn RtlTestProtectedAccess(
         Source: PS_PROTECTION,
         Target: PS_PROTECTION,
     ) -> BOOLEAN;
-    fn RtlIsCurrentProcess(ProcessHandle: HANDLE) -> BOOLEAN;
-    fn RtlIsCurrentThread(ThreadHandle: HANDLE) -> BOOLEAN;
+    fn RtlIsCurrentProcess(
+        ProcessHandle: HANDLE,
+    ) -> BOOLEAN;
+    fn RtlIsCurrentThread(
+        ThreadHandle: HANDLE,
+    ) -> BOOLEAN;
 }}
 FN!{stdcall PUSER_THREAD_START_ROUTINE(
     ThreadParameter: PVOID,
@@ -1444,7 +1560,9 @@ EXTERN!{extern "system" {
         Thread: PHANDLE,
         ClientId: PCLIENT_ID,
     ) -> NTSTATUS;
-    fn RtlExitUserThread(ExitStatus: NTSTATUS);
+    fn RtlExitUserThread(
+        ExitStatus: NTSTATUS,
+    );
     fn RtlIsCurrentThreadAttachExempt() -> BOOLEAN;
     fn RtlCreateUserStack(
         CommittedStackSize: SIZE_T,
@@ -1454,7 +1572,9 @@ EXTERN!{extern "system" {
         ReserveAlignment: ULONG_PTR,
         InitialTeb: PINITIAL_TEB,
     ) -> NTSTATUS;
-    fn RtlFreeUserStack(AllocationBase: PVOID) -> NTSTATUS;
+    fn RtlFreeUserStack(
+        AllocationBase: PVOID,
+    ) -> NTSTATUS;
 }}
 STRUCT!{struct CONTEXT_CHUNK {
     Offset: LONG,
@@ -1534,7 +1654,9 @@ EXTERN!{extern "system" {
         ContextFlags: ULONG,
         ContextLength: PULONG,
     ) -> ULONG;
-    fn RtlGetExtendedFeaturesMask(ContextEx: PCONTEXT_EX) -> ULONG64;
+    fn RtlGetExtendedFeaturesMask(
+        ContextEx: PCONTEXT_EX,
+    ) -> ULONG64;
     fn RtlLocateExtendedFeature(
         ContextEx: PCONTEXT_EX,
         FeatureId: ULONG,
@@ -1574,12 +1696,16 @@ EXTERN!{extern "system" {
         First: ULONG,
         Handler: PVECTORED_EXCEPTION_HANDLER,
     ) -> PVOID;
-    fn RtlRemoveVectoredExceptionHandler(Handle: PVOID) -> ULONG;
+    fn RtlRemoveVectoredExceptionHandler(
+        Handle: PVOID,
+    ) -> ULONG;
     fn RtlAddVectoredContinueHandler(
         First: ULONG,
         Handler: PVECTORED_EXCEPTION_HANDLER,
     ) -> PVOID;
-    fn RtlRemoveVectoredContinueHandler(Handle: PVOID) -> ULONG;
+    fn RtlRemoveVectoredContinueHandler(
+        Handle: PVOID,
+    ) -> ULONG;
 }}
 FN!{stdcall PRTLP_UNHANDLED_EXCEPTION_FILTER(
     ExceptionInfo: PEXCEPTION_POINTERS,
@@ -1588,12 +1714,16 @@ EXTERN!{extern "system" {
     fn RtlSetUnhandledExceptionFilter(
         UnhandledExceptionFilter: PRTLP_UNHANDLED_EXCEPTION_FILTER,
     );
-    fn RtlUnhandledExceptionFilter(ExceptionPointers: PEXCEPTION_POINTERS) -> LONG;
+    fn RtlUnhandledExceptionFilter(
+        ExceptionPointers: PEXCEPTION_POINTERS,
+    ) -> LONG;
     fn RtlUnhandledExceptionFilter2(
         ExceptionPointers: PEXCEPTION_POINTERS,
         Flags: ULONG,
     ) -> LONG;
-    fn RtlKnownExceptionFilter(ExceptionPointers: PEXCEPTION_POINTERS) -> LONG;
+    fn RtlKnownExceptionFilter(
+        ExceptionPointers: PEXCEPTION_POINTERS,
+    ) -> LONG;
 }}
 #[cfg(target_arch = "x86_64")]
 IFDEF!{
@@ -1623,7 +1753,9 @@ EXTERN!{extern "system" {
 }}
 }
 EXTERN!{extern "system" {
-    fn RtlImageNtHeader(BaseOfImage: PVOID) -> PIMAGE_NT_HEADERS;
+    fn RtlImageNtHeader(
+        BaseOfImage: PVOID,
+    ) -> PIMAGE_NT_HEADERS;
 }}
 pub const RTL_IMAGE_NT_HEADER_EX_FLAG_NO_RANGE_CHECK: ULONG = 0x00000001;
 EXTERN!{extern "system" {
@@ -1698,7 +1830,9 @@ EXTERN!{extern "system" {
         Environment: *mut PVOID,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn RtlDestroyEnvironment(Environment: PVOID) -> NTSTATUS;
+    fn RtlDestroyEnvironment(
+        Environment: PVOID,
+    ) -> NTSTATUS;
     fn RtlSetCurrentEnvironment(
         Environment: PVOID,
         PreviousEnvironment: *mut PVOID,
@@ -1778,9 +1912,15 @@ pub const RtlNtdllName: UTF16Const = UTF16Const(&[
     0x006E, 0x0074, 0x0064, 0x006C, 0x006C, 0x002E, 0x0064, 0x006C, 0x006C, 0u16,
 ]);
 EXTERN!{extern "system" {
-    fn RtlDetermineDosPathNameType_U(DosFileName: PWSTR) -> RTL_PATH_TYPE;
-    fn RtlIsDosDeviceName_U(DosFileName: PWSTR) -> ULONG;
-    fn RtlIsDosDeviceName_Ustr(DosFileName: PUNICODE_STRING) -> ULONG;
+    fn RtlDetermineDosPathNameType_U(
+        DosFileName: PWSTR,
+    ) -> RTL_PATH_TYPE;
+    fn RtlIsDosDeviceName_U(
+        DosFileName: PWSTR,
+    ) -> ULONG;
+    fn RtlIsDosDeviceName_Ustr(
+        DosFileName: PUNICODE_STRING,
+    ) -> ULONG;
     fn RtlGetFullPathName_U(
         FileName: PWSTR,
         BufferLength: ULONG,
@@ -1808,7 +1948,9 @@ EXTERN!{extern "system" {
         BufferLength: ULONG,
         Buffer: PWSTR,
     ) -> ULONG;
-    fn RtlSetCurrentDirectory_U(PathName: PUNICODE_STRING) -> NTSTATUS;
+    fn RtlSetCurrentDirectory_U(
+        PathName: PUNICODE_STRING,
+    ) -> NTSTATUS;
     fn RtlGetLongestNtPathLength() -> ULONG;
     fn RtlDosPathNameToNtPathName_U(
         DosFileName: PWSTR,
@@ -1846,7 +1988,9 @@ EXTERN!{extern "system" {
         FilePart: *mut PWSTR,
         RelativeName: PRTL_RELATIVE_NAME_U,
     ) -> NTSTATUS;
-    fn RtlReleaseRelativeName(RelativeName: PRTL_RELATIVE_NAME_U);
+    fn RtlReleaseRelativeName(
+        RelativeName: PRTL_RELATIVE_NAME_U,
+    );
     fn RtlDosSearchPath_U(
         Path: PWSTR,
         FileName: PWSTR,
@@ -1871,7 +2015,9 @@ EXTERN!{extern "system" {
         FilePartPrefixCch: *mut SIZE_T,
         BytesRequired: *mut SIZE_T,
     ) -> NTSTATUS;
-    fn RtlDoesFileExists_U(FileName: PWSTR) -> BOOLEAN;
+    fn RtlDoesFileExists_U(
+        FileName: PWSTR,
+    ) -> BOOLEAN;
     fn RtlGetLengthWithoutLastFullDosOrNtPathElement(
         Flags: ULONG,
         PathString: PUNICODE_STRING,
@@ -1905,8 +2051,12 @@ EXTERN!{extern "system" {
         RealName: PUNICODE_STRING,
         LocalName: PUNICODE_STRING,
     ) -> NTSTATUS;
-    fn RtlGetSearchPath(SearchPathA: *mut PWSTR) -> BOOLEAN;
-    fn RtlSetSearchPathMode(Flags: ULONG) -> NTSTATUS;
+    fn RtlGetSearchPath(
+        SearchPathA: *mut PWSTR,
+    ) -> BOOLEAN;
+    fn RtlSetSearchPathMode(
+        Flags: ULONG,
+    ) -> NTSTATUS;
     fn RtlGetExePath() -> PWSTR;
     fn RtlGetNtSystemRoot() -> PWSTR;
     fn RtlAreLongPathsEnabled() -> BOOLEAN;
@@ -2014,7 +2164,9 @@ EXTERN!{extern "system" {
         Lock: PVOID,
         Parameters: PRTL_HEAP_PARAMETERS,
     ) -> PVOID;
-    fn RtlDestroyHeap(HeapHandle: PVOID) -> PVOID;
+    fn RtlDestroyHeap(
+        HeapHandle: PVOID,
+    ) -> PVOID;
     fn RtlAllocateHeap(
         HeapHandle: PVOID,
         Flags: ULONG,
@@ -2045,8 +2197,12 @@ pub unsafe fn RtlProcessHeap() -> PVOID {
     (*NtCurrentPeb()).ProcessHeap
 }
 EXTERN!{extern "system" {
-    fn RtlLockHeap(HeapHandle: PVOID) -> BOOLEAN;
-    fn RtlUnlockHeap(HeapHandle: PVOID) -> BOOLEAN;
+    fn RtlLockHeap(
+        HeapHandle: PVOID,
+    ) -> BOOLEAN;
+    fn RtlUnlockHeap(
+        HeapHandle: PVOID,
+    ) -> BOOLEAN;
     fn RtlReAllocateHeap(
         HeapHandle: PVOID,
         Flags: ULONG,
@@ -2279,15 +2435,23 @@ EXTERN!{extern "system" {
         InitialSize: SIZE_T,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn RtlDestroyMemoryZone(MemoryZone: PVOID) -> NTSTATUS;
+    fn RtlDestroyMemoryZone(
+        MemoryZone: PVOID,
+    ) -> NTSTATUS;
     fn RtlAllocateMemoryZone(
         MemoryZone: PVOID,
         BlockSize: SIZE_T,
         Block: *mut PVOID,
     ) -> NTSTATUS;
-    fn RtlResetMemoryZone(MemoryZone: PVOID) -> NTSTATUS;
-    fn RtlLockMemoryZone(MemoryZone: PVOID) -> NTSTATUS;
-    fn RtlUnlockMemoryZone(MemoryZone: PVOID) -> NTSTATUS;
+    fn RtlResetMemoryZone(
+        MemoryZone: PVOID,
+    ) -> NTSTATUS;
+    fn RtlLockMemoryZone(
+        MemoryZone: PVOID,
+    ) -> NTSTATUS;
+    fn RtlUnlockMemoryZone(
+        MemoryZone: PVOID,
+    ) -> NTSTATUS;
     fn RtlCreateMemoryBlockLookaside(
         MemoryBlockLookaside: *mut PVOID,
         Flags: ULONG,
@@ -2295,7 +2459,9 @@ EXTERN!{extern "system" {
         MinimumBlockSize: ULONG,
         MaximumBlockSize: ULONG,
     ) -> NTSTATUS;
-    fn RtlDestroyMemoryBlockLookaside(MemoryBlockLookaside: PVOID) -> NTSTATUS;
+    fn RtlDestroyMemoryBlockLookaside(
+        MemoryBlockLookaside: PVOID,
+    ) -> NTSTATUS;
     fn RtlAllocateMemoryBlockLookaside(
         MemoryBlockLookaside: PVOID,
         BlockSize: ULONG,
@@ -2309,11 +2475,19 @@ EXTERN!{extern "system" {
         MemoryBlockLookaside: PVOID,
         Increment: ULONG,
     ) -> NTSTATUS;
-    fn RtlResetMemoryBlockLookaside(MemoryBlockLookaside: PVOID) -> NTSTATUS;
-    fn RtlLockMemoryBlockLookaside(MemoryBlockLookaside: PVOID) -> NTSTATUS;
-    fn RtlUnlockMemoryBlockLookaside(MemoryBlockLookaside: PVOID) -> NTSTATUS;
+    fn RtlResetMemoryBlockLookaside(
+        MemoryBlockLookaside: PVOID,
+    ) -> NTSTATUS;
+    fn RtlLockMemoryBlockLookaside(
+        MemoryBlockLookaside: PVOID,
+    ) -> NTSTATUS;
+    fn RtlUnlockMemoryBlockLookaside(
+        MemoryBlockLookaside: PVOID,
+    ) -> NTSTATUS;
     fn RtlGetCurrentTransaction() -> HANDLE;
-    fn RtlSetCurrentTransaction(TransactionHandle: HANDLE) -> LOGICAL;
+    fn RtlSetCurrentTransaction(
+        TransactionHandle: HANDLE,
+    ) -> LOGICAL;
 }}
 #[inline]
 pub fn RtlIsEqualLuid(L1: &LUID, L2: &LUID) -> bool {
@@ -2386,7 +2560,9 @@ EXTERN!{extern "system" {
         MaximumCommit: ULONG,
         UseEventPair: BOOLEAN,
     ) -> PRTL_DEBUG_INFORMATION;
-    fn RtlDestroyQueryDebugBuffer(Buffer: PRTL_DEBUG_INFORMATION) -> NTSTATUS;
+    fn RtlDestroyQueryDebugBuffer(
+        Buffer: PRTL_DEBUG_INFORMATION,
+    ) -> NTSTATUS;
     fn RtlCommitDebugInfo(
         Buffer: PRTL_DEBUG_INFORMATION,
         Size: SIZE_T,
@@ -2474,13 +2650,23 @@ EXTERN!{extern "system" {
         ReturnLength: PULONG,
         ParseContext: PPARSE_MESSAGE_CONTEXT,
     ) -> NTSTATUS;
-    fn RtlNtStatusToDosError(Status: NTSTATUS) -> ULONG;
-    fn RtlNtStatusToDosErrorNoTeb(Status: NTSTATUS) -> ULONG;
+    fn RtlNtStatusToDosError(
+        Status: NTSTATUS,
+    ) -> ULONG;
+    fn RtlNtStatusToDosErrorNoTeb(
+        Status: NTSTATUS,
+    ) -> ULONG;
     fn RtlGetLastNtStatus() -> NTSTATUS;
     fn RtlGetLastWin32Error() -> LONG;
-    fn RtlSetLastWin32ErrorAndNtStatusFromNtStatus(Status: NTSTATUS);
-    fn RtlSetLastWin32Error(Win32Error: LONG);
-    fn RtlRestoreLastWin32Error(Win32Error: LONG);
+    fn RtlSetLastWin32ErrorAndNtStatusFromNtStatus(
+        Status: NTSTATUS,
+    );
+    fn RtlSetLastWin32Error(
+        Win32Error: LONG,
+    );
+    fn RtlRestoreLastWin32Error(
+        Win32Error: LONG,
+    );
 }}
 pub const RTL_ERRORMODE_FAILCRITICALERRORS: ULONG = 0x0010;
 pub const RTL_ERRORMODE_NOGPFAULTERRORBOX: ULONG = 0x0020;
@@ -2512,9 +2698,15 @@ EXTERN!{extern "system" {
         ProcessHandle: HANDLE,
         ExitStatus: NTSTATUS,
     ) -> NTSTATUS;
-    fn RtlUniform(Seed: PULONG) -> ULONG;
-    fn RtlRandom(Seed: PULONG) -> ULONG;
-    fn RtlRandomEx(Seed: PULONG) -> ULONG;
+    fn RtlUniform(
+        Seed: PULONG,
+    ) -> ULONG;
+    fn RtlRandom(
+        Seed: PULONG,
+    ) -> ULONG;
+    fn RtlRandomEx(
+        Seed: PULONG,
+    ) -> ULONG;
     fn RtlComputeImportTableHash(
         FileHandle: HANDLE,
         Hash: PCHAR,
@@ -2647,7 +2839,9 @@ EXTERN!{extern "system" {
     fn RtlQueryTimeZoneInformation(
         TimeZoneInformation: PRTL_TIME_ZONE_INFORMATION,
     ) -> NTSTATUS;
-    fn RtlSetTimeZoneInformation(TimeZoneInformation: PRTL_TIME_ZONE_INFORMATION) -> NTSTATUS;
+    fn RtlSetTimeZoneInformation(
+        TimeZoneInformation: PRTL_TIME_ZONE_INFORMATION,
+    ) -> NTSTATUS;
 }}
 STRUCT!{struct RTL_BITMAP {
     SizeOfBitMap: ULONG,
@@ -2672,8 +2866,12 @@ EXTERN!{extern "system" {
         BitMapHeader: PRTL_BITMAP,
         BitNumber: ULONG,
     ) -> BOOLEAN;
-    fn RtlClearAllBits(BitMapHeader: PRTL_BITMAP);
-    fn RtlSetAllBits(BitMapHeader: PRTL_BITMAP);
+    fn RtlClearAllBits(
+        BitMapHeader: PRTL_BITMAP,
+    );
+    fn RtlSetAllBits(
+        BitMapHeader: PRTL_BITMAP,
+    );
     fn RtlFindClearBits(
         BitMapHeader: PRTL_BITMAP,
         NumberToFind: ULONG,
@@ -2704,8 +2902,12 @@ EXTERN!{extern "system" {
         StartingIndex: ULONG,
         NumberToSet: ULONG,
     );
-    fn RtlFindMostSignificantBit(Set: ULONGLONG) -> CCHAR;
-    fn RtlFindLeastSignificantBit(Set: ULONGLONG) -> CCHAR;
+    fn RtlFindMostSignificantBit(
+        Set: ULONGLONG,
+    ) -> CCHAR;
+    fn RtlFindLeastSignificantBit(
+        Set: ULONGLONG,
+    ) -> CCHAR;
 }}
 STRUCT!{struct RTL_BITMAP_RUN {
     StartingIndex: ULONG,
@@ -2739,8 +2941,12 @@ pub unsafe fn RtlCheckBit(BitMapHeader: &RTL_BITMAP, BitPosition: ULONG) -> u8 {
     }
 }
 EXTERN!{extern "system" {
-    fn RtlNumberOfClearBits(BitMapHeader: PRTL_BITMAP) -> ULONG;
-    fn RtlNumberOfSetBits(BitMapHeader: PRTL_BITMAP) -> ULONG;
+    fn RtlNumberOfClearBits(
+        BitMapHeader: PRTL_BITMAP,
+    ) -> ULONG;
+    fn RtlNumberOfSetBits(
+        BitMapHeader: PRTL_BITMAP,
+    ) -> ULONG;
     fn RtlAreBitsClear(
         BitMapHeader: PRTL_BITMAP,
         StartingIndex: ULONG,
@@ -2761,7 +2967,9 @@ EXTERN!{extern "system" {
         FromIndex: ULONG,
         StartingRunIndex: PULONG,
     ) -> ULONG;
-    fn RtlNumberOfSetBitsUlongPtr(Target: ULONG_PTR) -> ULONG;
+    fn RtlNumberOfSetBitsUlongPtr(
+        Target: ULONG_PTR,
+    ) -> ULONG;
     fn RtlInterlockedClearBitRun(
         BitMapHeader: PRTL_BITMAP,
         StartingIndex: ULONG,
@@ -2809,7 +3017,9 @@ EXTERN!{extern "system" {
         BitMapHeader: PRTL_BITMAP_EX,
         BitNumber: ULONG64,
     ) -> BOOLEAN;
-    fn RtlClearAllBitsEx(BitMapHeader: PRTL_BITMAP_EX);
+    fn RtlClearAllBitsEx(
+        BitMapHeader: PRTL_BITMAP_EX,
+    );
     fn RtlClearBitEx(
         BitMapHeader: PRTL_BITMAP_EX,
         BitNumber: ULONG64,
@@ -2851,7 +3061,9 @@ EXTERN!{extern "system" {
         SizeOfHandleTableEntry: ULONG,
         HandleTable: PRTL_HANDLE_TABLE,
     );
-    fn RtlDestroyHandleTable(HandleTable: PRTL_HANDLE_TABLE) -> NTSTATUS;
+    fn RtlDestroyHandleTable(
+        HandleTable: PRTL_HANDLE_TABLE,
+    ) -> NTSTATUS;
     fn RtlAllocateHandle(
         HandleTable: PRTL_HANDLE_TABLE,
         HandleIndex: PULONG,
@@ -2880,7 +3092,9 @@ EXTERN!{extern "system" {
         NumberOfBuckets: ULONG,
         AtomTableHandle: *mut PVOID,
     ) -> NTSTATUS;
-    fn RtlDestroyAtomTable(AtomTableHandle: PVOID) -> NTSTATUS;
+    fn RtlDestroyAtomTable(
+        AtomTableHandle: PVOID,
+    ) -> NTSTATUS;
     fn RtlEmptyAtomTable(
         AtomTableHandle: PVOID,
         IncludePinnedAtoms: BOOLEAN,
@@ -2915,7 +3129,9 @@ EXTERN!{extern "system" {
         AtomName: PWSTR,
         IntegerAtom: PUSHORT,
     ) -> BOOLEAN;
-    fn RtlValidSid(Sid: PSID) -> BOOLEAN;
+    fn RtlValidSid(
+        Sid: PSID,
+    ) -> BOOLEAN;
     fn RtlEqualSid(
         Sid1: PSID,
         Sid2: PSID,
@@ -2924,8 +3140,12 @@ EXTERN!{extern "system" {
         Sid1: PSID,
         Sid2: PSID,
     ) -> BOOLEAN;
-    fn RtlLengthRequiredSid(SubAuthorityCount: ULONG) -> ULONG;
-    fn RtlFreeSid(Sid: PSID) -> PVOID;
+    fn RtlLengthRequiredSid(
+        SubAuthorityCount: ULONG,
+    ) -> ULONG;
+    fn RtlFreeSid(
+        Sid: PSID,
+    ) -> PVOID;
     fn RtlAllocateAndInitializeSid(
         IdentifierAuthority: PSID_IDENTIFIER_AUTHORITY,
         SubAuthorityCount: UCHAR,
@@ -2954,13 +3174,19 @@ EXTERN!{extern "C" {
     ) -> NTSTATUS;
 }}
 EXTERN!{extern "system" {
-    fn RtlIdentifierAuthoritySid(Sid: PSID) -> PSID_IDENTIFIER_AUTHORITY;
+    fn RtlIdentifierAuthoritySid(
+        Sid: PSID,
+    ) -> PSID_IDENTIFIER_AUTHORITY;
     fn RtlSubAuthoritySid(
         Sid: PSID,
         SubAuthority: ULONG,
     ) -> PULONG;
-    fn RtlSubAuthorityCountSid(Sid: PSID) -> PUCHAR;
-    fn RtlLengthSid(Sid: PSID) -> ULONG;
+    fn RtlSubAuthorityCountSid(
+        Sid: PSID,
+    ) -> PUCHAR;
+    fn RtlLengthSid(
+        Sid: PSID,
+    ) -> ULONG;
     fn RtlCopySid(
         DestinationSidLength: ULONG,
         DestinationSid: PSID,
@@ -3029,7 +3255,9 @@ EXTERN!{extern "system" {
         SidAttrHash: PSID_AND_ATTRIBUTES_HASH,
         Sid: PSID,
     ) -> PSID_AND_ATTRIBUTES;
-    fn RtlIsElevatedRid(SidAttr: PSID_AND_ATTRIBUTES) -> BOOLEAN;
+    fn RtlIsElevatedRid(
+        SidAttr: PSID_AND_ATTRIBUTES,
+    ) -> BOOLEAN;
     fn RtlDeriveCapabilitySidsFromName(
         UnicodeString: PUNICODE_STRING,
         CapabilityGroupSid: PSID,
@@ -3039,8 +3267,12 @@ EXTERN!{extern "system" {
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         Revision: ULONG,
     ) -> NTSTATUS;
-    fn RtlValidSecurityDescriptor(SecurityDescriptor: PSECURITY_DESCRIPTOR) -> BOOLEAN;
-    fn RtlLengthSecurityDescriptor(SecurityDescriptor: PSECURITY_DESCRIPTOR) -> ULONG;
+    fn RtlValidSecurityDescriptor(
+        SecurityDescriptor: PSECURITY_DESCRIPTOR,
+    ) -> BOOLEAN;
+    fn RtlLengthSecurityDescriptor(
+        SecurityDescriptor: PSECURITY_DESCRIPTOR,
+    ) -> ULONG;
     fn RtlValidRelativeSecurityDescriptor(
         SecurityDescriptorInput: PSECURITY_DESCRIPTOR,
         SecurityDescriptorLength: ULONG,
@@ -3157,7 +3389,9 @@ EXTERN!{extern "system" {
         AclLength: ULONG,
         AclRevision: ULONG,
     ) -> NTSTATUS;
-    fn RtlValidAcl(Acl: PACL) -> BOOLEAN;
+    fn RtlValidAcl(
+        Acl: PACL,
+    ) -> BOOLEAN;
     fn RtlQueryInformationAcl(
         Acl: PACL,
         AclInformation: PVOID,
@@ -3195,7 +3429,9 @@ EXTERN!{extern "system" {
         AceType: UCHAR,
         pIndex: PULONG,
     ) -> PVOID;
-    fn RtlOwnerAcesPresent(pAcl: PACL) -> BOOLEAN;
+    fn RtlOwnerAcesPresent(
+        pAcl: PACL,
+    ) -> BOOLEAN;
     fn RtlAddAccessAllowedAce(
         Acl: PACL,
         AceRevision: ULONG,
@@ -3284,7 +3520,9 @@ EXTERN!{extern "system" {
         AceType: UCHAR,
         AccessMask: ACCESS_MASK,
     ) -> NTSTATUS;
-    fn RtlDefaultNpAcl(Acl: *mut PACL) -> NTSTATUS;
+    fn RtlDefaultNpAcl(
+        Acl: *mut PACL,
+    ) -> NTSTATUS;
     fn RtlNewSecurityObject(
         ParentDescriptor: PSECURITY_DESCRIPTOR,
         CreatorDescriptor: PSECURITY_DESCRIPTOR,
@@ -3314,7 +3552,9 @@ EXTERN!{extern "system" {
         Token: HANDLE,
         GenericMapping: PGENERIC_MAPPING,
     ) -> NTSTATUS;
-    fn RtlDeleteSecurityObject(ObjectDescriptor: *mut PSECURITY_DESCRIPTOR) -> NTSTATUS;
+    fn RtlDeleteSecurityObject(
+        ObjectDescriptor: *mut PSECURITY_DESCRIPTOR,
+    ) -> NTSTATUS;
     fn RtlQuerySecurityObject(
         ObjectDescriptor: PSECURITY_DESCRIPTOR,
         SecurityInformation: SECURITY_INFORMATION,
@@ -3369,7 +3609,9 @@ EXTERN!{extern "system" {
         Seed: UCHAR,
         String: PUNICODE_STRING,
     );
-    fn RtlImpersonateSelf(ImpersonationLevel: SECURITY_IMPERSONATION_LEVEL) -> NTSTATUS;
+    fn RtlImpersonateSelf(
+        ImpersonationLevel: SECURITY_IMPERSONATION_LEVEL,
+    ) -> NTSTATUS;
     fn RtlImpersonateSelfEx(
         ImpersonationLevel: SECURITY_IMPERSONATION_LEVEL,
         AdditionalAccess: ACCESS_MASK,
@@ -3391,7 +3633,9 @@ EXTERN!{extern "system" {
         Flags: ULONG,
         ReturnedState: *mut PVOID,
     ) -> NTSTATUS;
-    fn RtlReleasePrivilege(StatePointer: PVOID);
+    fn RtlReleasePrivilege(
+        StatePointer: PVOID,
+    );
     fn RtlRemovePrivileges(
         TokenHandle: HANDLE,
         PrivilegesToKeep: PULONG,
@@ -3402,12 +3646,16 @@ EXTERN!{extern "system" {
         Object: PVOID,
         IsUntrustedObject: PBOOLEAN,
     ) -> NTSTATUS;
-    fn RtlQueryValidationRunlevel(ComponentName: PUNICODE_STRING) -> ULONG;
+    fn RtlQueryValidationRunlevel(
+        ComponentName: PUNICODE_STRING,
+    ) -> ULONG;
     fn RtlCreateBoundaryDescriptor(
         Name: PUNICODE_STRING,
         Flags: ULONG,
     ) -> PVOID;
-    fn RtlDeleteBoundaryDescriptor(BoundaryDescriptor: PVOID);
+    fn RtlDeleteBoundaryDescriptor(
+        BoundaryDescriptor: PVOID,
+    );
     fn RtlAddSIDToBoundaryDescriptor(
         BoundaryDescriptor: *mut PVOID,
         RequiredSid: PSID,
@@ -3416,7 +3664,9 @@ EXTERN!{extern "system" {
         BoundaryDescriptor: *mut PVOID,
         IntegrityLabel: PSID,
     ) -> NTSTATUS;
-    fn RtlGetVersion(lpVersionInformation: PRTL_OSVERSIONINFOW) -> NTSTATUS;
+    fn RtlGetVersion(
+        lpVersionInformation: PRTL_OSVERSIONINFOW,
+    ) -> NTSTATUS;
     fn RtlVerifyVersionInfo(
         VersionInfo: PRTL_OSVERSIONINFOEXW,
         TypeMask: ULONG,
@@ -3428,7 +3678,9 @@ EXTERN!{extern "system" {
         NtBuildNumber: PULONG,
     );
     fn RtlGetNtGlobalFlags() -> ULONG;
-    fn RtlGetNtProductType(NtProductType: PNT_PRODUCT_TYPE) -> BOOLEAN;
+    fn RtlGetNtProductType(
+        NtProductType: PNT_PRODUCT_TYPE,
+    ) -> BOOLEAN;
     fn RtlGetSuiteMask() -> ULONG;
     fn RtlRegisterWait(
         WaitHandle: PHANDLE,
@@ -3438,7 +3690,9 @@ EXTERN!{extern "system" {
         Milliseconds: ULONG,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn RtlDeregisterWait(WaitHandle: HANDLE) -> NTSTATUS;
+    fn RtlDeregisterWait(
+        WaitHandle: HANDLE,
+    ) -> NTSTATUS;
     fn RtlDeregisterWaitEx(
         WaitHandle: HANDLE,
         Event: HANDLE,
@@ -3475,7 +3729,9 @@ EXTERN!{extern "system" {
         ContextRecord: PCONTEXT,
         Parameter: PVOID,
     );
-    fn RtlCreateTimerQueue(TimerQueueHandle: PHANDLE) -> NTSTATUS;
+    fn RtlCreateTimerQueue(
+        TimerQueueHandle: PHANDLE,
+    ) -> NTSTATUS;
     fn RtlCreateTimer(
         TimerQueueHandle: HANDLE,
         Handle: PHANDLE,
@@ -3496,12 +3752,16 @@ EXTERN!{extern "system" {
         TimerToCancel: HANDLE,
         Event: HANDLE,
     ) -> NTSTATUS;
-    fn RtlDeleteTimerQueue(TimerQueueHandle: HANDLE) -> NTSTATUS;
+    fn RtlDeleteTimerQueue(
+        TimerQueueHandle: HANDLE,
+    ) -> NTSTATUS;
     fn RtlDeleteTimerQueueEx(
         TimerQueueHandle: HANDLE,
         Event: HANDLE,
     ) -> NTSTATUS;
-    fn RtlFormatCurrentUserKeyPath(CurrentUserKeyPath: PUNICODE_STRING) -> NTSTATUS;
+    fn RtlFormatCurrentUserKeyPath(
+        CurrentUserKeyPath: PUNICODE_STRING,
+    ) -> NTSTATUS;
     fn RtlOpenCurrentUser(
         DesiredAccess: ACCESS_MASK,
         CurrentUserKey: PHANDLE,
@@ -3585,7 +3845,9 @@ EXTERN!{extern "system" {
         HardwareCounters: ULONG64,
         PerformanceDataHandle: *mut PVOID,
     ) -> NTSTATUS;
-    fn RtlDisableThreadProfiling(PerformanceDataHandle: PVOID) -> NTSTATUS;
+    fn RtlDisableThreadProfiling(
+        PerformanceDataHandle: PVOID,
+    ) -> NTSTATUS;
     fn RtlQueryThreadProfiling(
         ThreadHandle: HANDLE,
         Enabled: PBOOLEAN,
@@ -3608,7 +3870,9 @@ EXTERN!{extern "system" {
         ApcArgument2: PVOID,
         ApcArgument3: PVOID,
     ) -> NTSTATUS;
-    fn RtlWow64EnableFsRedirection(Wow64FsEnableRedirection: BOOLEAN) -> NTSTATUS;
+    fn RtlWow64EnableFsRedirection(
+        Wow64FsEnableRedirection: BOOLEAN,
+    ) -> NTSTATUS;
     fn RtlWow64EnableFsRedirectionEx(
         Wow64FsEnableRedirection: PVOID,
         OldFsRedirectionLevel: *mut PVOID,
@@ -3618,10 +3882,18 @@ EXTERN!{extern "system" {
         Buffer: PVOID,
         Length: ULONG,
     ) -> ULONG32;
-    fn RtlEncodePointer(Ptr: PVOID) -> PVOID;
-    fn RtlDecodePointer(Ptr: PVOID) -> PVOID;
-    fn RtlEncodeSystemPointer(Ptr: PVOID) -> PVOID;
-    fn RtlDecodeSystemPointer(Ptr: PVOID) -> PVOID;
+    fn RtlEncodePointer(
+        Ptr: PVOID,
+    ) -> PVOID;
+    fn RtlDecodePointer(
+        Ptr: PVOID,
+    ) -> PVOID;
+    fn RtlEncodeSystemPointer(
+        Ptr: PVOID,
+    ) -> PVOID;
+    fn RtlDecodeSystemPointer(
+        Ptr: PVOID,
+    ) -> PVOID;
     fn RtlEncodeRemotePointer(
         ProcessHandle: HANDLE,
         Pointer: PVOID,
@@ -3632,11 +3904,19 @@ EXTERN!{extern "system" {
         Pointer: PVOID,
         DecodedPointer: *mut PVOID,
     ) -> NTSTATUS;
-    fn RtlIsProcessorFeaturePresent(ProcessorFeature: ULONG) -> BOOLEAN;
+    fn RtlIsProcessorFeaturePresent(
+        ProcessorFeature: ULONG,
+    ) -> BOOLEAN;
     fn RtlGetCurrentProcessorNumber() -> ULONG;
-    fn RtlGetCurrentProcessorNumberEx(ProcessorNumber: PPROCESSOR_NUMBER);
-    fn RtlPushFrame(Frame: PTEB_ACTIVE_FRAME);
-    fn RtlPopFrame(Frame: PTEB_ACTIVE_FRAME);
+    fn RtlGetCurrentProcessorNumberEx(
+        ProcessorNumber: PPROCESSOR_NUMBER,
+    );
+    fn RtlPushFrame(
+        Frame: PTEB_ACTIVE_FRAME,
+    );
+    fn RtlPopFrame(
+        Frame: PTEB_ACTIVE_FRAME,
+    );
     fn RtlGetFrame() -> PTEB_ACTIVE_FRAME;
 }}
 pub const RTL_STACK_WALKING_MODE_FRAMES_TO_SKIP_SHIFT: ULONG = 8;
@@ -3650,8 +3930,12 @@ EXTERN!{extern "system" {
         CallersAddress: *mut PVOID,
         CallersCaller: *mut PVOID,
     );
-    fn RtlGetEnabledExtendedFeatures(FeatureMask: ULONG64) -> ULONG64;
-    fn RtlGetEnabledExtendedAndSupervisorFeatures(FeatureMask: ULONG64) -> ULONG64;
+    fn RtlGetEnabledExtendedFeatures(
+        FeatureMask: ULONG64,
+    ) -> ULONG64;
+    fn RtlGetEnabledExtendedAndSupervisorFeatures(
+        FeatureMask: ULONG64,
+    ) -> ULONG64;
     fn RtlLocateSupervisorFeature(
         XStateHeader: PXSAVE_AREA_HEADER,
         FeatureId: ULONG,
@@ -3669,12 +3953,18 @@ BITFIELD!{RTL_ELEVATION_FLAGS Flags: ULONG [
 ]}
 pub type PRTL_ELEVATION_FLAGS = *mut RTL_ELEVATION_FLAGS;
 EXTERN!{extern "system" {
-    fn RtlQueryElevationFlags(Flags: PRTL_ELEVATION_FLAGS) -> NTSTATUS;
+    fn RtlQueryElevationFlags(
+        Flags: PRTL_ELEVATION_FLAGS,
+    ) -> NTSTATUS;
     fn RtlRegisterThreadWithCsrss() -> NTSTATUS;
     fn RtlLockCurrentThread() -> NTSTATUS;
     fn RtlUnlockCurrentThread() -> NTSTATUS;
-    fn RtlLockModuleSection(Address: PVOID) -> NTSTATUS;
-    fn RtlUnlockModuleSection(Address: PVOID) -> NTSTATUS;
+    fn RtlLockModuleSection(
+        Address: PVOID,
+    ) -> NTSTATUS;
+    fn RtlUnlockModuleSection(
+        Address: PVOID,
+    ) -> NTSTATUS;
 }}
 pub const RTL_UNLOAD_EVENT_TRACE_NUMBER: u32 = 64;
 STRUCT!{struct RTL_UNLOAD_EVENT_TRACE {
@@ -3704,8 +3994,12 @@ EXTERN!{extern "system" {
         ElementCount: *mut PULONG,
         EventTrace: *mut PVOID,
     );
-    fn RtlQueryPerformanceCounter(PerformanceCounter: PLARGE_INTEGER) -> LOGICAL;
-    fn RtlQueryPerformanceFrequency(PerformanceFrequency: PLARGE_INTEGER) -> LOGICAL;
+    fn RtlQueryPerformanceCounter(
+        PerformanceCounter: PLARGE_INTEGER,
+    ) -> LOGICAL;
+    fn RtlQueryPerformanceFrequency(
+        PerformanceFrequency: PLARGE_INTEGER,
+    ) -> LOGICAL;
 }}
 ENUM!{enum IMAGE_MITIGATION_POLICY {
     ImageDepPolicy = 0,
@@ -3887,9 +4181,15 @@ EXTERN!{extern "system" {
         ParentAppContainerSid: PSID,
         ChildAppContainerSid: PSID,
     ) -> NTSTATUS;
-    fn RtlIsCapabilitySid(Sid: PSID) -> BOOLEAN;
-    fn RtlIsPackageSid(Sid: PSID) -> BOOLEAN;
-    fn RtlIsValidProcessTrustLabelSid(Sid: PSID) -> BOOLEAN;
+    fn RtlIsCapabilitySid(
+        Sid: PSID,
+    ) -> BOOLEAN;
+    fn RtlIsPackageSid(
+        Sid: PSID,
+    ) -> BOOLEAN;
+    fn RtlIsValidProcessTrustLabelSid(
+        Sid: PSID,
+    ) -> BOOLEAN;
     fn RtlIsStateSeparationEnabled() -> BOOLEAN;
 }}
 ENUM!{enum APPCONTAINER_SID_TYPE {
@@ -3909,7 +4209,9 @@ EXTERN!{extern "system" {
         Callback: PFLS_CALLBACK_FUNCTION,
         FlsIndex: PULONG,
     ) -> NTSTATUS;
-    fn RtlFlsFree(FlsIndex: ULONG) -> NTSTATUS;
+    fn RtlFlsFree(
+        FlsIndex: ULONG,
+    ) -> NTSTATUS;
 }}
 ENUM!{enum STATE_LOCATION_TYPE {
     LocationTypeRegistry = 0,
@@ -3943,7 +4245,9 @@ EXTERN!{extern "system" {
         InfoClass: FILE_INFORMATION_CLASS,
         IsPartialPlaceholder: PBOOLEAN,
     ) -> NTSTATUS;
-    fn RtlIsNonEmptyDirectoryReparsePointAllowed(ReparseTag: ULONG) -> BOOLEAN;
+    fn RtlIsNonEmptyDirectoryReparsePointAllowed(
+        ReparseTag: ULONG,
+    ) -> BOOLEAN;
     fn RtlAppxIsFileOwnedByTrustedInstaller(
         FileHandle: HANDLE,
         IsFileOwnedByTrustedInstaller: PBOOLEAN,
@@ -4004,8 +4308,12 @@ STRUCT!{struct RTL_BSD_ITEM {
 pub type PRTL_BSD_ITEM = *mut RTL_BSD_ITEM;
 EXTERN!{extern "system" {
     fn RtlCreateBootStatusDataFile() -> NTSTATUS;
-    fn RtlLockBootStatusData(FileHandle: PHANDLE) -> NTSTATUS;
-    fn RtlUnlockBootStatusData(FileHandle: HANDLE) -> NTSTATUS;
+    fn RtlLockBootStatusData(
+        FileHandle: PHANDLE,
+    ) -> NTSTATUS;
+    fn RtlUnlockBootStatusData(
+        FileHandle: HANDLE,
+    ) -> NTSTATUS;
     fn RtlGetSetBootStatusData(
         FileHandle: HANDLE,
         Read: BOOLEAN,
@@ -4018,11 +4326,17 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
         Verified: PBOOLEAN,
     ) -> NTSTATUS;
-    fn RtlCheckPortableOperatingSystem(IsPortable: PBOOLEAN) -> NTSTATUS;
-    fn RtlSetPortableOperatingSystem(IsPortable: BOOLEAN) -> NTSTATUS;
+    fn RtlCheckPortableOperatingSystem(
+        IsPortable: PBOOLEAN,
+    ) -> NTSTATUS;
+    fn RtlSetPortableOperatingSystem(
+        IsPortable: BOOLEAN,
+    ) -> NTSTATUS;
 }}
 EXTERN!{extern "system" {
-    fn RtlOsDeploymentState(Flags: DWORD) -> OS_DEPLOYEMENT_STATE_VALUES;
+    fn RtlOsDeploymentState(
+        Flags: DWORD,
+    ) -> OS_DEPLOYEMENT_STATE_VALUES;
     fn RtlFindClosestEncodableLength(
         SourceLength: ULONGLONG,
         TargetLength: PULONGLONG,

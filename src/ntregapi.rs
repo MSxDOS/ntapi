@@ -270,7 +270,9 @@ EXTERN!{extern "system" {
         OpenOptions: ULONG,
         TransactionHandle: HANDLE,
     ) -> NTSTATUS;
-    fn NtDeleteKey(KeyHandle: HANDLE) -> NTSTATUS;
+    fn NtDeleteKey(
+        KeyHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtRenameKey(
         KeyHandle: HANDLE,
         NewName: PUNICODE_STRING,
@@ -332,12 +334,16 @@ EXTERN!{extern "system" {
         Length: ULONG,
         ResultLength: PULONG,
     ) -> NTSTATUS;
-    fn NtFlushKey(KeyHandle: HANDLE) -> NTSTATUS;
+    fn NtFlushKey(
+        KeyHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtCompactKeys(
         Count: ULONG,
         KeyArray: *mut HANDLE,
     ) -> NTSTATUS;
-    fn NtCompressKey(Key: HANDLE) -> NTSTATUS;
+    fn NtCompressKey(
+        Key: HANDLE,
+    ) -> NTSTATUS;
     fn NtLoadKey(
         TargetKey: POBJECT_ATTRIBUTES,
         SourceFile: POBJECT_ATTRIBUTES,
@@ -381,7 +387,9 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn NtUnloadKey(TargetKey: POBJECT_ATTRIBUTES) -> NTSTATUS;
+    fn NtUnloadKey(
+        TargetKey: POBJECT_ATTRIBUTES,
+    ) -> NTSTATUS;
 }}
 pub const REG_FORCE_UNLOAD: ULONG = 1;
 pub const REG_UNLOAD_LEGAL_FLAGS: ULONG = REG_FORCE_UNLOAD;
@@ -430,12 +438,18 @@ EXTERN!{extern "system" {
         Buffer: PVOID,
         RequiredSize: PULONG,
     ) -> NTSTATUS;
-    fn NtInitializeRegistry(BootCondition: USHORT) -> NTSTATUS;
-    fn NtLockRegistryKey(KeyHandle: HANDLE) -> NTSTATUS;
+    fn NtInitializeRegistry(
+        BootCondition: USHORT,
+    ) -> NTSTATUS;
+    fn NtLockRegistryKey(
+        KeyHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtLockProductActivationKeys(
         pPrivateVer: *mut ULONG,
         pSafeMode: *mut ULONG,
     ) -> NTSTATUS;
-    fn NtFreezeRegistry(TimeOutInSeconds: ULONG) -> NTSTATUS;
+    fn NtFreezeRegistry(
+        TimeOutInSeconds: ULONG,
+    ) -> NTSTATUS;
     fn NtThawRegistry() -> NTSTATUS;
 }}

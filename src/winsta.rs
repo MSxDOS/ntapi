@@ -719,10 +719,18 @@ pub const WNOTIFY_ALL_SESSIONS: ULONG = 0x1;
 pub const LOGONID_CURRENT: i32 = -1;
 pub const SERVERNAME_CURRENT: PWSTR = null_mut();
 EXTERN!{extern "system" {
-    fn WinStationFreeMemory(Buffer: PVOID) -> BOOLEAN;
-    fn WinStationOpenServerW(ServerName: PWSTR) -> HANDLE;
-    fn WinStationCloseServer(ServerHandle: HANDLE) -> BOOLEAN;
-    fn WinStationServerPing(ServerHandle: HANDLE) -> BOOLEAN;
+    fn WinStationFreeMemory(
+        Buffer: PVOID,
+    ) -> BOOLEAN;
+    fn WinStationOpenServerW(
+        ServerName: PWSTR,
+    ) -> HANDLE;
+    fn WinStationCloseServer(
+        ServerHandle: HANDLE,
+    ) -> BOOLEAN;
+    fn WinStationServerPing(
+        ServerHandle: HANDLE,
+    ) -> BOOLEAN;
     fn WinStationGetTermSrvCountersValue(
         ServerHandle: HANDLE,
         Count: ULONG,

@@ -117,7 +117,9 @@ EXTERN!{extern "system" {
         NewFlags: EXECUTION_STATE,
         PreviousFlags: PEXECUTION_STATE,
     ) -> NTSTATUS;
-    fn NtRequestWakeupLatency(latency: LATENCY_TIME) -> NTSTATUS;
+    fn NtRequestWakeupLatency(
+        latency: LATENCY_TIME,
+    ) -> NTSTATUS;
     fn NtInitiatePowerAction(
         SystemAction: POWER_ACTION,
         LightestSystemState: SYSTEM_POWER_STATE,

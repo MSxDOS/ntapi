@@ -202,7 +202,9 @@ EXTERN!{extern "system" {
         ServerView: PPORT_VIEW,
         ClientView: PREMOTE_PORT_VIEW,
     ) -> NTSTATUS;
-    fn NtCompleteConnectPort(PortHandle: HANDLE) -> NTSTATUS;
+    fn NtCompleteConnectPort(
+        PortHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtRequestPort(
         PortHandle: HANDLE,
         RequestMessage: PPORT_MESSAGE,
@@ -636,7 +638,9 @@ EXTERN!{extern "system" {
         ObjectAttributes: POBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn AlpcMaxAllowedMessageLength() -> ULONG;
-    fn AlpcGetHeaderSize(Flags: ULONG) -> ULONG;
+    fn AlpcGetHeaderSize(
+        Flags: ULONG,
+    ) -> ULONG;
     fn AlpcInitializeMessageAttribute(
         AttributeFlags: ULONG,
         Buffer: PALPC_MESSAGE_ATTRIBUTES,
@@ -654,20 +658,30 @@ EXTERN!{extern "system" {
         ConcurrencyCount: ULONG,
         AttributeFlags: ULONG,
     ) -> NTSTATUS;
-    fn AlpcUnregisterCompletionList(PortHandle: HANDLE) -> NTSTATUS;
-    fn AlpcRundownCompletionList(PortHandle: HANDLE) -> NTSTATUS;
+    fn AlpcUnregisterCompletionList(
+        PortHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn AlpcRundownCompletionList(
+        PortHandle: HANDLE,
+    ) -> NTSTATUS;
     fn AlpcAdjustCompletionListConcurrencyCount(
         PortHandle: HANDLE,
         ConcurrencyCount: ULONG,
     ) -> NTSTATUS;
-    fn AlpcRegisterCompletionListWorkerThread(CompletionList: PVOID) -> BOOLEAN;
-    fn AlpcUnregisterCompletionListWorkerThread(CompletionList: PVOID) -> BOOLEAN;
+    fn AlpcRegisterCompletionListWorkerThread(
+        CompletionList: PVOID,
+    ) -> BOOLEAN;
+    fn AlpcUnregisterCompletionListWorkerThread(
+        CompletionList: PVOID,
+    ) -> BOOLEAN;
     fn AlpcGetCompletionListLastMessageInformation(
         CompletionList: PVOID,
         LastMessageId: PULONG,
         LastCallbackId: PULONG,
     );
-    fn AlpcGetOutstandingCompletionListMessageCount(CompletionList: PVOID) -> ULONG;
+    fn AlpcGetOutstandingCompletionListMessageCount(
+        CompletionList: PVOID,
+    ) -> ULONG;
     fn AlpcGetMessageFromCompletionList(
         CompletionList: PVOID,
         MessageAttributes: *mut PALPC_MESSAGE_ATTRIBUTES,

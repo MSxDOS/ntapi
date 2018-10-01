@@ -270,7 +270,9 @@ EXTERN!{extern "system" {
         RequiredPrivileges: PPRIVILEGE_SET,
         Result: PBOOLEAN,
     ) -> NTSTATUS;
-    fn NtImpersonateAnonymousToken(ThreadHandle: HANDLE) -> NTSTATUS;
+    fn NtImpersonateAnonymousToken(
+        ThreadHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtQuerySecurityAttributesToken(
         TokenHandle: HANDLE,
         Attributes: PUNICODE_STRING,

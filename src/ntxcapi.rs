@@ -10,8 +10,12 @@ EXTERN!{extern "system" {
         ExceptionRecord: PEXCEPTION_RECORD,
         ContextRecord: PCONTEXT,
     ) -> BOOLEAN;
-    fn RtlRaiseStatus(Status: NTSTATUS);
-    fn RtlRaiseException(ExceptionRecord: PEXCEPTION_RECORD);
+    fn RtlRaiseStatus(
+        Status: NTSTATUS,
+    );
+    fn RtlRaiseException(
+        ExceptionRecord: PEXCEPTION_RECORD,
+    );
     fn NtContinue(
         ContextRecord: PCONTEXT,
         TestAlert: BOOLEAN,

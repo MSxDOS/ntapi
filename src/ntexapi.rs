@@ -113,8 +113,12 @@ EXTERN!{extern "system" {
         BootEntry: PBOOT_ENTRY,
         Id: PULONG,
     ) -> NTSTATUS;
-    fn NtDeleteBootEntry(Id: ULONG) -> NTSTATUS;
-    fn NtModifyBootEntry(BootEntry: PBOOT_ENTRY) -> NTSTATUS;
+    fn NtDeleteBootEntry(
+        Id: ULONG,
+    ) -> NTSTATUS;
+    fn NtModifyBootEntry(
+        BootEntry: PBOOT_ENTRY,
+    ) -> NTSTATUS;
     fn NtEnumerateBootEntries(
         Buffer: PVOID,
         BufferLength: PULONG,
@@ -145,8 +149,12 @@ EXTERN!{extern "system" {
         DriverEntry: PEFI_DRIVER_ENTRY,
         Id: PULONG,
     ) -> NTSTATUS;
-    fn NtDeleteDriverEntry(Id: ULONG) -> NTSTATUS;
-    fn NtModifyDriverEntry(DriverEntry: PEFI_DRIVER_ENTRY) -> NTSTATUS;
+    fn NtDeleteDriverEntry(
+        Id: ULONG,
+    ) -> NTSTATUS;
+    fn NtModifyDriverEntry(
+        DriverEntry: PEFI_DRIVER_ENTRY,
+    ) -> NTSTATUS;
     fn NtEnumerateDriverEntries(
         Buffer: PVOID,
         BufferLength: PULONG,
@@ -201,8 +209,12 @@ EXTERN!{extern "system" {
         EventHandle: HANDLE,
         PreviousState: PLONG,
     ) -> NTSTATUS;
-    fn NtSetEventBoostPriority(EventHandle: HANDLE) -> NTSTATUS;
-    fn NtClearEvent(EventHandle: HANDLE) -> NTSTATUS;
+    fn NtSetEventBoostPriority(
+        EventHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtClearEvent(
+        EventHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtResetEvent(
         EventHandle: HANDLE,
         PreviousState: PLONG,
@@ -231,12 +243,24 @@ EXTERN!{extern "system" {
         DesiredAccess: ACCESS_MASK,
         ObjectAttributes: POBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
-    fn NtSetLowEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn NtSetHighEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn NtWaitLowEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn NtWaitHighEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn NtSetLowWaitHighEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn NtSetHighWaitLowEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
+    fn NtSetLowEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtSetHighEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtWaitLowEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtWaitHighEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtSetLowWaitHighEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtSetHighWaitLowEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
 }}
 ENUM!{enum MUTANT_INFORMATION_CLASS {
     MutantBasicInformation = 0,
@@ -437,8 +461,12 @@ EXTERN!{extern "system" {
         GroupCount: USHORT,
         GroupAffinity: PGROUP_AFFINITY,
     ) -> NTSTATUS;
-    fn NtStartProfile(ProfileHandle: HANDLE) -> NTSTATUS;
-    fn NtStopProfile(ProfileHandle: HANDLE) -> NTSTATUS;
+    fn NtStartProfile(
+        ProfileHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtStopProfile(
+        ProfileHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtQueryIntervalProfile(
         ProfileSource: KPROFILE_SOURCE,
         Interval: PULONG,
@@ -476,7 +504,9 @@ EXTERN!{extern "system" {
         Alertable: BOOLEAN,
         Timeout: PLARGE_INTEGER,
     ) -> NTSTATUS;
-    fn NtUmsThreadYield(SchedulerParam: PVOID) -> NTSTATUS;
+    fn NtUmsThreadYield(
+        SchedulerParam: PVOID,
+    ) -> NTSTATUS;
 }}
 ENUM!{enum WNF_STATE_NAME_LIFETIME {
     WnfWellKnownStateName = 0,
@@ -523,7 +553,9 @@ EXTERN!{extern "system" {
         MaximumStateSize: ULONG,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
     ) -> NTSTATUS;
-    fn NtDeleteWnfStateName(StateName: PCWNF_STATE_NAME) -> NTSTATUS;
+    fn NtDeleteWnfStateName(
+        StateName: PCWNF_STATE_NAME,
+    ) -> NTSTATUS;
     fn NtUpdateWnfStateData(
         StateName: PCWNF_STATE_NAME,
         Buffer: *const VOID,
@@ -558,7 +590,9 @@ EXTERN!{extern "system" {
         EventMask: ULONG,
         SubscriptionId: PULONG64,
     ) -> NTSTATUS;
-    fn NtUnsubscribeWnfStateChange(StateName: PCWNF_STATE_NAME) -> NTSTATUS;
+    fn NtUnsubscribeWnfStateChange(
+        StateName: PCWNF_STATE_NAME,
+    ) -> NTSTATUS;
     fn NtGetCompleteWnfStateSubscription(
         OldDescriptorStateName: PWNF_STATE_NAME,
         OldSubscriptionId: *mut ULONG64,
@@ -567,7 +601,9 @@ EXTERN!{extern "system" {
         NewDeliveryDescriptor: PWNF_DELIVERY_DESCRIPTOR,
         DescriptorSize: ULONG,
     ) -> NTSTATUS;
-    fn NtSetWnfProcessNotificationEvent(NotificationEvent: HANDLE) -> NTSTATUS;
+    fn NtSetWnfProcessNotificationEvent(
+        NotificationEvent: HANDLE,
+    ) -> NTSTATUS;
 }}
 pub const WORKER_FACTORY_RELEASE_WORKER: u32 = 0x0001;
 pub const WORKER_FACTORY_WAIT: u32 = 0x0002;
@@ -654,13 +690,19 @@ EXTERN!{extern "system" {
         WorkerFactoryHandle: HANDLE,
         PendingWorkerCount: *mut LONG,
     ) -> NTSTATUS;
-    fn NtReleaseWorkerFactoryWorker(WorkerFactoryHandle: HANDLE) -> NTSTATUS;
-    fn NtWorkerFactoryWorkerReady(WorkerFactoryHandle: HANDLE) -> NTSTATUS;
+    fn NtReleaseWorkerFactoryWorker(
+        WorkerFactoryHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtWorkerFactoryWorkerReady(
+        WorkerFactoryHandle: HANDLE,
+    ) -> NTSTATUS;
     fn NtWaitForWorkViaWorkerFactory(
         WorkerFactoryHandle: HANDLE,
         MiniPacket: *mut FILE_IO_COMPLETION_INFORMATION,
     ) -> NTSTATUS;
-    fn NtQuerySystemTime(SystemTime: PLARGE_INTEGER) -> NTSTATUS;
+    fn NtQuerySystemTime(
+        SystemTime: PLARGE_INTEGER,
+    ) -> NTSTATUS;
     fn NtSetSystemTime(
         SystemTime: PLARGE_INTEGER,
         PreviousTime: PLARGE_INTEGER,
@@ -679,8 +721,12 @@ EXTERN!{extern "system" {
         PerformanceCounter: PLARGE_INTEGER,
         PerformanceFrequency: PLARGE_INTEGER,
     ) -> NTSTATUS;
-    fn NtAllocateLocallyUniqueId(Luid: PLUID) -> NTSTATUS;
-    fn NtSetUuidSeed(Seed: PCHAR) -> NTSTATUS;
+    fn NtAllocateLocallyUniqueId(
+        Luid: PLUID,
+    ) -> NTSTATUS;
+    fn NtSetUuidSeed(
+        Seed: PCHAR,
+    ) -> NTSTATUS;
     fn NtAllocateUuids(
         Time: PULARGE_INTEGER,
         Range: PULONG,
@@ -2773,13 +2819,19 @@ EXTERN!{extern "system" {
         UserProfile: BOOLEAN,
         DefaultLocaleId: LCID,
     ) -> NTSTATUS;
-    fn NtQueryInstallUILanguage(InstallUILanguageId: *mut LANGID) -> NTSTATUS;
+    fn NtQueryInstallUILanguage(
+        InstallUILanguageId: *mut LANGID,
+    ) -> NTSTATUS;
     fn NtFlushInstallUILanguage(
         InstallUILanguage: LANGID,
         SetComittedFlag: ULONG,
     ) -> NTSTATUS;
-    fn NtQueryDefaultUILanguage(DefaultUILanguageId: *mut LANGID) -> NTSTATUS;
-    fn NtSetDefaultUILanguage(DefaultUILanguageId: LANGID) -> NTSTATUS;
+    fn NtQueryDefaultUILanguage(
+        DefaultUILanguageId: *mut LANGID,
+    ) -> NTSTATUS;
+    fn NtSetDefaultUILanguage(
+        DefaultUILanguageId: LANGID,
+    ) -> NTSTATUS;
     fn NtIsUILanguageComitted() -> NTSTATUS;
     fn NtInitializeNlsFiles(
         BaseAddress: *mut PVOID,
@@ -2822,7 +2874,9 @@ EXTERN!{extern "system" {
         Length: ULONG,
         Atom: PRTL_ATOM,
     ) -> NTSTATUS;
-    fn NtDeleteAtom(Atom: RTL_ATOM) -> NTSTATUS;
+    fn NtDeleteAtom(
+        Atom: RTL_ATOM,
+    ) -> NTSTATUS;
 }}
 ENUM!{enum ATOM_INFORMATION_CLASS {
     AtomBasicInformation = 0,
@@ -2857,7 +2911,9 @@ EXTERN!{extern "system" {
         DataSize: ULONG,
         ResultDataSize: PULONG,
     ) -> NTSTATUS;
-    fn NtSetDefaultHardErrorPort(DefaultHardErrorPort: HANDLE) -> NTSTATUS;
+    fn NtSetDefaultHardErrorPort(
+        DefaultHardErrorPort: HANDLE,
+    ) -> NTSTATUS;
 }}
 ENUM!{enum SHUTDOWN_ACTION {
     ShutdownNoReboot = 0,
@@ -2865,7 +2921,13 @@ ENUM!{enum SHUTDOWN_ACTION {
     ShutdownPowerOff = 2,
 }}
 EXTERN!{extern "system" {
-    fn NtShutdownSystem(Action: SHUTDOWN_ACTION) -> NTSTATUS;
-    fn NtDisplayString(String: PUNICODE_STRING) -> NTSTATUS;
-    fn NtDrawText(Text: PUNICODE_STRING) -> NTSTATUS;
+    fn NtShutdownSystem(
+        Action: SHUTDOWN_ACTION,
+    ) -> NTSTATUS;
+    fn NtDisplayString(
+        String: PUNICODE_STRING,
+    ) -> NTSTATUS;
+    fn NtDrawText(
+        Text: PUNICODE_STRING,
+    ) -> NTSTATUS;
 }}

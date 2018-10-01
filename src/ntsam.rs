@@ -47,8 +47,12 @@ pub type PSAM_BYTE_ARRAY_32K = *mut SAM_BYTE_ARRAY_32K;
 pub type PSAM_SHELL_OBJECT_PROPERTIES = *mut SAM_BYTE_ARRAY_32K;
 pub type SAM_SHELL_OBJECT_PROPERTIES = SAM_BYTE_ARRAY_32K;
 EXTERN!{extern "system" {
-    fn SamFreeMemory(Buffer: PVOID) -> NTSTATUS;
-    fn SamCloseHandle(SamHandle: SAM_HANDLE) -> NTSTATUS;
+    fn SamFreeMemory(
+        Buffer: PVOID,
+    ) -> NTSTATUS;
+    fn SamCloseHandle(
+        SamHandle: SAM_HANDLE,
+    ) -> NTSTATUS;
     fn SamSetSecurityObject(
         ObjectHandle: SAM_HANDLE,
         SecurityInformation: SECURITY_INFORMATION,
@@ -86,7 +90,9 @@ EXTERN!{extern "system" {
         DesiredAccess: ACCESS_MASK,
         ObjectAttributes: POBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
-    fn SamShutdownSamServer(ServerHandle: SAM_HANDLE) -> NTSTATUS;
+    fn SamShutdownSamServer(
+        ServerHandle: SAM_HANDLE,
+    ) -> NTSTATUS;
 }}
 pub const DOMAIN_READ_PASSWORD_PARAMETERS: u32 = 0x0001;
 pub const DOMAIN_WRITE_PASSWORD_PARAMS: u32 = 0x0002;
@@ -388,7 +394,9 @@ EXTERN!{extern "system" {
         GroupId: ULONG,
         GroupHandle: PSAM_HANDLE,
     ) -> NTSTATUS;
-    fn SamDeleteGroup(GroupHandle: SAM_HANDLE) -> NTSTATUS;
+    fn SamDeleteGroup(
+        GroupHandle: SAM_HANDLE,
+    ) -> NTSTATUS;
     fn SamQueryInformationGroup(
         GroupHandle: SAM_HANDLE,
         GroupInformationClass: GROUP_INFORMATION_CLASS,
@@ -482,7 +490,9 @@ EXTERN!{extern "system" {
         AliasId: ULONG,
         AliasHandle: PSAM_HANDLE,
     ) -> NTSTATUS;
-    fn SamDeleteAlias(AliasHandle: SAM_HANDLE) -> NTSTATUS;
+    fn SamDeleteAlias(
+        AliasHandle: SAM_HANDLE,
+    ) -> NTSTATUS;
     fn SamQueryInformationAlias(
         AliasHandle: SAM_HANDLE,
         AliasInformationClass: ALIAS_INFORMATION_CLASS,
@@ -824,7 +834,9 @@ EXTERN!{extern "system" {
         UserId: ULONG,
         UserHandle: PSAM_HANDLE,
     ) -> NTSTATUS;
-    fn SamDeleteUser(UserHandle: SAM_HANDLE) -> NTSTATUS;
+    fn SamDeleteUser(
+        UserHandle: SAM_HANDLE,
+    ) -> NTSTATUS;
     fn SamQueryInformationUser(
         UserHandle: SAM_HANDLE,
         UserInformationClass: USER_INFORMATION_CLASS,

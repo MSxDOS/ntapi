@@ -16,7 +16,9 @@ use winapi::vc::vadefs::va_list;
 EXTERN!{extern "system" {
     fn DbgUserBreakPoint();
     fn DbgBreakPoint();
-    fn DbgBreakPointWithStatus(Status: ULONG);
+    fn DbgBreakPointWithStatus(
+        Status: ULONG,
+    );
 }}
 pub const DBG_STATUS_CONTROL_C: u32 = 1;
 pub const DBG_STATUS_SYSRQ: u32 = 2;
@@ -193,7 +195,9 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn DbgUiConnectToDbg() -> NTSTATUS;
     fn DbgUiGetThreadDebugObject() -> HANDLE;
-    fn DbgUiSetThreadDebugObject(DebugObject: HANDLE);
+    fn DbgUiSetThreadDebugObject(
+        DebugObject: HANDLE,
+    );
     fn DbgUiWaitStateChange(
         StateChange: PDBGUI_WAIT_STATE_CHANGE,
         Timeout: PLARGE_INTEGER,
@@ -202,10 +206,18 @@ EXTERN!{extern "system" {
         AppClientId: PCLIENT_ID,
         ContinueStatus: NTSTATUS,
     ) -> NTSTATUS;
-    fn DbgUiStopDebugging(Process: HANDLE) -> NTSTATUS;
-    fn DbgUiDebugActiveProcess(Process: HANDLE) -> NTSTATUS;
-    fn DbgUiRemoteBreakin(Context: PVOID);
-    fn DbgUiIssueRemoteBreakin(Process: HANDLE) -> NTSTATUS;
+    fn DbgUiStopDebugging(
+        Process: HANDLE,
+    ) -> NTSTATUS;
+    fn DbgUiDebugActiveProcess(
+        Process: HANDLE,
+    ) -> NTSTATUS;
+    fn DbgUiRemoteBreakin(
+        Context: PVOID,
+    );
+    fn DbgUiIssueRemoteBreakin(
+        Process: HANDLE,
+    ) -> NTSTATUS;
     fn DbgUiConvertStateChangeStructure(
         StateChange: PDBGUI_WAIT_STATE_CHANGE,
         DebugEvent: LPDEBUG_EVENT,

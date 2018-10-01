@@ -241,9 +241,15 @@ EXTERN!{extern "system" {
         ThreadHandle: HANDLE,
         PreviousSuspendCount: PULONG,
     ) -> NTSTATUS;
-    fn ZwAlertThread(ThreadHandle: HANDLE) -> NTSTATUS;
-    fn ZwAlertThreadByThreadId(ThreadId: HANDLE) -> NTSTATUS;
-    fn ZwAllocateLocallyUniqueId(Luid: PLUID) -> NTSTATUS;
+    fn ZwAlertThread(
+        ThreadHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwAlertThreadByThreadId(
+        ThreadId: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwAllocateLocallyUniqueId(
+        Luid: PLUID,
+    ) -> NTSTATUS;
     fn ZwAllocateReserveObject(
         MemoryReserveHandle: PHANDLE,
         ObjectAttributes: POBJECT_ATTRIBUTES,
@@ -474,8 +480,12 @@ EXTERN!{extern "system" {
         WaitCompletionPacketHandle: HANDLE,
         RemoveSignaledPacket: BOOLEAN,
     ) -> NTSTATUS;
-    fn ZwClearEvent(EventHandle: HANDLE) -> NTSTATUS;
-    fn ZwClose(Handle: HANDLE) -> NTSTATUS;
+    fn ZwClearEvent(
+        EventHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwClose(
+        Handle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwCloseObjectAuditAlarm(
         SubsystemName: PUNICODE_STRING,
         HandleId: PVOID,
@@ -506,8 +516,12 @@ EXTERN!{extern "system" {
         SecondTokenHandle: HANDLE,
         Equal: PBOOLEAN,
     ) -> NTSTATUS;
-    fn ZwCompleteConnectPort(PortHandle: HANDLE) -> NTSTATUS;
-    fn ZwCompressKey(Key: HANDLE) -> NTSTATUS;
+    fn ZwCompleteConnectPort(
+        PortHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwCompressKey(
+        Key: HANDLE,
+    ) -> NTSTATUS;
     fn ZwConnectPort(
         PortHandle: PHANDLE,
         PortName: PUNICODE_STRING,
@@ -912,17 +926,29 @@ EXTERN!{extern "system" {
         Alertable: BOOLEAN,
         DelayInterval: PLARGE_INTEGER,
     ) -> NTSTATUS;
-    fn ZwDeleteAtom(Atom: RTL_ATOM) -> NTSTATUS;
-    fn ZwDeleteBootEntry(Id: ULONG) -> NTSTATUS;
-    fn ZwDeleteDriverEntry(Id: ULONG) -> NTSTATUS;
-    fn ZwDeleteFile(ObjectAttributes: POBJECT_ATTRIBUTES) -> NTSTATUS;
-    fn ZwDeleteKey(KeyHandle: HANDLE) -> NTSTATUS;
+    fn ZwDeleteAtom(
+        Atom: RTL_ATOM,
+    ) -> NTSTATUS;
+    fn ZwDeleteBootEntry(
+        Id: ULONG,
+    ) -> NTSTATUS;
+    fn ZwDeleteDriverEntry(
+        Id: ULONG,
+    ) -> NTSTATUS;
+    fn ZwDeleteFile(
+        ObjectAttributes: POBJECT_ATTRIBUTES,
+    ) -> NTSTATUS;
+    fn ZwDeleteKey(
+        KeyHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwDeleteObjectAuditAlarm(
         SubsystemName: PUNICODE_STRING,
         HandleId: PVOID,
         GenerateOnClose: BOOLEAN,
     ) -> NTSTATUS;
-    fn ZwDeletePrivateNamespace(NamespaceHandle: HANDLE) -> NTSTATUS;
+    fn ZwDeletePrivateNamespace(
+        NamespaceHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwDeleteValueKey(
         KeyHandle: HANDLE,
         ValueName: PUNICODE_STRING,
@@ -931,7 +957,9 @@ EXTERN!{extern "system" {
         StateName: PCWNF_STATE_NAME,
         ExplicitScope: *const VOID,
     ) -> NTSTATUS;
-    fn ZwDeleteWnfStateName(StateName: PCWNF_STATE_NAME) -> NTSTATUS;
+    fn ZwDeleteWnfStateName(
+        StateName: PCWNF_STATE_NAME,
+    ) -> NTSTATUS;
     fn ZwDeviceIoControlFile(
         FileHandle: HANDLE,
         Event: HANDLE,
@@ -945,8 +973,12 @@ EXTERN!{extern "system" {
         OutputBufferLength: ULONG,
     ) -> NTSTATUS;
     fn ZwDisableLastKnownGood() -> NTSTATUS;
-    fn ZwDisplayString(String: PUNICODE_STRING) -> NTSTATUS;
-    fn ZwDrawText(String: PUNICODE_STRING) -> NTSTATUS;
+    fn ZwDisplayString(
+        String: PUNICODE_STRING,
+    ) -> NTSTATUS;
+    fn ZwDrawText(
+        String: PUNICODE_STRING,
+    ) -> NTSTATUS;
     fn ZwDuplicateObject(
         SourceProcessHandle: HANDLE,
         SourceHandle: HANDLE,
@@ -1054,7 +1086,9 @@ EXTERN!{extern "system" {
         BaseAddress: PVOID,
         Length: SIZE_T,
     ) -> NTSTATUS;
-    fn ZwFlushKey(KeyHandle: HANDLE) -> NTSTATUS;
+    fn ZwFlushKey(
+        KeyHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwFlushProcessWriteBuffers();
     fn ZwFlushWriteBuffer() -> NTSTATUS;
     fn ZwFreeUserPhysicalPages(
@@ -1068,7 +1102,9 @@ EXTERN!{extern "system" {
         RegionSize: PSIZE_T,
         FreeType: ULONG,
     ) -> NTSTATUS;
-    fn ZwFreezeRegistry(TimeOutInSeconds: ULONG) -> NTSTATUS;
+    fn ZwFreezeRegistry(
+        TimeOutInSeconds: ULONG,
+    ) -> NTSTATUS;
     fn ZwFreezeTransactions(
         FreezeTimeout: PLARGE_INTEGER,
         ThawTimeout: PLARGE_INTEGER,
@@ -1161,7 +1197,9 @@ EXTERN!{extern "system" {
         EntriesInUserAddressArray: PULONG_PTR,
         Granularity: PULONG,
     ) -> NTSTATUS;
-    fn ZwImpersonateAnonymousToken(ThreadHandle: HANDLE) -> NTSTATUS;
+    fn ZwImpersonateAnonymousToken(
+        ThreadHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwImpersonateClientOfPort(
         PortHandle: HANDLE,
         Message: PPORT_MESSAGE,
@@ -1176,7 +1214,9 @@ EXTERN!{extern "system" {
         DefaultLocaleId: PLCID,
         DefaultCasingTableSize: PLARGE_INTEGER,
     ) -> NTSTATUS;
-    fn ZwInitializeRegistry(BootCondition: USHORT) -> NTSTATUS;
+    fn ZwInitializeRegistry(
+        BootCondition: USHORT,
+    ) -> NTSTATUS;
     fn ZwInitiatePowerAction(
         SystemAction: POWER_ACTION,
         LightestSystemState: SYSTEM_POWER_STATE,
@@ -1193,7 +1233,9 @@ EXTERN!{extern "system" {
         PortHandle: HANDLE,
         ConnectionRequest: PPORT_MESSAGE,
     ) -> NTSTATUS;
-    fn ZwLoadDriver(DriverServiceName: PUNICODE_STRING) -> NTSTATUS;
+    fn ZwLoadDriver(
+        DriverServiceName: PUNICODE_STRING,
+    ) -> NTSTATUS;
     fn ZwLoadKey(
         TargetKey: POBJECT_ATTRIBUTES,
         SourceFile: POBJECT_ATTRIBUTES,
@@ -1229,15 +1271,21 @@ EXTERN!{extern "system" {
         pPrivateVer: *mut ULONG,
         pSafeMode: *mut ULONG,
     ) -> NTSTATUS;
-    fn ZwLockRegistryKey(KeyHandle: HANDLE) -> NTSTATUS;
+    fn ZwLockRegistryKey(
+        KeyHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwLockVirtualMemory(
         ProcessHandle: HANDLE,
         BaseAddress: *mut PVOID,
         RegionSize: PSIZE_T,
         MapType: ULONG,
     ) -> NTSTATUS;
-    fn ZwMakePermanentObject(Handle: HANDLE) -> NTSTATUS;
-    fn ZwMakeTemporaryObject(Handle: HANDLE) -> NTSTATUS;
+    fn ZwMakePermanentObject(
+        Handle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwMakeTemporaryObject(
+        Handle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwManagePartition(
         PartitionInformationClass: MEMORY_PARTITION_INFORMATION_CLASS,
         PartitionInformation: PVOID,
@@ -1273,8 +1321,12 @@ EXTERN!{extern "system" {
         AllocationType: ULONG,
         Win32Protect: ULONG,
     ) -> NTSTATUS;
-    fn ZwModifyBootEntry(BootEntry: PBOOT_ENTRY) -> NTSTATUS;
-    fn ZwModifyDriverEntry(DriverEntry: PEFI_DRIVER_ENTRY) -> NTSTATUS;
+    fn ZwModifyBootEntry(
+        BootEntry: PBOOT_ENTRY,
+    ) -> NTSTATUS;
+    fn ZwModifyDriverEntry(
+        DriverEntry: PEFI_DRIVER_ENTRY,
+    ) -> NTSTATUS;
     fn ZwNotifyChangeDirectoryFile(
         FileHandle: HANDLE,
         Event: HANDLE,
@@ -1594,7 +1646,9 @@ EXTERN!{extern "system" {
         UserProfile: BOOLEAN,
         DefaultLocaleId: PLCID,
     ) -> NTSTATUS;
-    fn ZwQueryDefaultUILanguage(DefaultUILanguageId: *mut LANGID) -> NTSTATUS;
+    fn ZwQueryDefaultUILanguage(
+        DefaultUILanguageId: *mut LANGID,
+    ) -> NTSTATUS;
     fn ZwQueryDirectoryFile(
         FileHandle: HANDLE,
         Event: HANDLE,
@@ -1727,7 +1781,9 @@ EXTERN!{extern "system" {
         WorkerFactoryInformationLength: ULONG,
         ReturnLength: PULONG,
     ) -> NTSTATUS;
-    fn ZwQueryInstallUILanguage(InstallUILanguageId: *mut LANGID) -> NTSTATUS;
+    fn ZwQueryInstallUILanguage(
+        InstallUILanguageId: *mut LANGID,
+    ) -> NTSTATUS;
     fn ZwQueryIntervalProfile(
         ProfileSource: KPROFILE_SOURCE,
         Interval: PULONG,
@@ -1862,7 +1918,9 @@ EXTERN!{extern "system" {
         SystemInformationLength: ULONG,
         ReturnLength: PULONG,
     ) -> NTSTATUS;
-    fn ZwQuerySystemTime(SystemTime: PLARGE_INTEGER) -> NTSTATUS;
+    fn ZwQuerySystemTime(
+        SystemTime: PLARGE_INTEGER,
+    ) -> NTSTATUS;
     fn ZwQueryTimer(
         TimerHandle: HANDLE,
         TimerInformationClass: TIMER_INFORMATION_CLASS,
@@ -1986,8 +2044,12 @@ EXTERN!{extern "system" {
         EnlistmentHandle: HANDLE,
         EnlistmentKey: PVOID,
     ) -> NTSTATUS;
-    fn ZwRecoverResourceManager(ResourceManagerHandle: HANDLE) -> NTSTATUS;
-    fn ZwRecoverTransactionManager(TransactionManagerHandle: HANDLE) -> NTSTATUS;
+    fn ZwRecoverResourceManager(
+        ResourceManagerHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwRecoverTransactionManager(
+        TransactionManagerHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwRegisterProtocolAddressInformation(
         ResourceManager: HANDLE,
         ProtocolId: PCRM_PROTOCOL_ID,
@@ -1995,7 +2057,9 @@ EXTERN!{extern "system" {
         ProtocolInformation: PVOID,
         CreateOptions: ULONG,
     ) -> NTSTATUS;
-    fn ZwRegisterThreadTerminatePort(PortHandle: HANDLE) -> NTSTATUS;
+    fn ZwRegisterThreadTerminatePort(
+        PortHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwReleaseCMFViewOwnership() -> NTSTATUS;
     fn ZwReleaseKeyedEvent(
         KeyedEventHandle: HANDLE,
@@ -2012,7 +2076,9 @@ EXTERN!{extern "system" {
         ReleaseCount: LONG,
         PreviousCount: PLONG,
     ) -> NTSTATUS;
-    fn ZwReleaseWorkerFactoryWorker(WorkerFactoryHandle: HANDLE) -> NTSTATUS;
+    fn ZwReleaseWorkerFactoryWorker(
+        WorkerFactoryHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwRemoveIoCompletion(
         IoCompletionHandle: HANDLE,
         KeyContext: *mut PVOID,
@@ -2080,7 +2146,9 @@ EXTERN!{extern "system" {
         RequestMessage: PPORT_MESSAGE,
         ReplyMessage: PPORT_MESSAGE,
     ) -> NTSTATUS;
-    fn ZwRequestWakeupLatency(latency: LATENCY_TIME) -> NTSTATUS;
+    fn ZwRequestWakeupLatency(
+        latency: LATENCY_TIME,
+    ) -> NTSTATUS;
     fn ZwResetEvent(
         EventHandle: HANDLE,
         PreviousState: PLONG,
@@ -2095,7 +2163,9 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn ZwResumeProcess(ProcessHandle: HANDLE) -> NTSTATUS;
+    fn ZwResumeProcess(
+        ProcessHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwResumeThread(
         ThreadHandle: HANDLE,
         PreviousSuspendCount: PULONG,
@@ -2167,12 +2237,16 @@ EXTERN!{extern "system" {
         Level: ULONG,
         State: BOOLEAN,
     ) -> NTSTATUS;
-    fn ZwSetDefaultHardErrorPort(DefaultHardErrorPort: HANDLE) -> NTSTATUS;
+    fn ZwSetDefaultHardErrorPort(
+        DefaultHardErrorPort: HANDLE,
+    ) -> NTSTATUS;
     fn ZwSetDefaultLocale(
         UserProfile: BOOLEAN,
         DefaultLocaleId: LCID,
     ) -> NTSTATUS;
-    fn ZwSetDefaultUILanguage(DefaultUILanguageId: LANGID) -> NTSTATUS;
+    fn ZwSetDefaultUILanguage(
+        DefaultUILanguageId: LANGID,
+    ) -> NTSTATUS;
     fn ZwSetDriverEntryOrder(
         Ids: PULONG,
         Count: ULONG,
@@ -2187,9 +2261,15 @@ EXTERN!{extern "system" {
         EventHandle: HANDLE,
         PreviousState: PLONG,
     ) -> NTSTATUS;
-    fn ZwSetEventBoostPriority(EventHandle: HANDLE) -> NTSTATUS;
-    fn ZwSetHighEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn ZwSetHighWaitLowEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
+    fn ZwSetEventBoostPriority(
+        EventHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwSetHighEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwSetHighWaitLowEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwSetIRTimer(
         TimerHandle: HANDLE,
         DueTime: PLARGE_INTEGER,
@@ -2309,8 +2389,12 @@ EXTERN!{extern "system" {
         Entry1Low: ULONG,
         Entry1Hi: ULONG,
     ) -> NTSTATUS;
-    fn ZwSetLowEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn ZwSetLowWaitHighEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
+    fn ZwSetLowEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwSetLowWaitHighEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwSetQuotaInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
@@ -2377,7 +2461,9 @@ EXTERN!{extern "system" {
         SetResolution: BOOLEAN,
         ActualTime: PULONG,
     ) -> NTSTATUS;
-    fn ZwSetUuidSeed(Seed: PCHAR) -> NTSTATUS;
+    fn ZwSetUuidSeed(
+        Seed: PCHAR,
+    ) -> NTSTATUS;
     fn ZwSetValueKey(
         KeyHandle: HANDLE,
         ValueName: PUNICODE_STRING,
@@ -2393,8 +2479,12 @@ EXTERN!{extern "system" {
         Length: ULONG,
         FsInformationClass: FS_INFORMATION_CLASS,
     ) -> NTSTATUS;
-    fn ZwSetWnfProcessNotificationEvent(NotificationEvent: HANDLE) -> NTSTATUS;
-    fn ZwShutdownSystem(Action: SHUTDOWN_ACTION) -> NTSTATUS;
+    fn ZwSetWnfProcessNotificationEvent(
+        NotificationEvent: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwShutdownSystem(
+        Action: SHUTDOWN_ACTION,
+    ) -> NTSTATUS;
     fn ZwShutdownWorkerFactory(
         WorkerFactoryHandle: HANDLE,
         PendingWorkerCount: *mut LONG,
@@ -2409,15 +2499,21 @@ EXTERN!{extern "system" {
         EnlistmentHandle: HANDLE,
         TmVirtualClock: PLARGE_INTEGER,
     ) -> NTSTATUS;
-    fn ZwStartProfile(ProfileHandle: HANDLE) -> NTSTATUS;
-    fn ZwStopProfile(ProfileHandle: HANDLE) -> NTSTATUS;
+    fn ZwStartProfile(
+        ProfileHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwStopProfile(
+        ProfileHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwSubscribeWnfStateChange(
         StateName: PCWNF_STATE_NAME,
         ChangeStamp: WNF_CHANGE_STAMP,
         EventMask: ULONG,
         SubscriptionId: PULONG64,
     ) -> NTSTATUS;
-    fn ZwSuspendProcess(ProcessHandle: HANDLE) -> NTSTATUS;
+    fn ZwSuspendProcess(
+        ProcessHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwSuspendThread(
         ThreadHandle: HANDLE,
         PreviousSuspendCount: PULONG,
@@ -2465,9 +2561,15 @@ EXTERN!{extern "system" {
         OutputFilePath: PFILE_PATH,
         OutputFilePathLength: PULONG,
     ) -> NTSTATUS;
-    fn ZwUmsThreadYield(SchedulerParam: PVOID) -> NTSTATUS;
-    fn ZwUnloadDriver(DriverServiceName: PUNICODE_STRING) -> NTSTATUS;
-    fn ZwUnloadKey(TargetKey: POBJECT_ATTRIBUTES) -> NTSTATUS;
+    fn ZwUmsThreadYield(
+        SchedulerParam: PVOID,
+    ) -> NTSTATUS;
+    fn ZwUnloadDriver(
+        DriverServiceName: PUNICODE_STRING,
+    ) -> NTSTATUS;
+    fn ZwUnloadKey(
+        TargetKey: POBJECT_ATTRIBUTES,
+    ) -> NTSTATUS;
     fn ZwUnloadKey2(
         TargetKey: POBJECT_ATTRIBUTES,
         Flags: ULONG,
@@ -2498,7 +2600,9 @@ EXTERN!{extern "system" {
         BaseAddress: PVOID,
         Flags: ULONG,
     ) -> NTSTATUS;
-    fn ZwUnsubscribeWnfStateChange(StateName: PCWNF_STATE_NAME) -> NTSTATUS;
+    fn ZwUnsubscribeWnfStateChange(
+        StateName: PCWNF_STATE_NAME,
+    ) -> NTSTATUS;
     fn ZwUpdateWnfStateData(
         StateName: PCWNF_STATE_NAME,
         Buffer: *const VOID,
@@ -2551,9 +2655,15 @@ EXTERN!{extern "system" {
         WorkerFactoryHandle: HANDLE,
         MiniPacket: *mut FILE_IO_COMPLETION_INFORMATION,
     ) -> NTSTATUS;
-    fn ZwWaitHighEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn ZwWaitLowEventPair(EventPairHandle: HANDLE) -> NTSTATUS;
-    fn ZwWorkerFactoryWorkerReady(WorkerFactoryHandle: HANDLE) -> NTSTATUS;
+    fn ZwWaitHighEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwWaitLowEventPair(
+        EventPairHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn ZwWorkerFactoryWorkerReady(
+        WorkerFactoryHandle: HANDLE,
+    ) -> NTSTATUS;
     fn ZwWriteFile(
         FileHandle: HANDLE,
         Event: HANDLE,
