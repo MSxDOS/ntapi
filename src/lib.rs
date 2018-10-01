@@ -40,7 +40,6 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clippy::cast_lossless, clippy::cast_ptr_alignment, clippy::len_without_is_empty, clippy::trivially_copy_pass_by_ref, clippy::unreadable_literal))]
 #[doc(hidden)]
 pub extern crate core as _core;
-#[doc(hidden)]
 #[macro_use]
 pub extern crate winapi;
 #[macro_use]
