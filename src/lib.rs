@@ -34,10 +34,8 @@
 #![no_std]
 #![deny(unused, unused_qualifications)]
 #![warn(unused_attributes)]
-#![allow(bad_style, overflowing_literals, unused_macros)]
+#![allow(bad_style, overflowing_literals, unused_macros, clippy::cast_lossless, clippy::cast_ptr_alignment, clippy::len_without_is_empty, clippy::trivially_copy_pass_by_ref, clippy::unreadable_literal)]
 #![cfg_attr(feature = "nightly", feature(asm))]
-#![cfg_attr(feature = "cargo-clippy", feature(tool_lints))]
-#![cfg_attr(feature = "cargo-clippy", allow(clippy::cast_lossless, clippy::cast_ptr_alignment, clippy::len_without_is_empty, clippy::trivially_copy_pass_by_ref, clippy::unreadable_literal))]
 #[doc(hidden)]
 pub extern crate core as _core;
 #[macro_use]
