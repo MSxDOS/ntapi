@@ -4,7 +4,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 use core::ptr::null_mut;
-use ntrtl::RTL_TIME_ZONE_INFORMATION;
+use crate::ntrtl::RTL_TIME_ZONE_INFORMATION;
 use winapi::shared::basetsd::SIZE_T;
 use winapi::shared::minwindef::{BYTE, DWORD, FILETIME};
 use winapi::shared::ntdef::{

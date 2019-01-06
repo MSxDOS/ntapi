@@ -3,7 +3,7 @@
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
-use ntlpcapi::PPORT_MESSAGE;
+use crate::ntlpcapi::PPORT_MESSAGE;
 use winapi::shared::minwindef::DWORD;
 use winapi::shared::ntdef::{HANDLE, NTSTATUS, PHANDLE, PUNICODE_STRING};
 EXTERN!{extern "system" {

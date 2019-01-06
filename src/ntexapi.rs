@@ -6,12 +6,12 @@
 use core::mem::uninitialized;
 #[cfg(target_arch = "x86")]
 use core::sync::atomic::spin_loop_hint;
-use ntapi_base::{CLIENT_ID, KPRIORITY, KSYSTEM_TIME, PRTL_ATOM, RTL_ATOM};
-use ntioapi::{BUS_DATA_TYPE, FILE_IO_COMPLETION_INFORMATION, INTERFACE_TYPE};
-use ntkeapi::{KPROFILE_SOURCE, KWAIT_REASON};
-use ntldr::RTL_PROCESS_MODULE_INFORMATION_EX;
-use ntpebteb::PTEB;
-use ntpoapi::COUNTED_REASON_CONTEXT;
+use crate::ntapi_base::{CLIENT_ID, KPRIORITY, KSYSTEM_TIME, PRTL_ATOM, RTL_ATOM};
+use crate::ntioapi::{BUS_DATA_TYPE, FILE_IO_COMPLETION_INFORMATION, INTERFACE_TYPE};
+use crate::ntkeapi::{KPROFILE_SOURCE, KWAIT_REASON};
+use crate::ntldr::RTL_PROCESS_MODULE_INFORMATION_EX;
+use crate::ntpebteb::PTEB;
+use crate::ntpoapi::COUNTED_REASON_CONTEXT;
 use winapi::shared::basetsd::{KAFFINITY, PULONG64, PULONG_PTR, SIZE_T, ULONG64, ULONG_PTR};
 use winapi::shared::evntrace::PROFILE_SOURCE_INFO;
 use winapi::shared::guiddef::{GUID, LPGUID};
@@ -26,7 +26,7 @@ use winapi::um::winnt::{
     ACCESS_MASK, ANYSIZE_ARRAY, FIRMWARE_TYPE, GENERIC_MAPPING, PSECURITY_DESCRIPTOR,
     STANDARD_RIGHTS_REQUIRED, SYNCHRONIZE, XSTATE_CONFIGURATION,
 };
-use winapi_local::um::winnt::UInt32x32To64;
+use crate::winapi_local::um::winnt::UInt32x32To64;
 EXTERN!{extern "system" {
     fn NtDelayExecution(
         Alertable: BOOLEAN,

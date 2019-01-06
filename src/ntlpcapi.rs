@@ -4,7 +4,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 use core::mem::size_of;
-use ntapi_base::{CLIENT_ID, CLIENT_ID64};
+use crate::ntapi_base::{CLIENT_ID, CLIENT_ID64};
 use winapi::ctypes::c_double;
 use winapi::shared::basetsd::{PSIZE_T, SIZE_T, ULONG64, ULONG_PTR};
 use winapi::shared::ntdef::{

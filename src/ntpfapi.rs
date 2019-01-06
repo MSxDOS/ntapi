@@ -3,8 +3,8 @@
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
-use ntexapi::SYSTEM_MEMORY_LIST_INFORMATION;
-use ntmmapi::MMPFN_IDENTITY;
+use crate::ntexapi::SYSTEM_MEMORY_LIST_INFORMATION;
+use crate::ntmmapi::MMPFN_IDENTITY;
 use winapi::shared::basetsd::{SIZE_T, ULONG_PTR};
 use winapi::shared::ntdef::{CHAR, LONGLONG, PVOID, ULONG, ULONGLONG, WCHAR};
 ENUM!{enum PF_BOOT_PHASE_ID {

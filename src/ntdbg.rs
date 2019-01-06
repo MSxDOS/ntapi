@@ -3,7 +3,7 @@
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
-use ntapi_base::{CLIENT_ID, PCLIENT_ID};
+use crate::ntapi_base::{CLIENT_ID, PCLIENT_ID};
 use winapi::shared::evntprov::EVENT_FILTER_DESCRIPTOR;
 use winapi::shared::guiddef::LPCGUID;
 use winapi::shared::ntdef::{

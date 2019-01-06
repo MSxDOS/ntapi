@@ -9,7 +9,7 @@ pub fn UInt32x32To64(a: u32, b: u32) -> u64 {
 }
 #[cfg(feature = "nightly")]
 IFDEF!{
-use ntpebteb::TEB;
+use crate::ntpebteb::TEB;
 use winapi::shared::basetsd::DWORD64;
 use winapi::shared::minwindef::DWORD;
 #[inline]

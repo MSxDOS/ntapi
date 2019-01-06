@@ -3,9 +3,9 @@
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
-use ntapi_base::{CLIENT_ID, KPRIORITY, PCLIENT_ID};
-use ntexapi::{PROCESS_DISK_COUNTERS, PROCESS_ENERGY_VALUES};
-use ntpebteb::{PPEB, PTEB};
+use crate::ntapi_base::{CLIENT_ID, KPRIORITY, PCLIENT_ID};
+use crate::ntexapi::{PROCESS_DISK_COUNTERS, PROCESS_ENERGY_VALUES};
+use crate::ntpebteb::{PPEB, PTEB};
 use winapi::ctypes::c_void;
 use winapi::shared::basetsd::{PSIZE_T, SIZE_T, ULONG64, ULONG_PTR};
 use winapi::shared::ntdef::{
@@ -25,7 +25,7 @@ use winapi::um::winnt::{
     PROCESS_MITIGATION_SYSTEM_CALL_FILTER_POLICY, PSECURITY_QUALITY_OF_SERVICE,
 };
 #[cfg(feature = "nightly")]
-use winapi_local::um::winnt::NtCurrentTeb;
+use crate::winapi_local::um::winnt::NtCurrentTeb;
 pub const GDI_HANDLE_BUFFER_SIZE32: usize = 34;
 pub const GDI_HANDLE_BUFFER_SIZE64: usize = 60;
 #[cfg(target_arch = "x86_64")]

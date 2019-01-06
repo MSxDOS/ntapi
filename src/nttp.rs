@@ -3,7 +3,7 @@
 // http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
-use ntioapi::PIO_STATUS_BLOCK;
+use crate::ntioapi::PIO_STATUS_BLOCK;
 use winapi::shared::ntdef::{HANDLE, LOGICAL, LONG, NTSTATUS, PLARGE_INTEGER, PVOID};
 use winapi::um::winnt::{
     PRTL_CRITICAL_SECTION, PTP_CALLBACK_ENVIRON, PTP_CALLBACK_INSTANCE, PTP_CLEANUP_GROUP, PTP_IO,

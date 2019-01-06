@@ -4,16 +4,16 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 use core::ptr::null_mut;
-use ntapi_base::{CLIENT_ID, PCLIENT_ID};
-use ntexapi::{RTL_PROCESS_BACKTRACES, RTL_PROCESS_LOCKS};
-use ntioapi::FILE_INFORMATION_CLASS;
-use ntldr::{RTL_PROCESS_MODULES, RTL_PROCESS_MODULE_INFORMATION_EX};
-use ntmmapi::SECTION_IMAGE_INFORMATION;
-use ntnls::{PCPTABLEINFO, PNLSTABLEINFO};
-use ntpebteb::{PPEB, PTEB_ACTIVE_FRAME};
-use ntpsapi::{PINITIAL_TEB, PPS_APC_ROUTINE, PS_PROTECTION};
-use ntapi_base::{PRTL_ATOM, RTL_ATOM};
-use string::UTF16Const;
+use crate::ntapi_base::{CLIENT_ID, PCLIENT_ID};
+use crate::ntexapi::{RTL_PROCESS_BACKTRACES, RTL_PROCESS_LOCKS};
+use crate::ntioapi::FILE_INFORMATION_CLASS;
+use crate::ntldr::{RTL_PROCESS_MODULES, RTL_PROCESS_MODULE_INFORMATION_EX};
+use crate::ntmmapi::SECTION_IMAGE_INFORMATION;
+use crate::ntnls::{PCPTABLEINFO, PNLSTABLEINFO};
+use crate::ntpebteb::{PPEB, PTEB_ACTIVE_FRAME};
+use crate::ntpsapi::{PINITIAL_TEB, PPS_APC_ROUTINE, PS_PROTECTION};
+use crate::ntapi_base::{PRTL_ATOM, RTL_ATOM};
+use crate::string::UTF16Const;
 use winapi::ctypes::c_void;
 use winapi::shared::basetsd::{PULONG64, ULONG32, ULONG64, PSIZE_T, PULONG_PTR, SIZE_T, ULONG_PTR};
 use winapi::shared::guiddef::GUID;
@@ -2193,7 +2193,7 @@ EXTERN!{extern "system" {
 }}
 #[inline] #[cfg(feature = "nightly")]
 pub unsafe fn RtlProcessHeap() -> PVOID {
-    use ntpsapi::NtCurrentPeb;
+    use crate::ntpsapi::NtCurrentPeb;
     (*NtCurrentPeb()).ProcessHeap
 }
 EXTERN!{extern "system" {
@@ -2933,7 +2933,7 @@ EXTERN!{extern "system" {
 #[inline]
 pub unsafe fn RtlCheckBit(BitMapHeader: &RTL_BITMAP, BitPosition: ULONG) -> u8 {
     #[cfg(all(target_arch = "x86_64", feature = "nightly"))] {
-        use winapi_local::um::winnt::_bittest64;
+        use crate::winapi_local::um::winnt::_bittest64;
         _bittest64(BitMapHeader.Buffer as *const i64, BitPosition as i64)
     }
     #[cfg(any(target_arch = "x86", all(target_arch = "x86_64", not(feature = "nightly"))))] {

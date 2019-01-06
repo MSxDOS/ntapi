@@ -4,9 +4,9 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 use core::mem::size_of;
-use ntapi_base::CLIENT_ID;
-use ntpsapi::{GDI_HANDLE_BUFFER, PPEB_LDR_DATA};
-use ntrtl::PRTL_USER_PROCESS_PARAMETERS;
+use crate::ntapi_base::CLIENT_ID;
+use crate::ntpsapi::{GDI_HANDLE_BUFFER, PPEB_LDR_DATA};
+use crate::ntrtl::PRTL_USER_PROCESS_PARAMETERS;
 use winapi::shared::basetsd::{SIZE_T, ULONG_PTR};
 use winapi::shared::guiddef::GUID;
 use winapi::shared::ntdef::{

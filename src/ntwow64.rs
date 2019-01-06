@@ -4,11 +4,11 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 use core::mem::size_of;
-use ntapi_base::CLIENT_ID32;
-use ntldr::{LDR_DDAG_STATE, LDR_DLL_LOAD_REASON};
-use ntpsapi::GDI_HANDLE_BUFFER32;
-use ntrtl::RTL_MAX_DRIVE_LETTERS;
-use string::{UTF16Const, UTF8Const};
+use crate::ntapi_base::CLIENT_ID32;
+use crate::ntldr::{LDR_DDAG_STATE, LDR_DLL_LOAD_REASON};
+use crate::ntpsapi::GDI_HANDLE_BUFFER32;
+use crate::ntrtl::RTL_MAX_DRIVE_LETTERS;
+use crate::string::{UTF16Const, UTF8Const};
 use winapi::shared::guiddef::GUID;
 use winapi::shared::ntdef::{
     BOOLEAN, CHAR, LARGE_INTEGER, LCID, LIST_ENTRY32, LONG, NTSTATUS, PROCESSOR_NUMBER,
