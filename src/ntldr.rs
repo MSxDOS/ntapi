@@ -1,8 +1,3 @@
-// Copyright 2018 ntapi Developers
-// Licensed under the Apache License, Version 2.0, <LICENSE-APACHE or
-// http://apache.org/licenses/LICENSE-2.0> or the MIT license <LICENSE-MIT or
-// http://opensource.org/licenses/MIT>, at your option. This file may not be
-// copied, modified, or distributed except according to those terms.
 use winapi::shared::basetsd::{LONG_PTR, PSIZE_T, SIZE_T, ULONG_PTR};
 use winapi::shared::ntdef::{
     BOOLEAN, HANDLE, LARGE_INTEGER, LIST_ENTRY, LONG, LONGLONG, NTSTATUS, PANSI_STRING, PCSTR,
