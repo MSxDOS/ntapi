@@ -137,7 +137,7 @@ ENUM!{enum DOMAIN_SERVER_ROLE {
     DomainServerRolePrimary = 3,
 }}
 pub type PDOMAIN_SERVER_ROLE = *mut DOMAIN_SERVER_ROLE;
-STRUCT!{struct DOMAIN_GENERAL_INFORMATION {
+STRUCT!{#[repr(packed(4))] struct DOMAIN_GENERAL_INFORMATION {
     ForceLogoff: LARGE_INTEGER,
     OemInformation: UNICODE_STRING,
     DomainName: UNICODE_STRING,
@@ -151,12 +151,11 @@ STRUCT!{struct DOMAIN_GENERAL_INFORMATION {
     AliasCount: ULONG,
 }}
 pub type PDOMAIN_GENERAL_INFORMATION = *mut DOMAIN_GENERAL_INFORMATION;
-STRUCT!{#[repr(packed)] struct DOMAIN_GENERAL_INFORMATION2 {
+STRUCT!{#[repr(packed(4))] struct DOMAIN_GENERAL_INFORMATION2 {
     I1: DOMAIN_GENERAL_INFORMATION,
     LockoutDuration: LARGE_INTEGER,
     LockoutObservationWindow: LARGE_INTEGER,
     LockoutThreshold: USHORT,
-    __padding: u16,
 }}
 pub type PDOMAIN_GENERAL_INFORMATION2 = *mut DOMAIN_GENERAL_INFORMATION2;
 STRUCT!{struct DOMAIN_UAS_INFORMATION {
@@ -667,7 +666,7 @@ STRUCT!{struct USER_PARAMETERS_INFORMATION {
     Parameters: UNICODE_STRING,
 }}
 pub type PUSER_PARAMETERS_INFORMATION = *mut USER_PARAMETERS_INFORMATION;
-STRUCT!{#[repr(packed)] struct USER_LOGON_INFORMATION {
+STRUCT!{#[repr(packed(4))] struct USER_LOGON_INFORMATION {
     UserName: UNICODE_STRING,
     FullName: UNICODE_STRING,
     UserId: ULONG,
@@ -688,7 +687,7 @@ STRUCT!{#[repr(packed)] struct USER_LOGON_INFORMATION {
     UserAccountControl: ULONG,
 }}
 pub type PUSER_LOGON_INFORMATION = *mut USER_LOGON_INFORMATION;
-STRUCT!{#[repr(packed)] struct USER_ACCOUNT_INFORMATION {
+STRUCT!{#[repr(packed(4))] struct USER_ACCOUNT_INFORMATION {
     UserName: UNICODE_STRING,
     FullName: UNICODE_STRING,
     UserId: ULONG,

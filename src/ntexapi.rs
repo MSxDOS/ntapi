@@ -2653,7 +2653,7 @@ UNION!{union KUSER_SHARED_DATA_u {
     TickCountQuad: ULONG64,
     ReservedTickCountOverlay: [ULONG; 3],
 }}
-STRUCT!{struct KUSER_SHARED_DATA {
+STRUCT!{#[repr(packed(4))] struct KUSER_SHARED_DATA {
     TickCountLowDeprecated: ULONG,
     TickCountMultiplier: ULONG,
     InterruptTime: KSYSTEM_TIME,

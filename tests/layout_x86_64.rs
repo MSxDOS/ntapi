@@ -404,7 +404,7 @@ fn ntexapi() {
     assert_eq!(size_of::<SYSDBG_LIVEDUMP_CONTROL>(), 64);
     assert_eq!(align_of::<SYSDBG_LIVEDUMP_CONTROL>(), 8);
     assert_eq!(size_of::<KUSER_SHARED_DATA>(), 1800);
-    // assert_eq!(align_of::<KUSER_SHARED_DATA>(), 4); //fixme
+    assert_eq!(align_of::<KUSER_SHARED_DATA>(), 4);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TickCountLowDeprecated), 0);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TickCountMultiplier), 4);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, InterruptTime), 8);
@@ -1543,7 +1543,7 @@ fn ntsam() {
     assert_eq!(size_of::<SAM_BYTE_ARRAY_32K>(), 16);
     assert_eq!(align_of::<SAM_BYTE_ARRAY_32K>(), 8);
     assert_eq!(size_of::<DOMAIN_GENERAL_INFORMATION>(), 88);
-    // assert_eq!(align_of::<DOMAIN_GENERAL_INFORMATION>(), 4); //fixme
+    assert_eq!(align_of::<DOMAIN_GENERAL_INFORMATION>(), 4);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, ForceLogoff), 0);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, OemInformation), 8);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainName), 24);
@@ -1556,7 +1556,7 @@ fn ntsam() {
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, GroupCount), 80);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, AliasCount), 84);
     assert_eq!(size_of::<DOMAIN_GENERAL_INFORMATION2>(), 108);
-    // assert_eq!(align_of::<DOMAIN_GENERAL_INFORMATION2>(), 4); //fixme
+    assert_eq!(align_of::<DOMAIN_GENERAL_INFORMATION2>(), 4);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, I1), 0);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutDuration), 88);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutObservationWindow), 96);
@@ -1622,7 +1622,7 @@ fn ntsam() {
     assert_eq!(size_of::<USER_PARAMETERS_INFORMATION>(), 16);
     assert_eq!(align_of::<USER_PARAMETERS_INFORMATION>(), 8);
     assert_eq!(size_of::<USER_LOGON_INFORMATION>(), 184);
-    // assert_eq!(align_of::<USER_LOGON_INFORMATION>(), 4); // fixme
+    assert_eq!(align_of::<USER_LOGON_INFORMATION>(), 4);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, UserName), 0);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, FullName), 16);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, UserId), 32);
@@ -1642,7 +1642,7 @@ fn ntsam() {
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, LogonCount), 178);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, UserAccountControl), 180);
     assert_eq!(size_of::<USER_ACCOUNT_INFORMATION>(), 192);
-    // assert_eq!(align_of::<USER_ACCOUNT_INFORMATION>(), 4); // fixme
+    assert_eq!(align_of::<USER_ACCOUNT_INFORMATION>(), 4);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, UserName), 0);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, FullName), 16);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, UserId), 32);
