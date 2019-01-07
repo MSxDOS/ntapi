@@ -11,15 +11,15 @@ pub type PRTL_ATOM = *mut RTL_ATOM;
 pub const NT_FACILITY_MASK: ULONG = 0xfff;
 pub const NT_FACILITY_SHIFT: ULONG = 16;
 #[inline]
-pub fn NT_FACILITY(Status: NTSTATUS) -> ULONG {
+pub const fn NT_FACILITY(Status: NTSTATUS) -> ULONG {
     (Status as u32) >> NT_FACILITY_SHIFT & NT_FACILITY_MASK
 }
 #[inline]
-pub fn NT_NTWIN32(Status: NTSTATUS) -> bool {
+pub const fn NT_NTWIN32(Status: NTSTATUS) -> bool {
     NT_FACILITY(Status) == FACILITY_NTWIN32 as u32
 }
 #[inline]
-pub fn WIN32_FROM_NTSTATUS(Status: NTSTATUS) -> ULONG {
+pub const fn WIN32_FROM_NTSTATUS(Status: NTSTATUS) -> ULONG {
     (Status as u32) & 0xffff
 }
 STRUCT!{struct CLIENT_ID {

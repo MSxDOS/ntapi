@@ -4,7 +4,7 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 #[inline]
-pub fn UInt32x32To64(a: u32, b: u32) -> u64 {
+pub const fn UInt32x32To64(a: u32, b: u32) -> u64 {
     a as u64 * b as u64
 }
 #[cfg(feature = "nightly")]

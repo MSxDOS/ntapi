@@ -21,23 +21,23 @@ pub const GDI_HANDLE_UNIQUE_SHIFT: ULONG = 24;
 pub const GDI_HANDLE_UNIQUE_BITS: ULONG = 8;
 pub const GDI_HANDLE_UNIQUE_MASK: ULONG = 0xff;
 #[inline]
-pub fn GDI_HANDLE_INDEX(Handle: ULONG) -> ULONG {
+pub const fn GDI_HANDLE_INDEX(Handle: ULONG) -> ULONG {
     Handle & GDI_HANDLE_INDEX_MASK
 }
 #[inline]
-pub fn GDI_HANDLE_TYPE(Handle: ULONG) -> ULONG {
+pub const fn GDI_HANDLE_TYPE(Handle: ULONG) -> ULONG {
     Handle >> GDI_HANDLE_TYPE_SHIFT & GDI_HANDLE_TYPE_MASK
 }
 #[inline]
-pub fn GDI_HANDLE_ALTTYPE(Handle: ULONG) -> ULONG {
+pub const fn GDI_HANDLE_ALTTYPE(Handle: ULONG) -> ULONG {
     Handle >> GDI_HANDLE_ALTTYPE_SHIFT & GDI_HANDLE_ALTTYPE_MASK
 }
 #[inline]
-pub fn GDI_HANDLE_STOCK(Handle: ULONG) -> ULONG {
+pub const fn GDI_HANDLE_STOCK(Handle: ULONG) -> ULONG {
     Handle >> GDI_HANDLE_STOCK_SHIFT & GDI_HANDLE_STOCK_MASK
 }
 #[inline]
-pub fn GDI_MAKE_HANDLE(Index: ULONG, Unique: ULONG) -> ULONG {
+pub const fn GDI_MAKE_HANDLE(Index: ULONG, Unique: ULONG) -> ULONG {
     Unique << GDI_HANDLE_INDEX_BITS | Index
 }
 pub const GDI_DEF_TYPE: ULONG = 0;
@@ -72,12 +72,12 @@ pub const GDI_DRVOBJ_TYPE: ULONG = 28;
 pub const GDI_DCIOBJ_TYPE: ULONG = 29;
 pub const GDI_SPOOL_TYPE: ULONG = 30;
 #[inline]
-pub fn GDI_CLIENT_TYPE_FROM_HANDLE(Handle: ULONG) -> ULONG {
+pub const fn GDI_CLIENT_TYPE_FROM_HANDLE(Handle: ULONG) -> ULONG {
     Handle & (GDI_HANDLE_ALTTYPE_MASK << GDI_HANDLE_ALTTYPE_SHIFT | GDI_HANDLE_TYPE_MASK
         << GDI_HANDLE_TYPE_SHIFT)
 }
 #[inline]
-pub fn GDI_CLIENT_TYPE_FROM_UNIQUE(Unique: ULONG) -> ULONG {
+pub const fn GDI_CLIENT_TYPE_FROM_UNIQUE(Unique: ULONG) -> ULONG {
     GDI_CLIENT_TYPE_FROM_HANDLE(Unique << 16)
 }
 pub const GDI_ALTTYPE_1: ULONG = 1 << GDI_HANDLE_ALTTYPE_SHIFT;

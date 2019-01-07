@@ -6,18 +6,18 @@
 #[macro_export]
 macro_rules! EXTERN {
     (extern $c:tt {$(
-        fn $n:ident ($( $p:tt $(: $t:ty)*),* $(,)*) $(-> $r:ty)*;
+        fn $n:ident ($( $p:tt $(: $t:ty)?),* $(,)?) $(-> $r:ty)?;
     )+}) => {
         #[cfg_attr(all(target_env = "msvc", feature = "user"), link(name = "ntdll"))]
         #[cfg_attr(all(target_env = "msvc", feature = "kernel"), link(name = "ntoskrnl"))]
         extern $c {$(
             pub fn $n(
-                $($p $(: $t)*),*
-            ) $(-> $r)*;
+                $($p $(: $t)?),*
+            ) $(-> $r)?;
         )+}
         $(
             #[cfg(feature = "func-types")]
-            pub type $n = unsafe extern $c fn($($p $(: $t)*),*) $(-> $r)*;
+            pub type $n = unsafe extern $c fn($($p $(: $t)?),*) $(-> $r)?;
         )+
     };
     (extern $c:tt {$(
@@ -31,7 +31,7 @@ macro_rules! EXTERN {
 }
 #[macro_export]
 macro_rules! FIELD_OFFSET {
-    ($_type:ident, $field:ident$(.$cfields:ident)*) => {
+    ($_type:ty, $field:ident$(.$cfields:ident)*) => {
         unsafe {
             &(*$crate::_core::ptr::null::<$_type>()).$field$(.$cfields)* as *const _ as usize
         }
@@ -43,15 +43,15 @@ macro_rules! BITFIELD {
     ]) => {
         impl $base {$(
             #[inline]
-            pub fn $thing(&self) -> $fieldtype {
-                let size = $crate::_core::mem::size_of::<$fieldtype>() * 8;
-                self.$field << (size - $r.end) >> (size - $r.end + $r.start)
+            pub const fn $thing(&self) -> $fieldtype {
+                const SIZE: usize = $crate::_core::mem::size_of::<$fieldtype>() * 8;
+                self.$field << (SIZE - $r.end) >> (SIZE - $r.end + $r.start)
             }
             #[inline]
             pub fn $set_thing(&mut self, val: $fieldtype) {
-                let mask = ((1 << ($r.end - $r.start)) - 1) << $r.start;
-                self.$field &= !mask;
-                self.$field |= (val << $r.start) & mask;
+                const MASK: $fieldtype = ((1 << ($r.end - $r.start)) - 1) << $r.start;
+                self.$field &= !MASK;
+                self.$field |= (val << $r.start) & MASK;
             }
         )+}
     };
@@ -61,21 +61,16 @@ macro_rules! BITFIELD {
         impl $base {$(
             #[inline]
             pub unsafe fn $thing(&self) -> $fieldtype {
-                let size = $crate::_core::mem::size_of::<$fieldtype>() * 8;
-                self.$field << (size - $r.end) >> (size - $r.end + $r.start)
+                const SIZE: usize = $crate::_core::mem::size_of::<$fieldtype>() * 8;
+                self.$field << (SIZE - $r.end) >> (SIZE - $r.end + $r.start)
             }
             #[inline]
             pub unsafe fn $set_thing(&mut self, val: $fieldtype) {
-                let mask = ((1 << ($r.end - $r.start)) - 1) << $r.start;
-                self.$field &= !mask;
-                self.$field |= (val << $r.start) & mask;
+                const MASK: $fieldtype = ((1 << ($r.end - $r.start)) - 1) << $r.start;
+                self.$field &= !MASK;
+                self.$field |= (val << $r.start) & MASK;
             }
         )+}
-    };
-}
-macro_rules! CTL_CODE {
-    ($DeviceType:expr, $Function:expr, $Method:expr, $Access:expr) => {
-        ($DeviceType << 16) | ($Access << 14) | ($Function << 2) | $Method
     };
 }
 macro_rules! UNION {

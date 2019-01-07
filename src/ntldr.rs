@@ -197,16 +197,16 @@ BITFIELD!{unsafe LDR_DATA_TABLE_ENTRY_u2 Flags: ULONG [
 ]}
 pub type PLDR_DATA_TABLE_ENTRY = *mut LDR_DATA_TABLE_ENTRY;
 #[inline]
-pub fn LDR_IS_DATAFILE(DllHandle: ULONG_PTR) -> bool {
+pub const fn LDR_IS_DATAFILE(DllHandle: ULONG_PTR) -> bool {
     DllHandle & 1 != 0
 }
 #[inline]
-pub fn LDR_IS_IMAGEMAPPING(DllHandle: ULONG_PTR) -> bool {
+pub const fn LDR_IS_IMAGEMAPPING(DllHandle: ULONG_PTR) -> bool {
     DllHandle & 2 != 0
 }
 #[inline]
-pub fn LDR_IS_RESOURCE(DllHandle: ULONG_PTR) -> bool {
-    LDR_IS_IMAGEMAPPING(DllHandle) || LDR_IS_DATAFILE(DllHandle)
+pub const fn LDR_IS_RESOURCE(DllHandle: ULONG_PTR) -> bool {
+    (LDR_IS_IMAGEMAPPING(DllHandle) | LDR_IS_DATAFILE(DllHandle)) as u8 != 0 //fixme
 }
 EXTERN!{extern "system" {
     fn LdrLoadDll(

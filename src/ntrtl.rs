@@ -249,15 +249,15 @@ pub fn RtlInitializeSplayLinks(Links: &mut RTL_SPLAY_LINKS) {
     Links.RightChild = null_mut();
 }
 #[inline]
-pub fn RtlParent(Links: &RTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS {
+pub const fn RtlParent(Links: &RTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS {
     Links.Parent
 }
 #[inline]
-pub fn RtlLeftChild(Links: &RTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS {
+pub const fn RtlLeftChild(Links: &RTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS {
     Links.LeftChild
 }
 #[inline]
-pub fn RtlRightChild(Links: &RTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS {
+pub const fn RtlRightChild(Links: &RTL_SPLAY_LINKS) -> PRTL_SPLAY_LINKS {
     Links.RightChild
 }
 #[inline]
@@ -417,7 +417,7 @@ STRUCT!{struct RTL_DYNAMIC_HASH_TABLE_ENTRY {
 }}
 pub type PRTL_DYNAMIC_HASH_TABLE_ENTRY = *mut RTL_DYNAMIC_HASH_TABLE_ENTRY;
 #[inline]
-pub fn HASH_ENTRY_KEY(x: &RTL_DYNAMIC_HASH_TABLE_ENTRY) -> ULONG_PTR {
+pub const fn HASH_ENTRY_KEY(x: &RTL_DYNAMIC_HASH_TABLE_ENTRY) -> ULONG_PTR {
     x.Signature
 }
 STRUCT!{struct RTL_DYNAMIC_HASH_TABLE_CONTEXT {
@@ -459,23 +459,23 @@ pub fn RtlInitHashTableContextFromEnumerator(
 }
 // RtlReleaseHashTableContext
 #[inline]
-pub fn RtlTotalBucketsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
+pub const fn RtlTotalBucketsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
     HashTable.TableSize
 }
 #[inline]
-pub fn RtlNonEmptyBucketsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
+pub const fn RtlNonEmptyBucketsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
     HashTable.NonEmptyBuckets
 }
 #[inline]
-pub fn RtlEmptyBucketsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
+pub const fn RtlEmptyBucketsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
     HashTable.TableSize - HashTable.NonEmptyBuckets
 }
 #[inline]
-pub fn RtlTotalEntriesHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
+pub const fn RtlTotalEntriesHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
     HashTable.NumEntries
 }
 #[inline]
-pub fn RtlActiveEnumeratorsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
+pub const fn RtlActiveEnumeratorsHashTable(HashTable: &RTL_DYNAMIC_HASH_TABLE) -> ULONG {
     HashTable.NumEnumerators
 }
 EXTERN!{extern "system" {
@@ -2490,22 +2490,19 @@ EXTERN!{extern "system" {
     ) -> LOGICAL;
 }}
 #[inline]
-pub fn RtlIsEqualLuid(L1: &LUID, L2: &LUID) -> bool {
-    L1.LowPart == L2.LowPart && L1.HighPart == L2.HighPart
+pub const fn RtlIsEqualLuid(L1: &LUID, L2: &LUID) -> bool {
+    ((L1.LowPart == L2.LowPart) & (L1.HighPart == L2.HighPart)) as u8 != 0 //fixme
 }
 #[inline]
-pub fn RtlIsZeroLuid(L1: &LUID) -> bool {
+pub const fn RtlIsZeroLuid(L1: &LUID) -> bool {
     (L1.LowPart | L1.HighPart as u32) == 0
 }
 #[inline]
-pub unsafe fn RtlConvertLongToLuid(Long: LONG) -> LUID {
-    use core::mem::uninitialized;
-    let mut tempLi: LARGE_INTEGER = uninitialized();
-    *tempLi.QuadPart_mut() = Long as i64;
-    LUID { LowPart: tempLi.s().LowPart, HighPart: tempLi.s().HighPart }
+pub const fn RtlConvertLongToLuid(Long: LONG) -> LUID {
+    LUID { LowPart: Long as u32, HighPart: ((Long as i64) >> 32) as i32 }
 }
 #[inline]
-pub fn RtlConvertUlongToLuid(Ulong: ULONG) -> LUID {
+pub const fn RtlConvertUlongToLuid(Ulong: ULONG) -> LUID {
     LUID { LowPart: Ulong, HighPart: 0 }
 }
 EXTERN!{extern "system" {
