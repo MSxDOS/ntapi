@@ -1,3 +1,4 @@
+use crate::winapi_local::um::winnt::PMEM_EXTENDED_PARAMETER;
 use winapi::shared::basetsd::{PSIZE_T, PULONG_PTR, SIZE_T, ULONG_PTR};
 use winapi::shared::ntdef::{
     BOOLEAN, HANDLE, LARGE_INTEGER, NTSTATUS, PHANDLE, PLARGE_INTEGER, POBJECT_ATTRIBUTES, PULONG,
@@ -390,6 +391,8 @@ STRUCT!{struct CFG_CALL_TARGET_LIST_INFORMATION {
     Reserved: ULONG,
     NumberOfEntriesProcessed: PULONG,
     CallTargetInfo: PCFG_CALL_TARGET_INFO,
+    Section: PVOID,
+    FileOffset: ULONGLONG,
 }}
 pub type PCFG_CALL_TARGET_LIST_INFORMATION = *mut CFG_CALL_TARGET_LIST_INFORMATION;
 EXTERN!{extern "system" {
@@ -421,6 +424,17 @@ EXTERN!{extern "system" {
         SectionPageProtection: ULONG,
         AllocationAttributes: ULONG,
         FileHandle: HANDLE,
+    ) -> NTSTATUS;
+    fn NtCreateSectionEx(
+        SectionHandle: PHANDLE,
+        DesiredAccess: ACCESS_MASK,
+        ObjectAttributes: POBJECT_ATTRIBUTES,
+        MaximumSize: PLARGE_INTEGER,
+        SectionPageProtection: ULONG,
+        AllocationAttributes: ULONG,
+        FileHandle: HANDLE,
+        ExtendedParameters: PMEM_EXTENDED_PARAMETER,
+        ExtendedParameterCount: ULONG,
     ) -> NTSTATUS;
     fn NtOpenSection(
         SectionHandle: PHANDLE,

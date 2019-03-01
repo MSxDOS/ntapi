@@ -933,7 +933,11 @@ ENUM!{enum SYSTEM_INFORMATION_CLASS {
     SystemSpeculationControlInformation = 201,
     SystemDmaGuardPolicyInformation = 202,
     SystemEnclaveLaunchControlInformation = 203,
-    MaxSystemInfoClass = 204,
+    SystemWorkloadAllowedCpuSetsInformation = 204,
+    SystemCodeIntegrityUnlockModeInformation = 205,
+    SystemLeapSecondInformation = 206,
+    SystemFlags2Information = 207,
+    MaxSystemInfoClass = 208,
 }}
 STRUCT!{struct SYSTEM_BASIC_INFORMATION {
     Reserved: ULONG,
@@ -2399,7 +2403,10 @@ BITFIELD!{SYSTEM_KERNEL_VA_SHADOW_INFORMATION Flags: ULONG [
     KvaShadowInvpcid set_KvaShadowInvpcid[3..4],
     KvaShadowRequired set_KvaShadowRequired[4..5],
     KvaShadowRequiredAvailable set_KvaShadowRequiredAvailable[5..6],
-    Reserved set_Reserved[6..32],
+    InvalidPteBit set_InvalidPteBit[6..12],
+    L1DataCacheFlushSupported set_L1DataCacheFlushSupported[12..13],
+    L1TerminalFaultMitigationPresent set_L1TerminalFaultMitigationPresent[13..14],
+    Reserved set_Reserved[14..32],
 ]}
 pub type PSYSTEM_KERNEL_VA_SHADOW_INFORMATION = *mut SYSTEM_KERNEL_VA_SHADOW_INFORMATION;
 STRUCT!{struct SYSTEM_CODEINTEGRITYVERIFICATION_INFORMATION {
@@ -2417,14 +2424,6 @@ pub type PSYSTEM_HYPERVISOR_SHARED_PAGE_INFORMATION =
 STRUCT!{struct SYSTEM_SPECULATION_CONTROL_INFORMATION {
     Flags: ULONG,
 }}
-pub type PSYSTEM_SPECULATION_CONTROL_INFORMATION = *mut SYSTEM_SPECULATION_CONTROL_INFORMATION;
-STRUCT!{struct SYSTEM_DMA_GUARD_POLICY_INFORMATION {
-    DmaGuardPolicyEnabled: BOOLEAN,
-}}
-pub type PSYSTEM_DMA_GUARD_POLICY_INFORMATION = *mut SYSTEM_DMA_GUARD_POLICY_INFORMATION;
-STRUCT!{struct SYSTEM_ENCLAVE_LAUNCH_CONTROL_INFORMATION {
-    EnclaveLaunchSigner: [UCHAR; 32],
-}}
 BITFIELD!{SYSTEM_SPECULATION_CONTROL_INFORMATION Flags: ULONG [
     BpbEnabled set_BpbEnabled[0..1],
     BpbDisabledSystemPolicy set_BpbDisabledSystemPolicy[1..2],
@@ -2434,15 +2433,32 @@ BITFIELD!{SYSTEM_SPECULATION_CONTROL_INFORMATION Flags: ULONG [
     IbrsPresent set_IbrsPresent[5..6],
     StibpPresent set_StibpPresent[6..7],
     SmepPresent set_SmepPresent[7..8],
-    MemoryDisambiguationDisableAvailable set_MemoryDisambiguationDisableAvailable[8..9],
-    MemoryDisambiguationDisableSupported set_MemoryDisambiguationDisableSupported[9..10],
-    MemoryDisambiguationDisabledSystemWide set_MemoryDisambiguationDisabledSystemWide[10..11],
-    MemoryDisambiguationDisabledKernel set_MemoryDisambiguationDisabledKernel[11..12],
-    MemoryDisambiguationDisableRequired set_MemoryDisambiguationDisableRequired[12..13],
-    Reserved set_Reserved[13..32],
+    SpeculativeStoreBypassDisableAvailable set_SpeculativeStoreBypassDisableAvailable[8..9],
+    SpeculativeStoreBypassDisableSupported set_SpeculativeStoreBypassDisableSupported[9..10],
+    SpeculativeStoreBypassDisabledSystemWide set_SpeculativeStoreBypassDisabledSystemWide[10..11],
+    SpeculativeStoreBypassDisabledKernel set_SpeculativeStoreBypassDisabledKernel[11..12],
+    SpeculativeStoreBypassDisableRequired set_SpeculativeStoreBypassDisableRequired[12..13],
+    BpbDisabledKernelToUser set_BpbDisabledKernelToUser[13..14],
+    SpecCtrlRetpolineEnabled set_SpecCtrlRetpolineEnabled[14..15],
+    SpecCtrlImportOptimizationEnabled set_SpecCtrlImportOptimizationEnabled[15..16],
+    Reserved set_Reserved[16..32],
 ]}
+pub type PSYSTEM_SPECULATION_CONTROL_INFORMATION = *mut SYSTEM_SPECULATION_CONTROL_INFORMATION;
+STRUCT!{struct SYSTEM_DMA_GUARD_POLICY_INFORMATION {
+    DmaGuardPolicyEnabled: BOOLEAN,
+}}
+pub type PSYSTEM_DMA_GUARD_POLICY_INFORMATION = *mut SYSTEM_DMA_GUARD_POLICY_INFORMATION;
+STRUCT!{struct SYSTEM_ENCLAVE_LAUNCH_CONTROL_INFORMATION {
+    EnclaveLaunchSigner: [UCHAR; 32],
+}}
 pub type PSYSTEM_ENCLAVE_LAUNCH_CONTROL_INFORMATION =
     *mut SYSTEM_ENCLAVE_LAUNCH_CONTROL_INFORMATION;
+STRUCT!{struct SYSTEM_WORKLOAD_ALLOWED_CPU_SET_INFORMATION {
+    WorkloadClass: ULONGLONG,
+    CpuSets: [ULONGLONG; 1],
+}}
+pub type PSYSTEM_WORKLOAD_ALLOWED_CPU_SET_INFORMATION =
+    *mut SYSTEM_WORKLOAD_ALLOWED_CPU_SET_INFORMATION;
 EXTERN!{extern "system" {
     fn NtQuerySystemInformation(
         SystemInformationClass: SYSTEM_INFORMATION_CLASS,
@@ -2857,6 +2873,9 @@ EXTERN!{extern "system" {
         Length: ULONG,
         Atom: PRTL_ATOM,
     ) -> NTSTATUS;
+}}
+pub const ATOM_FLAG_GLOBAL: ULONG = 0x2;
+EXTERN!{extern "system" {
     fn NtAddAtomEx(
         AtomName: PWSTR,
         Length: ULONG,
@@ -2897,6 +2916,51 @@ EXTERN!{extern "system" {
         ReturnLength: PULONG,
     ) -> NTSTATUS;
 }}
+pub const FLG_STOP_ON_EXCEPTION: u32 = 0x00000001;
+pub const FLG_SHOW_LDR_SNAPS: u32 = 0x00000002;
+pub const FLG_DEBUG_INITIAL_COMMAND: u32 = 0x00000004;
+pub const FLG_STOP_ON_HUNG_GUI: u32 = 0x00000008;
+pub const FLG_HEAP_ENABLE_TAIL_CHECK: u32 = 0x00000010;
+pub const FLG_HEAP_ENABLE_FREE_CHECK: u32 = 0x00000020;
+pub const FLG_HEAP_VALIDATE_PARAMETERS: u32 = 0x00000040;
+pub const FLG_HEAP_VALIDATE_ALL: u32 = 0x00000080;
+pub const FLG_APPLICATION_VERIFIER: u32 = 0x00000100;
+pub const FLG_POOL_ENABLE_TAGGING: u32 = 0x00000400;
+pub const FLG_HEAP_ENABLE_TAGGING: u32 = 0x00000800;
+pub const FLG_USER_STACK_TRACE_DB: u32 = 0x00001000;
+pub const FLG_KERNEL_STACK_TRACE_DB: u32 = 0x00002000;
+pub const FLG_MAINTAIN_OBJECT_TYPELIST: u32 = 0x00004000;
+pub const FLG_HEAP_ENABLE_TAG_BY_DLL: u32 = 0x00008000;
+pub const FLG_DISABLE_STACK_EXTENSION: u32 = 0x00010000;
+pub const FLG_ENABLE_CSRDEBUG: u32 = 0x00020000;
+pub const FLG_ENABLE_KDEBUG_SYMBOL_LOAD: u32 = 0x00040000;
+pub const FLG_DISABLE_PAGE_KERNEL_STACKS: u32 = 0x00080000;
+pub const FLG_ENABLE_SYSTEM_CRIT_BREAKS: u32 = 0x00100000;
+pub const FLG_HEAP_DISABLE_COALESCING: u32 = 0x00200000;
+pub const FLG_ENABLE_CLOSE_EXCEPTIONS: u32 = 0x00400000;
+pub const FLG_ENABLE_EXCEPTION_LOGGING: u32 = 0x00800000;
+pub const FLG_ENABLE_HANDLE_TYPE_TAGGING: u32 = 0x01000000;
+pub const FLG_HEAP_PAGE_ALLOCS: u32 = 0x02000000;
+pub const FLG_DEBUG_INITIAL_COMMAND_EX: u32 = 0x04000000;
+pub const FLG_DISABLE_DBGPRINT: u32 = 0x08000000;
+pub const FLG_CRITSEC_EVENT_CREATION: u32 = 0x10000000;
+pub const FLG_LDR_TOP_DOWN: u32 = 0x20000000;
+pub const FLG_ENABLE_HANDLE_EXCEPTIONS: u32 = 0x40000000;
+pub const FLG_DISABLE_PROTDLLS: u32 = 0x80000000;
+pub const FLG_VALID_BITS: u32 = 0xfffffdff;
+pub const FLG_USERMODE_VALID_BITS: u32 = FLG_STOP_ON_EXCEPTION | FLG_SHOW_LDR_SNAPS
+    | FLG_HEAP_ENABLE_TAIL_CHECK | FLG_HEAP_ENABLE_FREE_CHECK | FLG_HEAP_VALIDATE_PARAMETERS
+    | FLG_HEAP_VALIDATE_ALL | FLG_APPLICATION_VERIFIER | FLG_HEAP_ENABLE_TAGGING
+    | FLG_USER_STACK_TRACE_DB | FLG_HEAP_ENABLE_TAG_BY_DLL | FLG_DISABLE_STACK_EXTENSION
+    | FLG_ENABLE_SYSTEM_CRIT_BREAKS | FLG_HEAP_DISABLE_COALESCING | FLG_DISABLE_PROTDLLS
+    | FLG_HEAP_PAGE_ALLOCS | FLG_CRITSEC_EVENT_CREATION | FLG_LDR_TOP_DOWN;
+pub const FLG_BOOTONLY_VALID_BITS: u32 = FLG_KERNEL_STACK_TRACE_DB | FLG_MAINTAIN_OBJECT_TYPELIST
+    | FLG_ENABLE_CSRDEBUG | FLG_DEBUG_INITIAL_COMMAND | FLG_DEBUG_INITIAL_COMMAND_EX
+    | FLG_DISABLE_PAGE_KERNEL_STACKS;
+pub const FLG_KERNELMODE_VALID_BITS: u32 = FLG_STOP_ON_EXCEPTION | FLG_SHOW_LDR_SNAPS
+    | FLG_STOP_ON_HUNG_GUI | FLG_POOL_ENABLE_TAGGING | FLG_ENABLE_KDEBUG_SYMBOL_LOAD
+    | FLG_ENABLE_CLOSE_EXCEPTIONS | FLG_ENABLE_EXCEPTION_LOGGING | FLG_ENABLE_HANDLE_TYPE_TAGGING
+    | FLG_DISABLE_DBGPRINT | FLG_ENABLE_HANDLE_EXCEPTIONS;
 EXTERN!{extern "system" {
     fn NtQueryLicenseValue(
         ValueName: PUNICODE_STRING,

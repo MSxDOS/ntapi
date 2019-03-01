@@ -1,3 +1,7 @@
+use winapi::shared::basetsd::{DWORD64, SIZE_T, ULONG64};
+use winapi::shared::minwindef::DWORD;
+use winapi::um::winnt::{HANDLE, PVOID};
+#[doc(hidden)]
 #[inline]
 pub const fn UInt32x32To64(a: u32, b: u32) -> u64 {
     a as u64 * b as u64
@@ -5,8 +9,6 @@ pub const fn UInt32x32To64(a: u32, b: u32) -> u64 {
 #[cfg(feature = "nightly")]
 IFDEF!{
 use crate::ntpebteb::TEB;
-use winapi::shared::basetsd::DWORD64;
-use winapi::shared::minwindef::DWORD;
 #[inline]
 pub unsafe fn _bittest64(Base: *const i64, Offset: i64) -> u8 {
     let out: u8;
@@ -52,3 +54,27 @@ pub unsafe fn NtCurrentTeb() -> *mut TEB {
     }
 }
 }
+ENUM!{enum MEM_EXTENDED_PARAMETER_TYPE {
+    MemExtendedParameterInvalidType = 0,
+    MemExtendedParameterAddressRequirements = 1,
+    MemExtendedParameterNumaNode = 2,
+    MemExtendedParameterPartitionHandle = 3,
+    MemExtendedParameterMax = 4,
+}}
+pub type PMEM_EXTENDED_PARAMETER_TYPE = *mut MEM_EXTENDED_PARAMETER_TYPE;
+UNION!{union MEM_EXTENDED_PARAMETER_u {
+    ULong64: DWORD64,
+    Pointer: PVOID,
+    Size: SIZE_T,
+    Handle: HANDLE,
+    ULong: DWORD,
+}}
+STRUCT!{struct MEM_EXTENDED_PARAMETER {
+    BitFields: ULONG64,
+    u: MEM_EXTENDED_PARAMETER_u,
+}}
+BITFIELD!{MEM_EXTENDED_PARAMETER BitFields: ULONG64 [
+    Type set_Type[0..8],
+    Reserved set_Reserved[8..64],
+]}
+pub type PMEM_EXTENDED_PARAMETER = *mut MEM_EXTENDED_PARAMETER;

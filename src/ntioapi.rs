@@ -202,7 +202,11 @@ ENUM!{enum FILE_INFORMATION_CLASS {
     FileMemoryPartitionInformation = 69,
     FileStatLxInformation = 70,
     FileCaseSensitiveInformation = 71,
-    FileMaximumInformation = 72,
+    FileLinkInformationEx = 72,
+    FileLinkInformationExBypassAccessCheck = 73,
+    FileStorageReserveIdInformation = 74,
+    FileCaseSensitiveInformationForceAccessCheck = 75,
+    FileMaximumInformation = 76,
 }}
 pub type PFILE_INFORMATION_CLASS = *mut FILE_INFORMATION_CLASS;
 STRUCT!{struct FILE_BASIC_INFORMATION {
@@ -784,7 +788,8 @@ ENUM!{enum FS_INFORMATION_CLASS {
     FileFsSectorSizeInformation = 11,
     FileFsDataCopyInformation = 12,
     FileFsMetadataSizeInformation = 13,
-    FileFsMaximumInformation = 14,
+    FileFsFullSizeInformationEx = 14,
+    FileFsMaximumInformation = 15,
 }}
 pub type PFS_INFORMATION_CLASS = *mut FS_INFORMATION_CLASS;
 STRUCT!{struct FILE_FS_LABEL_INFORMATION {
@@ -874,6 +879,22 @@ STRUCT!{struct FILE_FS_METADATA_SIZE_INFORMATION {
     BytesPerSector: ULONG,
 }}
 pub type PFILE_FS_METADATA_SIZE_INFORMATION = *mut FILE_FS_METADATA_SIZE_INFORMATION;
+STRUCT!{struct FILE_FS_FULL_SIZE_INFORMATION_EX {
+    ActualTotalAllocationUnits: ULONGLONG,
+    ActualAvailableAllocationUnits: ULONGLONG,
+    ActualPoolUnavailableAllocationUnits: ULONGLONG,
+    CallerTotalAllocationUnits: ULONGLONG,
+    CallerAvailableAllocationUnits: ULONGLONG,
+    CallerPoolUnavailableAllocationUnits: ULONGLONG,
+    UsedAllocationUnits: ULONGLONG,
+    TotalReservedAllocationUnits: ULONGLONG,
+    VolumeStorageReserveAllocationUnits: ULONGLONG,
+    AvailableCommittedAllocationUnits: ULONGLONG,
+    PoolAvailableAllocationUnits: ULONGLONG,
+    SectorsPerAllocationUnit: ULONG,
+    BytesPerSector: ULONG,
+}}
+pub type PFILE_FS_FULL_SIZE_INFORMATION_EX = *mut FILE_FS_FULL_SIZE_INFORMATION_EX;
 EXTERN!{extern "system" {
     fn NtCreateFile(
         FileHandle: PHANDLE,
@@ -929,8 +950,6 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
     ) -> NTSTATUS;
-}}
-EXTERN!{extern "system" {
     fn NtFlushBuffersFileEx(
         FileHandle: HANDLE,
         Flags: ULONG,
@@ -940,6 +959,13 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn NtQueryInformationFile(
         FileHandle: HANDLE,
+        IoStatusBlock: PIO_STATUS_BLOCK,
+        FileInformation: PVOID,
+        Length: ULONG,
+        FileInformationClass: FILE_INFORMATION_CLASS,
+    ) -> NTSTATUS;
+    fn NtQueryInformationByName(
+        ObjectAttributes: POBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
         FileInformation: PVOID,
         Length: ULONG,

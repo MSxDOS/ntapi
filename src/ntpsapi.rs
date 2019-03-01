@@ -152,7 +152,12 @@ ENUM!{enum PROCESSINFOCLASS {
     ProcessDebugAuthInformation = 90,
     ProcessSystemResourceManagement = 91,
     ProcessSequenceNumber = 92,
-    MaxProcessInfoClass = 93,
+    ProcessLoaderDetour = 93,
+    ProcessSecurityDomainInformation = 94,
+    ProcessCombineSecurityDomainsInformation = 95,
+    ProcessEnableLogging = 96,
+    ProcessLeapSecondInformation = 97,
+    MaxProcessInfoClass = 98,
 }}
 ENUM!{enum THREADINFOCLASS {
     ThreadBasicInformation = 0,
@@ -205,7 +210,8 @@ ENUM!{enum THREADINFOCLASS {
     ThreadAttachContainer = 47,
     ThreadManageWritesToExecutableMemory = 48,
     ThreadPowerThrottlingState = 49,
-    MaxThreadInfoClass = 50,
+    ThreadWorkloadClass = 50,
+    MaxThreadInfoClass = 51,
 }}
 STRUCT!{struct PAGE_PRIORITY_INFORMATION {
     PagePriority: ULONG,
@@ -510,6 +516,7 @@ UNION!{union PROCESS_MITIGATION_POLICY_INFORMATION_u {
     SystemCallFilterPolicy: PROCESS_MITIGATION_SYSTEM_CALL_FILTER_POLICY,
     PayloadRestrictionPolicy: PROCESS_MITIGATION_PAYLOAD_RESTRICTION_POLICY,
     ChildProcessPolicy: PROCESS_MITIGATION_CHILD_PROCESS_POLICY,
+    // SideChannelIsolationPolicy: PROCESS_MITIGATION_SIDE_CHANNEL_ISOLATION_POLICY, //TODO
 }}
 STRUCT!{struct PROCESS_MITIGATION_POLICY_INFORMATION {
     Policy: PROCESS_MITIGATION_POLICY,
@@ -705,6 +712,32 @@ BITFIELD!{PROCESS_SYSTEM_RESOURCE_MANAGEMENT Flags: ULONG [
     Foreground set_Foreground[0..1],
     Reserved set_Reserved[1..32],
 ]}
+STRUCT!{struct PROCESS_SECURITY_DOMAIN_INFORMATION {
+    SecurityDomain: ULONGLONG,
+}}
+pub type PPROCESS_SECURITY_DOMAIN_INFORMATION = *mut PROCESS_SECURITY_DOMAIN_INFORMATION;
+STRUCT!{struct PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION {
+    ProcessHandle: HANDLE,
+}}
+pub type PPROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION =
+    *mut PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION;
+STRUCT!{struct PROCESS_LOGGING_INFORMATION {
+    Flags: ULONG,
+    BitFields: ULONG,
+}}
+BITFIELD!{PROCESS_LOGGING_INFORMATION BitFields: ULONG [
+    EnableReadVmLogging set_EnableReadVmLogging[0..1],
+    EnableWriteVmLogging set_EnableWriteVmLogging[1..2],
+    EnableProcessSuspendResumeLogging set_EnableProcessSuspendResumeLogging[2..3],
+    EnableThreadSuspendResumeLogging set_EnableThreadSuspendResumeLogging[3..4],
+    Reserved set_Reserved[4..32],
+]}
+pub type PPROCESS_LOGGING_INFORMATION = *mut PROCESS_LOGGING_INFORMATION;
+STRUCT!{struct PROCESS_LEAP_SECOND_INFORMATION {
+    Flags: ULONG,
+    Reserved: ULONG,
+}}
+pub type PPROCESS_LEAP_SECOND_INFORMATION = *mut PROCESS_LEAP_SECOND_INFORMATION;
 STRUCT!{struct THREAD_BASIC_INFORMATION {
     ExitStatus: NTSTATUS,
     TebBaseAddress: PTEB,
@@ -838,6 +871,11 @@ ENUM!{enum SUBSYSTEM_INFORMATION_TYPE {
     SubsystemInformationTypeWin32 = 0,
     SubsystemInformationTypeWSL = 1,
     MaxSubsystemInformationType = 2,
+}}
+ENUM!{enum THREAD_WORKLOAD_CLASS {
+    ThreadWorkloadClassDefault = 0,
+    ThreadWorkloadClassGraphics = 1,
+    MaxThreadWorkloadClass = 2,
 }}
 EXTERN!{extern "system" {
     fn NtCreateProcess(
@@ -1191,6 +1229,9 @@ ENUM!{enum PS_MITIGATION_OPTION {
     PS_MITIGATION_OPTION_IMPORT_ADDRESS_FILTER = 26,
     PS_MITIGATION_OPTION_MODULE_TAMPERING_PROTECTION = 27,
     PS_MITIGATION_OPTION_RESTRICT_INDIRECT_BRANCH_PREDICTION = 28,
+    PS_MITIGATION_OPTION_SPECULATIVE_STORE_BYPASS_DISABLE = 29,
+    PS_MITIGATION_OPTION_ALLOW_DOWNGRADE_DYNAMIC_CODE_POLICY = 30,
+    PS_MITIGATION_OPTION_CET_SHADOW_STACKS = 31,
 }}
 ENUM!{enum PS_CREATE_STATE {
     PsCreateInitialState = 0,

@@ -383,6 +383,8 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_DMA_GUARD_POLICY_INFORMATION>(), 1);
     assert_eq!(size_of::<SYSTEM_ENCLAVE_LAUNCH_CONTROL_INFORMATION>(), 32);
     assert_eq!(align_of::<SYSTEM_ENCLAVE_LAUNCH_CONTROL_INFORMATION>(), 1);
+    assert_eq!(size_of::<SYSTEM_WORKLOAD_ALLOWED_CPU_SET_INFORMATION>(), 16);
+    assert_eq!(align_of::<SYSTEM_WORKLOAD_ALLOWED_CPU_SET_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSDBG_VIRTUAL>(), 24);
     assert_eq!(align_of::<SYSDBG_VIRTUAL>(), 8);
     assert_eq!(size_of::<SYSDBG_PHYSICAL>(), 24);
@@ -661,6 +663,8 @@ fn ntioapi() {
     assert_eq!(align_of::<FILE_FS_DATA_COPY_INFORMATION>(), 4);
     assert_eq!(size_of::<FILE_FS_METADATA_SIZE_INFORMATION>(), 16);
     assert_eq!(align_of::<FILE_FS_METADATA_SIZE_INFORMATION>(), 8);
+    assert_eq!(size_of::<FILE_FS_FULL_SIZE_INFORMATION_EX>(), 96);
+    assert_eq!(align_of::<FILE_FS_FULL_SIZE_INFORMATION_EX>(), 8);
     assert_eq!(size_of::<IO_COMPLETION_BASIC_INFORMATION>(), 4);
     assert_eq!(align_of::<IO_COMPLETION_BASIC_INFORMATION>(), 4);
     assert_eq!(size_of::<REPARSE_DATA_BUFFER>(), 24);
@@ -837,7 +841,7 @@ fn ntmmapi() {
     assert_eq!(align_of::<SECTION_INTERNAL_IMAGE_INFORMATION>(), 8);
     assert_eq!(size_of::<MEMORY_RANGE_ENTRY>(), 16);
     assert_eq!(align_of::<MEMORY_RANGE_ENTRY>(), 8);
-    assert_eq!(size_of::<CFG_CALL_TARGET_LIST_INFORMATION>(), 24);
+    assert_eq!(size_of::<CFG_CALL_TARGET_LIST_INFORMATION>(), 40);
     assert_eq!(align_of::<CFG_CALL_TARGET_LIST_INFORMATION>(), 8);
     assert_eq!(size_of::<MEMORY_PARTITION_CONFIGURATION_INFORMATION>(), 240);
     assert_eq!(align_of::<MEMORY_PARTITION_CONFIGURATION_INFORMATION>(), 8);
@@ -891,7 +895,7 @@ fn ntpebteb() {
     assert_eq!(align_of::<API_SET_NAMESPACE_ENTRY>(), 4);
     assert_eq!(size_of::<API_SET_VALUE_ENTRY>(), 20);
     assert_eq!(align_of::<API_SET_VALUE_ENTRY>(), 4);
-    assert_eq!(size_of::<PEB>(), 1976);
+    assert_eq!(size_of::<PEB>(), 1992);
     assert_eq!(align_of::<PEB>(), 8);
     assert_eq!(FIELD_OFFSET!(PEB, InheritedAddressSpace), 0);
     assert_eq!(FIELD_OFFSET!(PEB, ReadImageFileExecOptions), 1);
@@ -974,6 +978,9 @@ fn ntpebteb() {
     assert_eq!(FIELD_OFFSET!(PEB, CloudFileDiagFlags), 1964);
     assert_eq!(FIELD_OFFSET!(PEB, PlaceholderCompatibilityMode), 1968);
     assert_eq!(FIELD_OFFSET!(PEB, PlaceholderCompatibilityModeReserved), 1969);
+    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondData), 1976);
+    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondFlags), 1984);
+    assert_eq!(FIELD_OFFSET!(PEB, NtGlobalFlag2), 1988);
     assert_eq!(size_of::<GDI_TEB_BATCH>(), 1256);
     assert_eq!(align_of::<GDI_TEB_BATCH>(), 8);
     assert_eq!(size_of::<TEB_ACTIVE_FRAME_CONTEXT>(), 16);
@@ -1256,6 +1263,14 @@ fn ntpsapi() {
     assert_eq!(align_of::<PROCESS_UPTIME_INFORMATION>(), 8);
     assert_eq!(size_of::<PROCESS_SYSTEM_RESOURCE_MANAGEMENT>(), 4);
     assert_eq!(align_of::<PROCESS_SYSTEM_RESOURCE_MANAGEMENT>(), 4);
+    assert_eq!(size_of::<PROCESS_SECURITY_DOMAIN_INFORMATION>(), 8);
+    assert_eq!(align_of::<PROCESS_SECURITY_DOMAIN_INFORMATION>(), 8);
+    assert_eq!(size_of::<PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION>(), 8);
+    assert_eq!(align_of::<PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION>(), 8);
+    assert_eq!(size_of::<PROCESS_LOGGING_INFORMATION>(), 8);
+    assert_eq!(align_of::<PROCESS_LOGGING_INFORMATION>(), 4);
+    assert_eq!(size_of::<PROCESS_LEAP_SECOND_INFORMATION>(), 8);
+    assert_eq!(align_of::<PROCESS_LEAP_SECOND_INFORMATION>(), 4);
     assert_eq!(size_of::<THREAD_BASIC_INFORMATION>(), 48);
     assert_eq!(align_of::<THREAD_BASIC_INFORMATION>(), 8);
     assert_eq!(size_of::<THREAD_LAST_SYSCALL_INFORMATION>(), 24);

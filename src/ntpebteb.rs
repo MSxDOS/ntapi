@@ -61,6 +61,8 @@ UNION!{union PEB_u {
     KernelCallbackTable: PVOID,
     UserSharedInfoPtr: PVOID,
 }}
+#[repr(C)]
+pub struct LEAP_SECOND_DATA([u8; 0]); //fixme
 STRUCT!{struct PEB {
     InheritedAddressSpace: BOOLEAN,
     ReadImageFileExecOptions: BOOLEAN,
@@ -146,6 +148,9 @@ STRUCT!{struct PEB {
     CloudFileDiagFlags: ULONG,
     PlaceholderCompatibilityMode: CHAR,
     PlaceholderCompatibilityModeReserved: [CHAR; 7],
+    LeapSecondData: *mut LEAP_SECOND_DATA,
+    LeapSecondFlags: ULONG,
+    NtGlobalFlag2: ULONG,
 }}
 BITFIELD!{PEB BitField: BOOLEAN [
     ImageUsesLargePages set_ImageUsesLargePages[0..1],
@@ -165,13 +170,18 @@ BITFIELD!{PEB CrossProcessFlags: ULONG [
     ProcessUsingFTH set_ProcessUsingFTH[4..5],
     ProcessPreviouslyThrottled set_ProcessPreviouslyThrottled[5..6],
     ProcessCurrentlyThrottled set_ProcessCurrentlyThrottled[6..7],
-    ReservedBits0 set_ReservedBits0[7..32],
+    ProcessImagesHotPatched set_ProcessImagesHotPatched[7..8],
+    ReservedBits0 set_ReservedBits0[8..32],
 ]}
 BITFIELD!{PEB TracingFlags: ULONG [
     HeapTracingEnabled set_HeapTracingEnabled[0..1],
     CritSecTracingEnabled set_CritSecTracingEnabled[1..2],
     LibLoaderTracingEnabled set_LibLoaderTracingEnabled[2..3],
     SpareTracingBits set_SpareTracingBits[3..32],
+]}
+BITFIELD!{PEB LeapSecondFlags: ULONG [
+    SixtySecondEnabled set_SixtySecondEnabled[0..1],
+    Reserved set_Reserved[1..32],
 ]}
 pub type PPEB = *mut PEB;
 pub const GDI_BATCH_BUFFER_SIZE: usize = 310;

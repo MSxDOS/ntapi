@@ -1472,6 +1472,13 @@ EXTERN!{extern "system" {
         TokenHandle: HANDLE,
         ProcessInformation: PRTL_USER_PROCESS_INFORMATION,
     ) -> NTSTATUS;
+    fn RtlCreateUserProcessEx(
+        NtImagePathName: PUNICODE_STRING,
+        ProcessParameters: PRTL_USER_PROCESS_PARAMETERS,
+        InheritHandles: BOOLEAN,
+        Flags: ULONG,
+        ProcessInformation: PRTL_USER_PROCESS_INFORMATION,
+    ) -> NTSTATUS;
     fn RtlExitUserProcess(
         ExitStatus: NTSTATUS,
     );
@@ -1909,6 +1916,9 @@ pub const RtlNtdllName: UTF16Const = UTF16Const(&[
 EXTERN!{extern "system" {
     fn RtlDetermineDosPathNameType_U(
         DosFileName: PWSTR,
+    ) -> RTL_PATH_TYPE;
+    fn RtlDetermineDosPathNameType_Ustr(
+        DosFileName: PCUNICODE_STRING,
     ) -> RTL_PATH_TYPE;
     fn RtlIsDosDeviceName_U(
         DosFileName: PWSTR,
@@ -3911,7 +3921,9 @@ EXTERN!{extern "system" {
     );
     fn RtlGetFrame() -> PTEB_ACTIVE_FRAME;
 }}
-pub const RTL_STACK_WALKING_MODE_FRAMES_TO_SKIP_SHIFT: ULONG = 8;
+pub const RTL_WALK_USER_MODE_STACK: ULONG = 0x00000001;
+pub const RTL_WALK_VALID_FLAGS: ULONG = 0x00000001;
+pub const RTL_STACK_WALKING_MODE_FRAMES_TO_SKIP_SHIFT: ULONG = 0x00000008;
 EXTERN!{extern "system" {
     fn RtlWalkFrameChain(
         Callers: *mut PVOID,
