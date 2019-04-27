@@ -859,9 +859,12 @@ STRUCT!{struct THREAD_UMS_INFORMATION {
     CompletionList: PRTL_UMS_COMPLETION_LIST,
     UmsContext: PRTL_UMS_CONTEXT,
     Flags: ULONG,
-    IsUmsSchedulerThread: ULONG,
-    IsUmsWorkerThread: ULONG,
 }}
+BITFIELD!{THREAD_UMS_INFORMATION Flags: ULONG [
+    IsUmsSchedulerThread set_IsUmsSchedulerThread[0..1],
+    IsUmsWorkerThread set_IsUmsWorkerThread[1..2],
+    SpareBits set_SpareBits[2..32],
+]}
 pub type PTHREAD_UMS_INFORMATION = *mut THREAD_UMS_INFORMATION;
 STRUCT!{struct THREAD_NAME_INFORMATION {
     ThreadName: UNICODE_STRING,

@@ -1309,7 +1309,7 @@ fn ntpsapi() {
     assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, YieldCount), 800);
     assert_eq!(size_of::<RTL_UMS_COMPLETION_LIST>(), 16);
     assert_eq!(align_of::<RTL_UMS_COMPLETION_LIST>(), 4);
-    assert_eq!(size_of::<THREAD_UMS_INFORMATION>(), 24);
+    assert_eq!(size_of::<THREAD_UMS_INFORMATION>(), 16);
     assert_eq!(align_of::<THREAD_UMS_INFORMATION>(), 4);
     assert_eq!(size_of::<THREAD_NAME_INFORMATION>(), 8);
     assert_eq!(align_of::<THREAD_NAME_INFORMATION>(), 4);
@@ -1473,7 +1473,7 @@ fn ntrtl() {
     assert_eq!(align_of::<PROCESS_HEAP_INFORMATION>(), 4);
     assert_eq!(size_of::<HEAP_INFORMATION>(), 24);
     assert_eq!(align_of::<HEAP_INFORMATION>(), 4);
-    assert_eq!(size_of::<HEAP_EXTENDED_INFORMATION>(), 60);
+    assert_eq!(size_of::<HEAP_EXTENDED_INFORMATION>(), 44);
     assert_eq!(align_of::<HEAP_EXTENDED_INFORMATION>(), 4);
     assert_eq!(size_of::<HEAP_DEBUGGING_INFORMATION>(), 28);
     assert_eq!(align_of::<HEAP_DEBUGGING_INFORMATION>(), 4);

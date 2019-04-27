@@ -2346,6 +2346,13 @@ EXTERN!{extern "system" {
         Entry: PRTL_HEAP_WALK_ENTRY,
     ) -> NTSTATUS;
 }}
+pub const HeapDetailedFailureInformation: u32 = 0x80000001;
+pub const HeapSetDebuggingInformation: u32 = 0x80000002;
+ENUM!{enum HEAP_COMPATIBILITY_MODE {
+    HEAP_COMPATIBILITY_STANDARD = 0,
+    HEAP_COMPATIBILITY_LAL = 1,
+    HEAP_COMPATIBILITY_LFH = 2,
+}}
 STRUCT!{struct PROCESS_HEAP_INFORMATION {
     ReserveSize: ULONG_PTR,
     CommitSize: ULONG_PTR,
@@ -2362,14 +2369,17 @@ STRUCT!{struct HEAP_INFORMATION {
     NextHeapInformationOffset: ULONG_PTR,
 }}
 pub type PHEAP_INFORMATION = *mut HEAP_INFORMATION;
+UNION!{union HEAP_EXTENDED_INFORMATION_u {
+    ProcessHeapInformation: PROCESS_HEAP_INFORMATION,
+    HeapInformation: HEAP_INFORMATION,
+}}
 STRUCT!{struct HEAP_EXTENDED_INFORMATION {
     Process: HANDLE,
     Heap: ULONG_PTR,
     Level: ULONG,
     CallbackRoutine: PVOID,
     CallbackContext: PVOID,
-    ProcessHeapInformation: PROCESS_HEAP_INFORMATION,
-    HeapInformation: HEAP_INFORMATION,
+    u: HEAP_EXTENDED_INFORMATION_u,
 }}
 pub type PHEAP_EXTENDED_INFORMATION = *mut HEAP_EXTENDED_INFORMATION;
 FN!{stdcall PRTL_HEAP_LEAK_ENUMERATION_ROUTINE(
