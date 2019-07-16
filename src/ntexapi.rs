@@ -3,7 +3,7 @@ use core::mem::uninitialized;
 use core::sync::atomic::spin_loop_hint;
 use crate::ntapi_base::{CLIENT_ID, KPRIORITY, KSYSTEM_TIME, PRTL_ATOM, RTL_ATOM};
 use crate::ntioapi::{BUS_DATA_TYPE, FILE_IO_COMPLETION_INFORMATION, INTERFACE_TYPE};
-use crate::ntkeapi::{KPROFILE_SOURCE, KWAIT_REASON};
+use crate::ntkeapi::{KPROFILE_SOURCE, KTHREAD_STATE, KWAIT_REASON};
 use crate::ntldr::RTL_PROCESS_MODULE_INFORMATION_EX;
 use crate::ntpebteb::PTEB;
 use crate::ntpoapi::COUNTED_REASON_CONTEXT;
@@ -1062,7 +1062,7 @@ STRUCT!{struct SYSTEM_THREAD_INFORMATION {
     Priority: KPRIORITY,
     BasePriority: LONG,
     ContextSwitches: ULONG,
-    ThreadState: ULONG,
+    ThreadState: KTHREAD_STATE,
     WaitReason: KWAIT_REASON,
 }}
 pub type PSYSTEM_THREAD_INFORMATION = *mut SYSTEM_THREAD_INFORMATION;
