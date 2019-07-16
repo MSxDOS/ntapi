@@ -28,7 +28,16 @@ macro_rules! EXTERN {
 macro_rules! FIELD_OFFSET {
     ($_type:ty, $field:ident$(.$cfields:ident)*) => {
         unsafe {
-            &(*$crate::_core::ptr::null::<$_type>()).$field$(.$cfields)* as *const _ as usize
+            union Transmuter<T: 'static> {
+                p: *const T,
+                r: &'static T,
+                i: usize,
+            }
+            Transmuter {
+                r: &(Transmuter {
+                    p: $crate::_core::ptr::null::<$_type>()
+                }.r).$field$(.$cfields)*
+            }.i
         }
     };
 }
