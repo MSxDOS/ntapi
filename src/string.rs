@@ -17,7 +17,7 @@ impl UTF16Const {
 impl AsRef<[u16]> for UTF16Const {
     #[inline]
     fn as_ref(&self) -> &[u16] {
-        self.0
+        &self.0[..self.len()]
     }
 }
 impl Copy for UTF16Const {}
