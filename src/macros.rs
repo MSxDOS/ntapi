@@ -34,7 +34,7 @@ macro_rules! FIELD_OFFSET {
                 i: usize,
             }
             Transmuter {
-                r: &(Transmuter {
+                r: &(&Transmuter {
                     p: $crate::_core::ptr::null::<$_type>()
                 }.r).$field$(.$cfields)*
             }.i
