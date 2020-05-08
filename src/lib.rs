@@ -34,6 +34,7 @@
 #[doc(hidden)]
 pub extern crate core as _core;
 #[macro_use]
+#[doc(hidden)]
 pub extern crate winapi;
 #[macro_use]
 mod macros;
