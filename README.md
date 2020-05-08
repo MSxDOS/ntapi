@@ -15,5 +15,5 @@ Always the latest stable. Some [features][docs_link] require a nightly compiler.
 [docs_badge]: https://docs.rs/ntapi/badge.svg
 [loc_link]: https://github.com/Aaronepower/tokei
 [loc_badge]: https://tokei.rs/b1/github/MSxDOS/ntapi
-[unsafe_link]: https://doc.rust-lang.org/book/second-edition/ch19-01-unsafe-rust.html
+[unsafe_link]: https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html
 [unsafe_badge]: https://img.shields.io/badge/unsafe-%E2%9C%94-C901DD.svg
