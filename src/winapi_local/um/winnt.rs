@@ -12,7 +12,7 @@ use crate::ntpebteb::TEB;
 #[inline]
 pub unsafe fn _bittest64(Base: *const i64, Offset: i64) -> u8 {
     let out: u8;
-    asm!("bt $1, $2; setb $0"
+    llvm_asm!("bt $1, $2; setb $0"
     : "=r"(out)
     :  "*m"(Base), "r"(Offset)
     : "cc"
@@ -23,7 +23,7 @@ pub unsafe fn _bittest64(Base: *const i64, Offset: i64) -> u8 {
 #[inline]
 pub unsafe fn __readfsdword(Offset: DWORD) -> DWORD {
     let out: u32;
-    asm!("mov $0, fs:[$1]"
+    llvm_asm!("mov $0, fs:[$1]"
     : "=r"(out)
     : "ri"(Offset)
     :
@@ -34,7 +34,7 @@ pub unsafe fn __readfsdword(Offset: DWORD) -> DWORD {
 #[inline]
 pub unsafe fn __readgsqword(Offset: DWORD) -> DWORD64 {
     let out: u64;
-    asm!("mov $0, gs:[$1]"
+    llvm_asm!("mov $0, gs:[$1]"
     : "=r"(out)
     : "ri"(Offset)
     :

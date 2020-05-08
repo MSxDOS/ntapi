@@ -1,3 +1,4 @@
+#[allow(deprecated)] //fixme
 use core::mem::uninitialized;
 #[cfg(target_arch = "x86")]
 use core::sync::atomic::spin_loop_hint;
@@ -2777,6 +2778,7 @@ pub type PKUSER_SHARED_DATA = *mut KUSER_SHARED_DATA;
 pub const USER_SHARED_DATA: *const KUSER_SHARED_DATA = 0x7ffe0000 as *const _;
 #[inline]
 pub unsafe fn NtGetTickCount64() -> ULONGLONG {
+    #[allow(deprecated)] //fixme
     let mut tick_count: ULARGE_INTEGER = uninitialized();
     #[cfg(target_arch = "x86_64")] {
         *tick_count.QuadPart_mut() = (*USER_SHARED_DATA).u.TickCountQuad;
@@ -2804,6 +2806,7 @@ pub unsafe fn NtGetTickCount() -> ULONG {
             >> 24) as u32
     }
     #[cfg(target_arch = "x86")] {
+        #[allow(deprecated)] //fixme
         let mut tick_count: ULARGE_INTEGER = uninitialized();
         loop {
             tick_count.s_mut().HighPart = (*USER_SHARED_DATA).u.TickCount.High1Time as u32;
