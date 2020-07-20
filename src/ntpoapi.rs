@@ -6,20 +6,20 @@ use winapi::um::winnt::{
     DEVICE_POWER_STATE, EXECUTION_STATE, LATENCY_TIME, PDEVICE_POWER_STATE, PEXECUTION_STATE,
     POWER_ACTION, POWER_INFORMATION_LEVEL, SYSTEM_POWER_STATE,
 };
-UNION!{union POWER_STATE {
+UNION! {union POWER_STATE {
     SystemState: SYSTEM_POWER_STATE,
     DeviceState: DEVICE_POWER_STATE,
 }}
 pub type PPOWER_STATE = *mut POWER_STATE;
-ENUM!{enum POWER_STATE_TYPE {
+ENUM! {enum POWER_STATE_TYPE {
     SystemPowerState = 0,
     DevicePowerState = 1,
 }}
 pub type PPOWER_STATE_TYPE = *mut POWER_STATE_TYPE;
-STRUCT!{struct SYSTEM_POWER_STATE_CONTEXT {
+STRUCT! {struct SYSTEM_POWER_STATE_CONTEXT {
     ContextAsUlong: ULONG,
 }}
-BITFIELD!{SYSTEM_POWER_STATE_CONTEXT ContextAsUlong: ULONG [
+BITFIELD! {SYSTEM_POWER_STATE_CONTEXT ContextAsUlong: ULONG [
     Reserved1 set_Reserved1[0..8],
     TargetSystemState set_TargetSystemState[8..12],
     EffectiveSystemState set_EffectiveSystemState[12..16],
@@ -29,23 +29,23 @@ BITFIELD!{SYSTEM_POWER_STATE_CONTEXT ContextAsUlong: ULONG [
     Reserved2 set_Reserved2[22..32],
 ]}
 pub type PSYSTEM_POWER_STATE_CONTEXT = *mut SYSTEM_POWER_STATE_CONTEXT;
-STRUCT!{struct COUNTED_REASON_CONTEXT_u_s {
+STRUCT! {struct COUNTED_REASON_CONTEXT_u_s {
     ResourceFileName: UNICODE_STRING,
     ResourceReasonId: USHORT,
     StringCount: ULONG,
     ReasonStrings: PUNICODE_STRING,
 }}
-UNION!{union COUNTED_REASON_CONTEXT_u {
+UNION! {union COUNTED_REASON_CONTEXT_u {
     s: COUNTED_REASON_CONTEXT_u_s,
     SimpleString: UNICODE_STRING,
 }}
-STRUCT!{struct COUNTED_REASON_CONTEXT {
+STRUCT! {struct COUNTED_REASON_CONTEXT {
     Version: ULONG,
     Flags: ULONG,
     u: COUNTED_REASON_CONTEXT_u,
 }}
 pub type PCOUNTED_REASON_CONTEXT = *mut COUNTED_REASON_CONTEXT;
-ENUM!{enum POWER_STATE_HANDLER_TYPE {
+ENUM! {enum POWER_STATE_HANDLER_TYPE {
     PowerStateSleeping1 = 0,
     PowerStateSleeping2 = 1,
     PowerStateSleeping3 = 2,
@@ -56,17 +56,17 @@ ENUM!{enum POWER_STATE_HANDLER_TYPE {
     PowerStateMaximum = 7,
 }}
 pub type PPOWER_STATE_HANDLER_TYPE = *mut POWER_STATE_HANDLER_TYPE;
-FN!{stdcall PENTER_STATE_SYSTEM_HANDLER(
+FN! {stdcall PENTER_STATE_SYSTEM_HANDLER(
     SystemContext: PVOID,
 ) -> NTSTATUS}
-FN!{stdcall PENTER_STATE_HANDLER(
+FN! {stdcall PENTER_STATE_HANDLER(
     Context: PVOID,
     SystemHandler: PENTER_STATE_SYSTEM_HANDLER,
     SystemContext: PVOID,
     NumberProcessors: LONG,
     Number: PLONG,
 ) -> NTSTATUS}
-STRUCT!{struct POWER_STATE_HANDLER {
+STRUCT! {struct POWER_STATE_HANDLER {
     Type: POWER_STATE_HANDLER_TYPE,
     RtcWake: BOOLEAN,
     Spare: [UCHAR; 3],
@@ -74,17 +74,17 @@ STRUCT!{struct POWER_STATE_HANDLER {
     Context: PVOID,
 }}
 pub type PPOWER_STATE_HANDLER = *mut POWER_STATE_HANDLER;
-FN!{stdcall PENTER_STATE_NOTIFY_HANDLER(
+FN! {stdcall PENTER_STATE_NOTIFY_HANDLER(
     State: POWER_STATE_HANDLER_TYPE,
     Context: PVOID,
     Entering: BOOLEAN,
 ) -> NTSTATUS}
-STRUCT!{struct POWER_STATE_NOTIFY_HANDLER {
+STRUCT! {struct POWER_STATE_NOTIFY_HANDLER {
     Handler: PENTER_STATE_NOTIFY_HANDLER,
     Context: PVOID,
 }}
 pub type PPOWER_STATE_NOTIFY_HANDLER = *mut POWER_STATE_NOTIFY_HANDLER;
-STRUCT!{struct PROCESSOR_POWER_INFORMATION {
+STRUCT! {struct PROCESSOR_POWER_INFORMATION {
     Number: ULONG,
     MaxMhz: ULONG,
     CurrentMhz: ULONG,
@@ -93,14 +93,14 @@ STRUCT!{struct PROCESSOR_POWER_INFORMATION {
     CurrentIdleState: ULONG,
 }}
 pub type PPROCESSOR_POWER_INFORMATION = *mut PROCESSOR_POWER_INFORMATION;
-STRUCT!{struct SYSTEM_POWER_INFORMATION {
+STRUCT! {struct SYSTEM_POWER_INFORMATION {
     MaxIdlenessAllowed: ULONG,
     Idleness: ULONG,
     TimeRemaining: ULONG,
     CoolingMode: UCHAR,
 }}
 pub type PSYSTEM_POWER_INFORMATION = *mut SYSTEM_POWER_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtPowerInformation(
         InformationLevel: POWER_INFORMATION_LEVEL,
         InputBuffer: PVOID,

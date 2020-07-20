@@ -10,7 +10,7 @@ pub const REG_INIT_BOOT_ACCEPTED_BASE: USHORT = 0x0002;
 pub const REG_INIT_BOOT_ACCEPTED_MAX: USHORT = REG_INIT_BOOT_ACCEPTED_BASE;
 pub const REG_MAX_KEY_VALUE_NAME_LENGTH: u32 = 32767;
 pub const REG_MAX_KEY_NAME_LENGTH: u32 = 512;
-ENUM!{enum KEY_INFORMATION_CLASS {
+ENUM! {enum KEY_INFORMATION_CLASS {
     KeyBasicInformation = 0,
     KeyNodeInformation = 1,
     KeyFullInformation = 2,
@@ -23,14 +23,14 @@ ENUM!{enum KEY_INFORMATION_CLASS {
     KeyLayerInformation = 9,
     MaxKeyInfoClass = 10,
 }}
-STRUCT!{struct KEY_BASIC_INFORMATION {
+STRUCT! {struct KEY_BASIC_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     NameLength: ULONG,
     Name: [WCHAR; 1],
 }}
 pub type PKEY_BASIC_INFORMATION = *mut KEY_BASIC_INFORMATION;
-STRUCT!{struct KEY_NODE_INFORMATION {
+STRUCT! {struct KEY_NODE_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     ClassOffset: ULONG,
@@ -39,7 +39,7 @@ STRUCT!{struct KEY_NODE_INFORMATION {
     Name: [WCHAR; 1],
 }}
 pub type PKEY_NODE_INFORMATION = *mut KEY_NODE_INFORMATION;
-STRUCT!{struct KEY_FULL_INFORMATION {
+STRUCT! {struct KEY_FULL_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     ClassOffset: ULONG,
@@ -53,12 +53,12 @@ STRUCT!{struct KEY_FULL_INFORMATION {
     Class: [WCHAR; 1],
 }}
 pub type PKEY_FULL_INFORMATION = *mut KEY_FULL_INFORMATION;
-STRUCT!{struct KEY_NAME_INFORMATION {
+STRUCT! {struct KEY_NAME_INFORMATION {
     NameLength: ULONG,
     Name: [WCHAR; 1],
 }}
 pub type PKEY_NAME_INFORMATION = *mut KEY_NAME_INFORMATION;
-STRUCT!{struct KEY_CACHED_INFORMATION {
+STRUCT! {struct KEY_CACHED_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     SubKeys: ULONG,
@@ -70,14 +70,14 @@ STRUCT!{struct KEY_CACHED_INFORMATION {
     Name: [WCHAR; 1],
 }}
 pub type PKEY_CACHED_INFORMATION = *mut KEY_CACHED_INFORMATION;
-STRUCT!{struct KEY_FLAGS_INFORMATION {
+STRUCT! {struct KEY_FLAGS_INFORMATION {
     UserFlags: ULONG,
 }}
 pub type PKEY_FLAGS_INFORMATION = *mut KEY_FLAGS_INFORMATION;
-STRUCT!{struct KEY_VIRTUALIZATION_INFORMATION {
+STRUCT! {struct KEY_VIRTUALIZATION_INFORMATION {
     Bitfields: ULONG,
 }}
-BITFIELD!{KEY_VIRTUALIZATION_INFORMATION Bitfields: ULONG [
+BITFIELD! {KEY_VIRTUALIZATION_INFORMATION Bitfields: ULONG [
     VirtualizationCandidate set_VirtualizationCandidate[0..1],
     VirtualizationEnabled set_VirtualizationEnabled[1..2],
     VirtualTarget set_VirtualTarget[2..3],
@@ -86,15 +86,15 @@ BITFIELD!{KEY_VIRTUALIZATION_INFORMATION Bitfields: ULONG [
     Reserved set_Reserved[5..32],
 ]}
 pub type PKEY_VIRTUALIZATION_INFORMATION = *mut KEY_VIRTUALIZATION_INFORMATION;
-STRUCT!{struct KEY_TRUST_INFORMATION {
+STRUCT! {struct KEY_TRUST_INFORMATION {
     Bitfields: ULONG,
 }}
-BITFIELD!{KEY_TRUST_INFORMATION Bitfields: ULONG [
+BITFIELD! {KEY_TRUST_INFORMATION Bitfields: ULONG [
     TrustedKey set_TrustedKey[0..1],
     Reserved set_Reserved[1..32],
 ]}
 pub type PKEY_TRUST_INFORMATION = *mut KEY_TRUST_INFORMATION;
-STRUCT!{struct KEY_LAYER_INFORMATION {
+STRUCT! {struct KEY_LAYER_INFORMATION {
     IsTombstone: ULONG,
     IsSupersedeLocal: ULONG,
     IsSupersedeTree: ULONG,
@@ -102,7 +102,7 @@ STRUCT!{struct KEY_LAYER_INFORMATION {
     Reserved: ULONG,
 }}
 pub type PKEY_LAYER_INFORMATION = *mut KEY_LAYER_INFORMATION;
-ENUM!{enum KEY_SET_INFORMATION_CLASS {
+ENUM! {enum KEY_SET_INFORMATION_CLASS {
     KeyWriteTimeInformation = 0,
     KeyWow64FlagsInformation = 1,
     KeyControlFlagsInformation = 2,
@@ -112,22 +112,22 @@ ENUM!{enum KEY_SET_INFORMATION_CLASS {
     KeySetLayerInformation = 6,
     MaxKeySetInfoClass = 7,
 }}
-STRUCT!{struct KEY_WRITE_TIME_INFORMATION {
+STRUCT! {struct KEY_WRITE_TIME_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
 }}
 pub type PKEY_WRITE_TIME_INFORMATION = *mut KEY_WRITE_TIME_INFORMATION;
-STRUCT!{struct KEY_WOW64_FLAGS_INFORMATION {
+STRUCT! {struct KEY_WOW64_FLAGS_INFORMATION {
     UserFlags: ULONG,
 }}
 pub type PKEY_WOW64_FLAGS_INFORMATION = *mut KEY_WOW64_FLAGS_INFORMATION;
-STRUCT!{struct KEY_HANDLE_TAGS_INFORMATION {
+STRUCT! {struct KEY_HANDLE_TAGS_INFORMATION {
     HandleTags: ULONG,
 }}
 pub type PKEY_HANDLE_TAGS_INFORMATION = *mut KEY_HANDLE_TAGS_INFORMATION;
-STRUCT!{struct KEY_SET_LAYER_INFORMATION {
+STRUCT! {struct KEY_SET_LAYER_INFORMATION {
     Bitfields: ULONG,
 }}
-BITFIELD!{KEY_SET_LAYER_INFORMATION Bitfields: ULONG [
+BITFIELD! {KEY_SET_LAYER_INFORMATION Bitfields: ULONG [
     IsTombstone set_IsTombstone[0..1],
     IsSupersedeLocal set_IsSupersedeLocal[1..2],
     IsSupersedeTree set_IsSupersedeTree[2..3],
@@ -135,21 +135,21 @@ BITFIELD!{KEY_SET_LAYER_INFORMATION Bitfields: ULONG [
     Reserved set_Reserved[4..32],
 ]}
 pub type PKEY_SET_LAYER_INFORMATION = *mut KEY_SET_LAYER_INFORMATION;
-STRUCT!{struct KEY_CONTROL_FLAGS_INFORMATION {
+STRUCT! {struct KEY_CONTROL_FLAGS_INFORMATION {
     ControlFlags: ULONG,
 }}
 pub type PKEY_CONTROL_FLAGS_INFORMATION = *mut KEY_CONTROL_FLAGS_INFORMATION;
-STRUCT!{struct KEY_SET_VIRTUALIZATION_INFORMATION {
+STRUCT! {struct KEY_SET_VIRTUALIZATION_INFORMATION {
     HandleTags: ULONG,
 }}
-BITFIELD!{KEY_SET_VIRTUALIZATION_INFORMATION HandleTags: ULONG [
+BITFIELD! {KEY_SET_VIRTUALIZATION_INFORMATION HandleTags: ULONG [
     VirtualTarget set_VirtualTarget[0..1],
     VirtualStore set_VirtualStore[1..2],
     VirtualSource set_VirtualSource[2..3],
     Reserved set_Reserved[3..32],
 ]}
 pub type PKEY_SET_VIRTUALIZATION_INFORMATION = *mut KEY_SET_VIRTUALIZATION_INFORMATION;
-ENUM!{enum KEY_VALUE_INFORMATION_CLASS {
+ENUM! {enum KEY_VALUE_INFORMATION_CLASS {
     KeyValueBasicInformation = 0,
     KeyValueFullInformation = 1,
     KeyValuePartialInformation = 2,
@@ -158,14 +158,14 @@ ENUM!{enum KEY_VALUE_INFORMATION_CLASS {
     KeyValueLayerInformation = 5,
     MaxKeyValueInfoClass = 6,
 }}
-STRUCT!{struct KEY_VALUE_BASIC_INFORMATION {
+STRUCT! {struct KEY_VALUE_BASIC_INFORMATION {
     TitleIndex: ULONG,
     Type: ULONG,
     NameLength: ULONG,
     Name: [WCHAR; 1],
 }}
 pub type PKEY_VALUE_BASIC_INFORMATION = *mut KEY_VALUE_BASIC_INFORMATION;
-STRUCT!{struct KEY_VALUE_FULL_INFORMATION {
+STRUCT! {struct KEY_VALUE_FULL_INFORMATION {
     TitleIndex: ULONG,
     Type: ULONG,
     DataOffset: ULONG,
@@ -174,54 +174,54 @@ STRUCT!{struct KEY_VALUE_FULL_INFORMATION {
     Name: [WCHAR; 1],
 }}
 pub type PKEY_VALUE_FULL_INFORMATION = *mut KEY_VALUE_FULL_INFORMATION;
-STRUCT!{struct KEY_VALUE_PARTIAL_INFORMATION {
+STRUCT! {struct KEY_VALUE_PARTIAL_INFORMATION {
     TitleIndex: ULONG,
     Type: ULONG,
     DataLength: ULONG,
     Data: [UCHAR; 1],
 }}
 pub type PKEY_VALUE_PARTIAL_INFORMATION = *mut KEY_VALUE_PARTIAL_INFORMATION;
-STRUCT!{struct KEY_VALUE_PARTIAL_INFORMATION_ALIGN64 {
+STRUCT! {struct KEY_VALUE_PARTIAL_INFORMATION_ALIGN64 {
     Type: ULONG,
     DataLength: ULONG,
     Data: [UCHAR; 1],
 }}
 pub type PKEY_VALUE_PARTIAL_INFORMATION_ALIGN64 = *mut KEY_VALUE_PARTIAL_INFORMATION_ALIGN64;
-STRUCT!{struct KEY_VALUE_LAYER_INFORMATION {
+STRUCT! {struct KEY_VALUE_LAYER_INFORMATION {
     IsTombstone: ULONG,
     Reserved: ULONG,
 }}
 pub type PKEY_VALUE_LAYER_INFORMATION = *mut KEY_VALUE_LAYER_INFORMATION;
-STRUCT!{struct KEY_VALUE_ENTRY {
+STRUCT! {struct KEY_VALUE_ENTRY {
     ValueName: PUNICODE_STRING,
     DataLength: ULONG,
     DataOffset: ULONG,
     Type: ULONG,
 }}
 pub type PKEY_VALUE_ENTRY = *mut KEY_VALUE_ENTRY;
-ENUM!{enum REG_ACTION {
+ENUM! {enum REG_ACTION {
     KeyAdded = 0,
     KeyRemoved = 1,
     KeyModified = 2,
 }}
-STRUCT!{struct REG_NOTIFY_INFORMATION {
+STRUCT! {struct REG_NOTIFY_INFORMATION {
     NextEntryOffset: ULONG,
     Action: REG_ACTION,
     KeyLength: ULONG,
     Key: [WCHAR; 1],
 }}
 pub type PREG_NOTIFY_INFORMATION = *mut REG_NOTIFY_INFORMATION;
-STRUCT!{struct KEY_PID_ARRAY {
+STRUCT! {struct KEY_PID_ARRAY {
     PID: HANDLE,
     KeyName: UNICODE_STRING,
 }}
 pub type PKEY_PID_ARRAY = *mut KEY_PID_ARRAY;
-STRUCT!{struct KEY_OPEN_SUBKEYS_INFORMATION {
+STRUCT! {struct KEY_OPEN_SUBKEYS_INFORMATION {
     Count: ULONG,
     KeyArray: [KEY_PID_ARRAY; 1],
 }}
 pub type PKEY_OPEN_SUBKEYS_INFORMATION = *mut KEY_OPEN_SUBKEYS_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtCreateKey(
         KeyHandle: PHANDLE,
         DesiredAccess: ACCESS_MASK,
@@ -388,7 +388,7 @@ EXTERN!{extern "system" {
 }}
 pub const REG_FORCE_UNLOAD: ULONG = 1;
 pub const REG_UNLOAD_LEGAL_FLAGS: ULONG = REG_FORCE_UNLOAD;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtUnloadKey2(
         TargetKey: POBJECT_ATTRIBUTES,
         Flags: ULONG,

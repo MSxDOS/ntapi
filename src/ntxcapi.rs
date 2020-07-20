@@ -1,6 +1,6 @@
 use winapi::shared::ntdef::{BOOLEAN, NTSTATUS, PSTR, PVOID, ULONG};
 use winapi::um::winnt::{PCONTEXT, PEXCEPTION_RECORD};
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn RtlDispatchException(
         ExceptionRecord: PEXCEPTION_RECORD,
         ContextRecord: PCONTEXT,

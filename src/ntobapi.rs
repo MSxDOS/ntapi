@@ -18,7 +18,7 @@ pub const SYMBOLIC_LINK_ALL_ACCESS: ACCESS_MASK = STANDARD_RIGHTS_REQUIRED | 0x1
 pub const OBJ_PROTECT_CLOSE: u32 = 0x00000001;
 pub const OBJ_INHERIT: u32 = 0x00000002;
 pub const OBJ_AUDIT_OBJECT_CLOSE: u32 = 0x00000004;
-ENUM!{enum OBJECT_INFORMATION_CLASS {
+ENUM! {enum OBJECT_INFORMATION_CLASS {
     ObjectBasicInformation = 0,
     ObjectNameInformation = 1,
     ObjectTypeInformation = 2,
@@ -28,7 +28,7 @@ ENUM!{enum OBJECT_INFORMATION_CLASS {
     ObjectSessionObjectInformation = 6,
     MaxObjectInfoClass = 7,
 }}
-STRUCT!{struct OBJECT_BASIC_INFORMATION {
+STRUCT! {struct OBJECT_BASIC_INFORMATION {
     Attributes: ULONG,
     GrantedAccess: ACCESS_MASK,
     HandleCount: ULONG,
@@ -42,11 +42,11 @@ STRUCT!{struct OBJECT_BASIC_INFORMATION {
     CreationTime: LARGE_INTEGER,
 }}
 pub type POBJECT_BASIC_INFORMATION = *mut OBJECT_BASIC_INFORMATION;
-STRUCT!{struct OBJECT_NAME_INFORMATION {
+STRUCT! {struct OBJECT_NAME_INFORMATION {
     Name: UNICODE_STRING,
 }}
 pub type POBJECT_NAME_INFORMATION = *mut OBJECT_NAME_INFORMATION;
-STRUCT!{struct OBJECT_TYPE_INFORMATION {
+STRUCT! {struct OBJECT_TYPE_INFORMATION {
     TypeName: UNICODE_STRING,
     TotalNumberOfObjects: ULONG,
     TotalNumberOfHandles: ULONG,
@@ -72,16 +72,16 @@ STRUCT!{struct OBJECT_TYPE_INFORMATION {
     DefaultNonPagedPoolCharge: ULONG,
 }}
 pub type POBJECT_TYPE_INFORMATION = *mut OBJECT_TYPE_INFORMATION;
-STRUCT!{struct OBJECT_TYPES_INFORMATION {
+STRUCT! {struct OBJECT_TYPES_INFORMATION {
     NumberOfTypes: ULONG,
 }}
 pub type POBJECT_TYPES_INFORMATION = *mut OBJECT_TYPES_INFORMATION;
-STRUCT!{struct OBJECT_HANDLE_FLAG_INFORMATION {
+STRUCT! {struct OBJECT_HANDLE_FLAG_INFORMATION {
     Inherit: BOOLEAN,
     ProtectFromClose: BOOLEAN,
 }}
 pub type POBJECT_HANDLE_FLAG_INFORMATION = *mut OBJECT_HANDLE_FLAG_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtQueryObject(
         Handle: HANDLE,
         ObjectInformationClass: OBJECT_INFORMATION_CLASS,
@@ -99,7 +99,7 @@ EXTERN!{extern "system" {
 pub const DUPLICATE_CLOSE_SOURCE: u32 = 0x00000001;
 pub const DUPLICATE_SAME_ACCESS: u32 = 0x00000002;
 pub const DUPLICATE_SAME_ATTRIBUTES: u32 = 0x00000004;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtDuplicateObject(
         SourceProcessHandle: HANDLE,
         SourceHandle: HANDLE,
@@ -177,12 +177,12 @@ EXTERN!{extern "system" {
         ObjectAttributes: POBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
 }}
-STRUCT!{struct OBJECT_DIRECTORY_INFORMATION {
+STRUCT! {struct OBJECT_DIRECTORY_INFORMATION {
     Name: UNICODE_STRING,
     TypeName: UNICODE_STRING,
 }}
 pub type POBJECT_DIRECTORY_INFORMATION = *mut OBJECT_DIRECTORY_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtQueryDirectoryObject(
         DirectoryHandle: HANDLE,
         Buffer: PVOID,

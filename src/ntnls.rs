@@ -1,6 +1,6 @@
 use winapi::shared::ntdef::{BOOLEAN, PUSHORT, PVOID, UCHAR, USHORT};
 pub const MAXIMUM_LEADBYTES: usize = 12;
-STRUCT!{struct CPTABLEINFO {
+STRUCT! {struct CPTABLEINFO {
     CodePage: USHORT,
     MaximumCharacterSize: USHORT,
     DefaultChar: USHORT,
@@ -15,14 +15,14 @@ STRUCT!{struct CPTABLEINFO {
     DBCSOffsets: PUSHORT,
 }}
 pub type PCPTABLEINFO = *mut CPTABLEINFO;
-STRUCT!{struct NLSTABLEINFO {
+STRUCT! {struct NLSTABLEINFO {
     OemTableInfo: CPTABLEINFO,
     AnsiTableInfo: CPTABLEINFO,
     UpperCaseTable: PUSHORT,
     LowerCaseTable: PUSHORT,
 }}
 pub type PNLSTABLEINFO = *mut NLSTABLEINFO;
-EXTERN!{extern "C" {
+EXTERN! {extern "C" {
     static mut NlsAnsiCodePage: USHORT;
     static mut NlsMbCodePageTag: BOOLEAN;
     static mut NlsMbOemCodePageTag: BOOLEAN;

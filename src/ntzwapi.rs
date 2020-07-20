@@ -32,8 +32,7 @@ use crate::ntpsapi::{
     PROCESSINFOCLASS, THREADINFOCLASS,
 };
 use crate::ntregapi::{
-    KEY_INFORMATION_CLASS, KEY_SET_INFORMATION_CLASS, KEY_VALUE_INFORMATION_CLASS,
-    PKEY_VALUE_ENTRY,
+    KEY_INFORMATION_CLASS, KEY_SET_INFORMATION_CLASS, KEY_VALUE_INFORMATION_CLASS, PKEY_VALUE_ENTRY,
 };
 use crate::ntseapi::PTOKEN_SECURITY_ATTRIBUTES_INFORMATION;
 use winapi::shared::basetsd::{
@@ -60,7 +59,7 @@ use winapi::um::winnt::{
     TOKEN_INFORMATION_CLASS, TOKEN_TYPE, TRANSACTIONMANAGER_INFORMATION_CLASS,
     TRANSACTION_INFORMATION_CLASS,
 };
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn ZwAcceptConnectPort(
         PortHandle: PHANDLE,
         PortContext: PVOID,

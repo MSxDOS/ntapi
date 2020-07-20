@@ -1,5 +1,5 @@
-use core::mem::size_of;
 use crate::ntapi_base::{CLIENT_ID, CLIENT_ID64};
+use core::mem::size_of;
 use winapi::ctypes::c_double;
 use winapi::shared::basetsd::{PSIZE_T, SIZE_T, ULONG64, ULONG_PTR};
 use winapi::shared::ntdef::{
@@ -13,31 +13,31 @@ use winapi::um::winnt::{
 };
 pub const PORT_CONNECT: u32 = 0x0001;
 pub const PORT_ALL_ACCESS: u32 = STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x1;
-STRUCT!{struct PORT_MESSAGE_u1_s {
+STRUCT! {struct PORT_MESSAGE_u1_s {
     DataLength: CSHORT,
     TotalLength: CSHORT,
 }}
-STRUCT!{struct PORT_MESSAGE_u2_s {
+STRUCT! {struct PORT_MESSAGE_u2_s {
     Type: CSHORT,
     DataInfoOffset: CSHORT,
 }}
-UNION!{union PORT_MESSAGE_u1 {
+UNION! {union PORT_MESSAGE_u1 {
     s: PORT_MESSAGE_u1_s,
     Length: ULONG,
 }}
-UNION!{union PORT_MESSAGE_u2 {
+UNION! {union PORT_MESSAGE_u2 {
     s: PORT_MESSAGE_u2_s,
     ZeroInit: ULONG,
 }}
-UNION!{union PORT_MESSAGE_u3 {
+UNION! {union PORT_MESSAGE_u3 {
     ClientId: CLIENT_ID,
     DoNotUseThisField: c_double,
 }}
-UNION!{union PORT_MESSAGE_u4 {
+UNION! {union PORT_MESSAGE_u4 {
     ClientViewSize: SIZE_T,
     CallbackId: ULONG,
 }}
-STRUCT!{struct PORT_MESSAGE {
+STRUCT! {struct PORT_MESSAGE {
     u1: PORT_MESSAGE_u1,
     u2: PORT_MESSAGE_u2,
     u3: PORT_MESSAGE_u3,
@@ -45,12 +45,12 @@ STRUCT!{struct PORT_MESSAGE {
     u4: PORT_MESSAGE_u4,
 }}
 pub type PPORT_MESSAGE = *mut PORT_MESSAGE;
-STRUCT!{struct PORT_DATA_ENTRY {
+STRUCT! {struct PORT_DATA_ENTRY {
     Base: PVOID,
     Size: ULONG,
 }}
 pub type PPORT_DATA_ENTRY = *mut PORT_DATA_ENTRY;
-STRUCT!{struct PORT_DATA_INFORMATION {
+STRUCT! {struct PORT_DATA_INFORMATION {
     CountDataEntries: ULONG,
     DataEntries: [PORT_DATA_ENTRY; 1],
 }}
@@ -76,13 +76,14 @@ pub const LPC_MAX_CONNECTION_INFO_SIZE: u32 = 16 * size_of::<ULONG_PTR>() as u32
 pub const PORT_TOTAL_MAXIMUM_MESSAGE_LENGTH: u32 = (PORT_MAXIMUM_MESSAGE_LENGTH
     + size_of::<PORT_MESSAGE>() as u32
     + LPC_MAX_CONNECTION_INFO_SIZE
-    + 0xf) & !0xf;
-STRUCT!{struct LPC_CLIENT_DIED_MSG {
+    + 0xf)
+    & !0xf;
+STRUCT! {struct LPC_CLIENT_DIED_MSG {
     PortMsg: PORT_MESSAGE,
     CreateTime: LARGE_INTEGER,
 }}
 pub type PLPC_CLIENT_DIED_MSG = *mut LPC_CLIENT_DIED_MSG;
-STRUCT!{struct PORT_VIEW {
+STRUCT! {struct PORT_VIEW {
     Length: ULONG,
     SectionHandle: HANDLE,
     SectionOffset: ULONG,
@@ -91,37 +92,37 @@ STRUCT!{struct PORT_VIEW {
     ViewRemoteBase: PVOID,
 }}
 pub type PPORT_VIEW = *mut PORT_VIEW;
-STRUCT!{struct REMOTE_PORT_VIEW {
+STRUCT! {struct REMOTE_PORT_VIEW {
     Length: ULONG,
     ViewSize: SIZE_T,
     ViewBase: PVOID,
 }}
 pub type PREMOTE_PORT_VIEW = *mut REMOTE_PORT_VIEW;
-STRUCT!{struct PORT_MESSAGE64_u1_s {
+STRUCT! {struct PORT_MESSAGE64_u1_s {
     DataLength: CSHORT,
     TotalLength: CSHORT,
 }}
-STRUCT!{struct PORT_MESSAGE64_u2_s {
+STRUCT! {struct PORT_MESSAGE64_u2_s {
     Type: CSHORT,
     DataInfoOffset: CSHORT,
 }}
-UNION!{union PORT_MESSAGE64_u1 {
+UNION! {union PORT_MESSAGE64_u1 {
     s: PORT_MESSAGE64_u1_s,
     Length: ULONG,
 }}
-UNION!{union PORT_MESSAGE64_u2 {
+UNION! {union PORT_MESSAGE64_u2 {
     s: PORT_MESSAGE64_u2_s,
     ZeroInit: ULONG,
 }}
-UNION!{union PORT_MESSAGE64_u3 {
+UNION! {union PORT_MESSAGE64_u3 {
     ClientId: CLIENT_ID64,
     DoNotUseThisField: c_double,
 }}
-UNION!{union PORT_MESSAGE64_u4 {
+UNION! {union PORT_MESSAGE64_u4 {
     ClientViewSize: ULONGLONG,
     CallbackId: ULONG,
 }}
-STRUCT!{struct PORT_MESSAGE64 {
+STRUCT! {struct PORT_MESSAGE64 {
     u1: PORT_MESSAGE64_u1,
     u2: PORT_MESSAGE64_u2,
     u3: PORT_MESSAGE64_u3,
@@ -129,12 +130,12 @@ STRUCT!{struct PORT_MESSAGE64 {
     u4: PORT_MESSAGE64_u4,
 }}
 pub type PPORT_MESSAGE64 = *mut PORT_MESSAGE64;
-STRUCT!{struct LPC_CLIENT_DIED_MSG64 {
+STRUCT! {struct LPC_CLIENT_DIED_MSG64 {
     PortMsg: PORT_MESSAGE64,
     CreateTime: LARGE_INTEGER,
 }}
 pub type PLPC_CLIENT_DIED_MSG64 = *mut LPC_CLIENT_DIED_MSG64;
-STRUCT!{struct PORT_VIEW64 {
+STRUCT! {struct PORT_VIEW64 {
     Length: ULONG,
     SectionHandle: ULONGLONG,
     SectionOffset: ULONG,
@@ -143,13 +144,13 @@ STRUCT!{struct PORT_VIEW64 {
     ViewRemoteBase: ULONGLONG,
 }}
 pub type PPORT_VIEW64 = *mut PORT_VIEW64;
-STRUCT!{struct REMOTE_PORT_VIEW64 {
+STRUCT! {struct REMOTE_PORT_VIEW64 {
     Length: ULONG,
     ViewSize: ULONGLONG,
     ViewBase: ULONGLONG,
 }}
 pub type PREMOTE_PORT_VIEW64 = *mut REMOTE_PORT_VIEW64;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtCreatePort(
         PortHandle: PHANDLE,
         ObjectAttributes: POBJECT_ATTRIBUTES,
@@ -251,11 +252,11 @@ EXTERN!{extern "system" {
         NumberOfBytesWritten: PSIZE_T,
     ) -> NTSTATUS;
 }}
-ENUM!{enum PORT_INFORMATION_CLASS {
+ENUM! {enum PORT_INFORMATION_CLASS {
     PortBasicInformation = 0,
     PortDumpInformation = 1,
 }}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtQueryInformationPort(
         PortHandle: HANDLE,
         PortInformationClass: PORT_INFORMATION_CLASS,
@@ -270,7 +271,7 @@ pub const ALPC_PORFLG_ALLOW_LPC_REQUESTS: ULONG = 0x20000;
 pub const ALPC_PORFLG_WAITABLE_PORT: ULONG = 0x40000;
 pub const ALPC_PORFLG_SYSTEM_PROCESS: ULONG = 0x100000;
 #[cfg(target_arch = "x86_64")]
-STRUCT!{struct ALPC_PORT_ATTRIBUTES {
+STRUCT! {struct ALPC_PORT_ATTRIBUTES {
     Flags: ULONG,
     SecurityQos: SECURITY_QUALITY_OF_SERVICE,
     MaxMessageLength: SIZE_T,
@@ -283,7 +284,7 @@ STRUCT!{struct ALPC_PORT_ATTRIBUTES {
     Reserved: ULONG,
 }}
 #[cfg(target_arch = "x86")]
-STRUCT!{struct ALPC_PORT_ATTRIBUTES {
+STRUCT! {struct ALPC_PORT_ATTRIBUTES {
     Flags: ULONG,
     SecurityQos: SECURITY_QUALITY_OF_SERVICE,
     MaxMessageLength: SIZE_T,
@@ -299,22 +300,22 @@ pub const ALPC_MESSAGE_SECURITY_ATTRIBUTE: ULONG = 0x80000000;
 pub const ALPC_MESSAGE_VIEW_ATTRIBUTE: ULONG = 0x40000000;
 pub const ALPC_MESSAGE_CONTEXT_ATTRIBUTE: ULONG = 0x20000000;
 pub const ALPC_MESSAGE_HANDLE_ATTRIBUTE: ULONG = 0x10000000;
-STRUCT!{struct ALPC_MESSAGE_ATTRIBUTES {
+STRUCT! {struct ALPC_MESSAGE_ATTRIBUTES {
     AllocatedAttributes: ULONG,
     ValidAttributes: ULONG,
 }}
 pub type PALPC_MESSAGE_ATTRIBUTES = *mut ALPC_MESSAGE_ATTRIBUTES;
-STRUCT!{struct ALPC_COMPLETION_LIST_STATE {
+STRUCT! {struct ALPC_COMPLETION_LIST_STATE {
     Value: ULONG64,
 }}
-BITFIELD!{ALPC_COMPLETION_LIST_STATE Value: ULONG64 [
+BITFIELD! {ALPC_COMPLETION_LIST_STATE Value: ULONG64 [
     Head set_Head[0..24],
     Tail set_Tail[24..48],
     ActiveThreadCount set_ActiveThreadCount[48..64],
 ]}
 pub type PALPC_COMPLETION_LIST_STATE = *mut ALPC_COMPLETION_LIST_STATE;
 pub const ALPC_COMPLETION_LIST_BUFFER_GRANULARITY_MASK: ULONG = 0x3f;
-STRUCT!{#[repr(align(128))] struct ALPC_COMPLETION_LIST_HEADER {
+STRUCT! {#[repr(align(128))] struct ALPC_COMPLETION_LIST_HEADER {
     StartMagic: ULONG64,
     TotalSize: ULONG,
     ListOffset: ULONG,
@@ -341,7 +342,7 @@ STRUCT!{#[repr(align(128))] struct ALPC_COMPLETION_LIST_HEADER {
     __padding5: [u64; 14],
 }}
 pub type PALPC_COMPLETION_LIST_HEADER = *mut ALPC_COMPLETION_LIST_HEADER;
-STRUCT!{struct ALPC_CONTEXT_ATTR {
+STRUCT! {struct ALPC_CONTEXT_ATTR {
     PortContext: PVOID,
     MessageContext: PVOID,
     Sequence: ULONG,
@@ -352,7 +353,7 @@ pub type PALPC_CONTEXT_ATTR = *mut ALPC_CONTEXT_ATTR;
 pub const ALPC_HANDLEFLG_DUPLICATE_SAME_ACCESS: ULONG = 0x10000;
 pub const ALPC_HANDLEFLG_DUPLICATE_SAME_ATTRIBUTES: ULONG = 0x20000;
 pub const ALPC_HANDLEFLG_DUPLICATE_INHERIT: ULONG = 0x80000;
-STRUCT!{struct ALPC_HANDLE_ATTR32 {
+STRUCT! {struct ALPC_HANDLE_ATTR32 {
     Flags: ULONG,
     Reserved0: ULONG,
     SameAccess: ULONG,
@@ -366,7 +367,7 @@ STRUCT!{struct ALPC_HANDLE_ATTR32 {
     GrantedAccess: ULONG,
 }}
 pub type PALPC_HANDLE_ATTR32 = *mut ALPC_HANDLE_ATTR32;
-STRUCT!{struct ALPC_HANDLE_ATTR {
+STRUCT! {struct ALPC_HANDLE_ATTR {
     Flags: ULONG,
     Reserved0: ULONG,
     SameAccess: ULONG,
@@ -383,21 +384,21 @@ STRUCT!{struct ALPC_HANDLE_ATTR {
 }}
 pub type PALPC_HANDLE_ATTR = *mut ALPC_HANDLE_ATTR;
 pub const ALPC_SECFLG_CREATE_HANDLE: ULONG = 0x20000;
-STRUCT!{struct ALPC_SECURITY_ATTR {
+STRUCT! {struct ALPC_SECURITY_ATTR {
     Flags: ULONG,
     QoS: PSECURITY_QUALITY_OF_SERVICE,
     ContextHandle: ALPC_HANDLE,
 }}
 pub type PALPC_SECURITY_ATTR = *mut ALPC_SECURITY_ATTR;
 pub const ALPC_VIEWFLG_NOT_SECURE: ULONG = 0x40000;
-STRUCT!{struct ALPC_DATA_VIEW_ATTR {
+STRUCT! {struct ALPC_DATA_VIEW_ATTR {
     Flags: ULONG,
     SectionHandle: ALPC_HANDLE,
     ViewBase: PVOID,
     ViewSize: SIZE_T,
 }}
 pub type PALPC_DATA_VIEW_ATTR = *mut ALPC_DATA_VIEW_ATTR;
-ENUM!{enum ALPC_PORT_INFORMATION_CLASS {
+ENUM! {enum ALPC_PORT_INFORMATION_CLASS {
     AlpcBasicInformation = 0,
     AlpcPortInformation = 1,
     AlpcAssociateCompletionPortInformation = 2,
@@ -411,40 +412,40 @@ ENUM!{enum ALPC_PORT_INFORMATION_CLASS {
     AlpcCompletionListRundownInformation = 10,
     AlpcWaitForPortReferences = 11,
 }}
-STRUCT!{struct ALPC_BASIC_INFORMATION {
+STRUCT! {struct ALPC_BASIC_INFORMATION {
     Flags: ULONG,
     SequenceNo: ULONG,
     PortContext: PVOID,
 }}
 pub type PALPC_BASIC_INFORMATION = *mut ALPC_BASIC_INFORMATION;
-STRUCT!{struct ALPC_PORT_ASSOCIATE_COMPLETION_PORT {
+STRUCT! {struct ALPC_PORT_ASSOCIATE_COMPLETION_PORT {
     CompletionKey: PVOID,
     CompletionPort: HANDLE,
 }}
 pub type PALPC_PORT_ASSOCIATE_COMPLETION_PORT = *mut ALPC_PORT_ASSOCIATE_COMPLETION_PORT;
-STRUCT!{struct ALPC_SERVER_INFORMATION_Out {
+STRUCT! {struct ALPC_SERVER_INFORMATION_Out {
     ThreadBlocked: BOOLEAN,
     ConnectedProcessId: HANDLE,
     ConnectionPortName: UNICODE_STRING,
 }}
-UNION!{union ALPC_SERVER_INFORMATION {
+UNION! {union ALPC_SERVER_INFORMATION {
     ThreadHandle: HANDLE,
     Out: ALPC_SERVER_INFORMATION_Out,
 }}
 pub type PALPC_SERVER_INFORMATION = *mut ALPC_SERVER_INFORMATION;
-STRUCT!{struct ALPC_PORT_MESSAGE_ZONE_INFORMATION {
+STRUCT! {struct ALPC_PORT_MESSAGE_ZONE_INFORMATION {
     Buffer: PVOID,
     Size: ULONG,
 }}
 pub type PALPC_PORT_MESSAGE_ZONE_INFORMATION = *mut ALPC_PORT_MESSAGE_ZONE_INFORMATION;
-STRUCT!{struct ALPC_PORT_COMPLETION_LIST_INFORMATION {
+STRUCT! {struct ALPC_PORT_COMPLETION_LIST_INFORMATION {
     Buffer: PVOID,
     Size: ULONG,
     ConcurrencyCount: ULONG,
     AttributeFlags: ULONG,
 }}
 pub type PALPC_PORT_COMPLETION_LIST_INFORMATION = *mut ALPC_PORT_COMPLETION_LIST_INFORMATION;
-ENUM!{enum ALPC_MESSAGE_INFORMATION_CLASS {
+ENUM! {enum ALPC_MESSAGE_INFORMATION_CLASS {
     AlpcMessageSidInformation = 0,
     AlpcMessageTokenModifiedIdInformation = 1,
     AlpcMessageDirectStatusInformation = 2,
@@ -452,7 +453,7 @@ ENUM!{enum ALPC_MESSAGE_INFORMATION_CLASS {
     MaxAlpcMessageInfoClass = 4,
 }}
 pub type PALPC_MESSAGE_INFORMATION_CLASS = *mut ALPC_MESSAGE_INFORMATION_CLASS;
-STRUCT!{struct ALPC_MESSAGE_HANDLE_INFORMATION {
+STRUCT! {struct ALPC_MESSAGE_HANDLE_INFORMATION {
     Index: ULONG,
     Flags: ULONG,
     Handle: ULONG,
@@ -460,7 +461,7 @@ STRUCT!{struct ALPC_MESSAGE_HANDLE_INFORMATION {
     GrantedAccess: ACCESS_MASK,
 }}
 pub type PALPC_MESSAGE_HANDLE_INFORMATION = *mut ALPC_MESSAGE_HANDLE_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtAlpcCreatePort(
         PortHandle: PHANDLE,
         ObjectAttributes: POBJECT_ATTRIBUTES,
@@ -548,7 +549,7 @@ pub const ALPC_MSGFLG_SYNC_REQUEST: ULONG = 0x20000;
 pub const ALPC_MSGFLG_WAIT_USER_MODE: ULONG = 0x100000;
 pub const ALPC_MSGFLG_WAIT_ALERTABLE: ULONG = 0x200000;
 pub const ALPC_MSGFLG_WOW64_CALL: ULONG = 0x80000000;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtAlpcConnectPort(
         PortHandle: PHANDLE,
         PortName: PUNICODE_STRING,
@@ -600,7 +601,7 @@ EXTERN!{extern "system" {
 pub const ALPC_CANCELFLG_TRY_CANCEL: ULONG = 0x1;
 pub const ALPC_CANCELFLG_NO_CONTEXT_CHECK: ULONG = 0x8;
 pub const ALPC_CANCELFLGP_FLUSH: ULONG = 0x10000;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtAlpcCancelMessage(
         PortHandle: HANDLE,
         Flags: ULONG,
