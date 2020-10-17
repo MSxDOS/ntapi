@@ -19,11 +19,11 @@ use winapi::um::winnt::{
     PROCESS_MITIGATION_STRICT_HANDLE_CHECK_POLICY, PROCESS_MITIGATION_SYSTEM_CALL_DISABLE_POLICY,
     PROCESS_MITIGATION_SYSTEM_CALL_FILTER_POLICY, PSECURITY_QUALITY_OF_SERVICE,
 };
-#[cfg(feature = "nightly")]
+#[cfg(all(feature = "nightly", not(target_arch = "aarch64")))]
 use crate::winapi_local::um::winnt::NtCurrentTeb;
 pub const GDI_HANDLE_BUFFER_SIZE32: usize = 34;
 pub const GDI_HANDLE_BUFFER_SIZE64: usize = 60;
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 pub const GDI_HANDLE_BUFFER_SIZE: usize = GDI_HANDLE_BUFFER_SIZE64;
 #[cfg(target_arch = "x86")]
 pub const GDI_HANDLE_BUFFER_SIZE: usize = GDI_HANDLE_BUFFER_SIZE32;
@@ -792,7 +792,7 @@ STRUCT!{struct THREAD_PROFILING_INFORMATION {
     PerformanceData: PTHREAD_PERFORMANCE_DATA,
 }}
 pub type PTHREAD_PROFILING_INFORMATION = *mut THREAD_PROFILING_INFORMATION;
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 STRUCT!{#[repr(align(16))] struct RTL_UMS_CONTEXT {
     Link: SINGLE_LIST_ENTRY,
     __padding: u64,
@@ -932,7 +932,7 @@ pub const NtCurrentThread: HANDLE = -2isize as *mut c_void;
 pub const ZwCurrentThread: HANDLE = NtCurrentThread;
 pub const NtCurrentSession: HANDLE = -3isize as *mut c_void;
 pub const ZwCurrentSession: HANDLE = NtCurrentSession;
-#[inline] #[cfg(feature = "nightly")]
+#[inline] #[cfg(all(feature = "nightly", not(target_arch = "aarch64")))]
 pub unsafe fn NtCurrentPeb() -> PPEB {
     (*NtCurrentTeb()).ProcessEnvironmentBlock
 }
@@ -940,11 +940,11 @@ pub const NtCurrentProcessToken: HANDLE = -4isize as *mut c_void;
 pub const NtCurrentThreadToken: HANDLE = -5isize as *mut c_void;
 pub const NtCurrentEffectiveToken: HANDLE = -6isize as *mut c_void;
 pub const NtCurrentSilo: HANDLE = -1isize as *mut c_void;
-#[inline] #[cfg(feature = "nightly")]
+#[inline] #[cfg(all(feature = "nightly", not(target_arch = "aarch64")))]
 pub unsafe fn NtCurrentProcessId() -> HANDLE {
     (*NtCurrentTeb()).ClientId.UniqueProcess
 }
-#[inline] #[cfg(feature = "nightly")]
+#[inline] #[cfg(all(feature = "nightly", not(target_arch = "aarch64")))]
 pub unsafe fn NtCurrentThreadId() -> HANDLE {
     (*NtCurrentTeb()).ClientId.UniqueThread
 }

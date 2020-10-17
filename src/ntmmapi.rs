@@ -23,7 +23,7 @@ ENUM!{enum MEMORY_INFORMATION_CLASS {
 STRUCT!{struct MEMORY_WORKING_SET_BLOCK {
     Bitfields: ULONG_PTR,
 }}
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 BITFIELD!{MEMORY_WORKING_SET_BLOCK Bitfields: ULONG_PTR [
     Protection set_Protection[0..5],
     ShareCount set_ShareCount[5..8],
@@ -78,7 +78,7 @@ UNION!{union MEMORY_WORKING_SET_EX_BLOCK_u {
 STRUCT!{struct MEMORY_WORKING_SET_EX_BLOCK {
     u: MEMORY_WORKING_SET_EX_BLOCK_u,
 }}
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
     Valid set_Valid[0..1],
     ShareCount set_ShareCount[1..4],
@@ -93,7 +93,7 @@ BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
     Bad set_Bad[31..32],
     ReservedUlong set_ReservedUlong[32..64],
 ]}
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Invalid: ULONG_PTR [
     Invalid_Valid set_Invalid_Valid[0..1],
     Invalid_Reserved0 set_Invalid_Reserved0[1..15],

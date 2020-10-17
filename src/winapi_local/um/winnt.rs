@@ -6,7 +6,7 @@ use winapi::um::winnt::{HANDLE, PVOID};
 pub const fn UInt32x32To64(a: u32, b: u32) -> u64 {
     a as u64 * b as u64
 }
-#[cfg(feature = "nightly")]
+#[cfg(all(feature = "nightly", not(target_arch = "aarch64")))]
 IFDEF!{
 use crate::ntpebteb::TEB;
 #[inline]
