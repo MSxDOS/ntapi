@@ -15,7 +15,7 @@ use winapi::shared::guiddef::GUID;
 use winapi::shared::in6addr::in6_addr;
 use winapi::shared::inaddr::in_addr;
 use winapi::shared::minwindef::{BOOL, DWORD, PBOOL};
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 use winapi::shared::ntdef::{LARGE_INTEGER, RTL_BALANCED_NODE};
 use winapi::shared::ntdef::{
     BOOLEAN, CCHAR, CHAR, CLONG, CSHORT, HANDLE, LCID, LIST_ENTRY, LOGICAL, LONG, LUID, NTSTATUS,
@@ -26,7 +26,7 @@ use winapi::shared::ntdef::{
     STRING, UCHAR, ULONG, ULONGLONG, UNICODE_STRING, USHORT, VOID, WCHAR,
 };
 use winapi::um::minwinbase::PTHREAD_START_ROUTINE;
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 use winapi::um::winnt::{PGET_RUNTIME_FUNCTION_CALLBACK, PRUNTIME_FUNCTION, PWOW64_CONTEXT};
 use winapi::um::winnt::{
     ACCESS_MASK, ACL_INFORMATION_CLASS, APC_CALLBACK_FUNCTION, HEAP_INFORMATION_CLASS,
@@ -1673,7 +1673,7 @@ EXTERN!{extern "system" {
         FeatureMask: ULONG64,
     );
 }}
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 EXTERN!{extern "system" {
     fn RtlWow64GetThreadContext(
         ThreadHandle: HANDLE,
@@ -1727,7 +1727,7 @@ EXTERN!{extern "system" {
         ExceptionPointers: PEXCEPTION_POINTERS,
     ) -> LONG;
 }}
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 IFDEF!{
 ENUM!{enum FUNCTION_TABLE_TYPE {
     RF_SORTED = 0,
@@ -2196,7 +2196,7 @@ EXTERN!{extern "system" {
         MakeReadOnly: BOOLEAN,
     );
 }}
-#[inline] #[cfg(feature = "nightly")]
+#[inline] #[cfg(all(feature = "nightly", not(target_arch = "aarch64")))]
 pub unsafe fn RtlProcessHeap() -> PVOID {
     use crate::ntpsapi::NtCurrentPeb;
     (*NtCurrentPeb()).ProcessHeap
@@ -2948,7 +2948,7 @@ pub unsafe fn RtlCheckBit(BitMapHeader: &RTL_BITMAP, BitPosition: ULONG) -> u8 {
         use crate::winapi_local::um::winnt::_bittest64;
         _bittest64(BitMapHeader.Buffer as *const i64, BitPosition as i64)
     }
-    #[cfg(any(target_arch = "x86", all(target_arch = "x86_64", not(feature = "nightly"))))] {
+    #[cfg(any(target_arch = "x86", all(target_arch = "x86_64", not(feature = "nightly")), target_arch = "aarch64"))] {
         (*BitMapHeader.Buffer.offset(BitPosition as isize / 32) >> (BitPosition % 32) & 1) as u8
     }
 }

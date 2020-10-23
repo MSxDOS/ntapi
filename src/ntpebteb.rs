@@ -213,7 +213,7 @@ UNION!{union TEB_u {
     IdealProcessorValue: ULONG,
     s: TEB_u_s,
 }}
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 STRUCT!{struct TEB {
     NtTib: NT_TIB,
     EnvironmentPointer: PVOID,

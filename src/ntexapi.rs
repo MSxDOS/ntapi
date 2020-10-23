@@ -1738,7 +1738,7 @@ STRUCT!{struct SYSTEM_IMAGE_FILE_EXECUTION_OPTIONS_INFORMATION {
 }}
 pub type PSYSTEM_IMAGE_FILE_EXECUTION_OPTIONS_INFORMATION =
     *mut SYSTEM_IMAGE_FILE_EXECUTION_OPTIONS_INFORMATION;
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 STRUCT!{struct SYSTEM_VERIFIER_INFORMATION_EX {
     VerifyMode: ULONG,
     OptionChanges: ULONG,
@@ -2780,7 +2780,7 @@ pub const USER_SHARED_DATA: *const KUSER_SHARED_DATA = 0x7ffe0000 as *const _;
 pub unsafe fn NtGetTickCount64() -> ULONGLONG {
     #[allow(deprecated)] //fixme
     let mut tick_count: ULARGE_INTEGER = uninitialized();
-    #[cfg(target_arch = "x86_64")] {
+    #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
         *tick_count.QuadPart_mut() = (*USER_SHARED_DATA).u.TickCountQuad;
     }
     #[cfg(target_arch = "x86")] {
@@ -2801,7 +2801,7 @@ pub unsafe fn NtGetTickCount64() -> ULONGLONG {
 }
 #[inline]
 pub unsafe fn NtGetTickCount() -> ULONG {
-    #[cfg(target_arch = "x86_64")] {
+    #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
         (((*USER_SHARED_DATA).u.TickCountQuad * (*USER_SHARED_DATA).TickCountMultiplier as u64)
             >> 24) as u32
     }

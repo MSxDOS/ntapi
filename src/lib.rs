@@ -25,7 +25,7 @@
 //! [`RtlCheckBit`]: ntrtl/fn.RtlCheckBit.html
 //! [fn_ptr]: https://doc.rust-lang.org/reference/types.html#function-pointer-types
 //! [`Default`]: https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default
-#![cfg(all(windows, any(target_arch = "x86", target_arch = "x86_64")))]
+#![cfg(all(windows, any(target_arch = "x86", target_arch = "x86_64", target_arch = "aarch64")))]
 #![no_std]
 #![deny(unused, unused_qualifications)]
 #![warn(unused_attributes)]

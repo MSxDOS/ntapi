@@ -68,7 +68,7 @@ pub const LPC_CONNECTION_REQUEST: ULONG = 10;
 pub const LPC_KERNELMODE_MESSAGE: CSHORT = 0x8000;
 pub const LPC_NO_IMPERSONATE: CSHORT = 0x4000;
 pub const PORT_VALID_OBJECT_ATTRIBUTES: u32 = OBJ_CASE_INSENSITIVE;
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 pub const PORT_MAXIMUM_MESSAGE_LENGTH: u32 = 512;
 #[cfg(target_arch = "x86")]
 pub const PORT_MAXIMUM_MESSAGE_LENGTH: u32 = 256;
@@ -269,7 +269,7 @@ pub type ALPC_HANDLE = HANDLE;
 pub const ALPC_PORFLG_ALLOW_LPC_REQUESTS: ULONG = 0x20000;
 pub const ALPC_PORFLG_WAITABLE_PORT: ULONG = 0x40000;
 pub const ALPC_PORFLG_SYSTEM_PROCESS: ULONG = 0x100000;
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 STRUCT!{struct ALPC_PORT_ATTRIBUTES {
     Flags: ULONG,
     SecurityQos: SECURITY_QUALITY_OF_SERVICE,
