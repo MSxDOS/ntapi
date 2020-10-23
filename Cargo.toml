@@ -14,15 +14,12 @@ edition = "2018"
 
 [package.metadata.docs.rs]
 default-target = "x86_64-pc-windows-msvc"
-features = ["func-types", "nightly"]
+features = ["nightly"]
+targets = ["aarch64-pc-windows-msvc", "i686-pc-windows-msvc", "x86_64-pc-windows-msvc"]
 
 [dependencies.winapi]
 version = "0.3.9"
 features = ["cfg", "evntrace", "in6addr", "inaddr", "minwinbase", "ntsecapi", "windef", "winioctl"]
-
-[badges]
-appveyor = { repository = "MSxDOS/ntapi" }
-travis-ci = { repository = "MSxDOS/ntapi" }
 
 [features]
 default = ["user"]
