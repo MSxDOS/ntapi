@@ -2948,7 +2948,11 @@ pub unsafe fn RtlCheckBit(BitMapHeader: &RTL_BITMAP, BitPosition: ULONG) -> u8 {
         use crate::winapi_local::um::winnt::_bittest64;
         _bittest64(BitMapHeader.Buffer as *const i64, BitPosition as i64)
     }
-    #[cfg(any(target_arch = "x86", all(target_arch = "x86_64", not(feature = "nightly")), target_arch = "aarch64"))] {
+    #[cfg(any(
+        target_arch = "x86",
+        all(target_arch = "x86_64", not(feature = "nightly")),
+        target_arch = "aarch64",
+    ))] {
         (*BitMapHeader.Buffer.offset(BitPosition as isize / 32) >> (BitPosition % 32) & 1) as u8
     }
 }
