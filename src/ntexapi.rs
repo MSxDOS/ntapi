@@ -1,5 +1,6 @@
 #[allow(deprecated)] //fixme
 use core::mem::uninitialized;
+use core::ptr::read_volatile;
 #[cfg(target_arch = "x86")]
 use core::sync::atomic::spin_loop_hint;
 use crate::ntapi_base::{CLIENT_ID, KPRIORITY, KSYSTEM_TIME, PRTL_ATOM, RTL_ATOM};
@@ -2781,13 +2782,16 @@ pub unsafe fn NtGetTickCount64() -> ULONGLONG {
     #[allow(deprecated)] //fixme
     let mut tick_count: ULARGE_INTEGER = uninitialized();
     #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
-        *tick_count.QuadPart_mut() = (*USER_SHARED_DATA).u.TickCountQuad;
+        *tick_count.QuadPart_mut() = read_volatile(&(*USER_SHARED_DATA).u.TickCountQuad);
     }
     #[cfg(target_arch = "x86")] {
         loop {
-            tick_count.s_mut().HighPart = (*USER_SHARED_DATA).u.TickCount.High1Time as u32;
-            tick_count.s_mut().LowPart = (*USER_SHARED_DATA).u.TickCount.LowPart;
-            if tick_count.s().HighPart == (*USER_SHARED_DATA).u.TickCount.High2Time as u32 {
+            tick_count.s_mut().HighPart =
+                read_volatile(&(*USER_SHARED_DATA).u.TickCount.High1Time) as u32;
+            tick_count.s_mut().LowPart = read_volatile(&(*USER_SHARED_DATA).u.TickCount.LowPart);
+            if tick_count.s().HighPart == read_volatile(&(*USER_SHARED_DATA).u.TickCount.High2Time)
+                as u32
+            {
                 break;
             }
             spin_loop_hint();
@@ -2802,16 +2806,19 @@ pub unsafe fn NtGetTickCount64() -> ULONGLONG {
 #[inline]
 pub unsafe fn NtGetTickCount() -> ULONG {
     #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
-        (((*USER_SHARED_DATA).u.TickCountQuad * (*USER_SHARED_DATA).TickCountMultiplier as u64)
-            >> 24) as u32
+        ((read_volatile(&(*USER_SHARED_DATA).u.TickCountQuad)
+            * (*USER_SHARED_DATA).TickCountMultiplier as u64) >> 24) as u32
     }
     #[cfg(target_arch = "x86")] {
         #[allow(deprecated)] //fixme
         let mut tick_count: ULARGE_INTEGER = uninitialized();
         loop {
-            tick_count.s_mut().HighPart = (*USER_SHARED_DATA).u.TickCount.High1Time as u32;
-            tick_count.s_mut().LowPart = (*USER_SHARED_DATA).u.TickCount.LowPart;
-            if tick_count.s().HighPart == (*USER_SHARED_DATA).u.TickCount.High2Time as u32 {
+            tick_count.s_mut().HighPart = read_volatile(&(*USER_SHARED_DATA).u.TickCount.High1Time)
+                as u32;
+            tick_count.s_mut().LowPart = read_volatile(&(*USER_SHARED_DATA).u.TickCount.LowPart);
+            if tick_count.s().HighPart == read_volatile(&(*USER_SHARED_DATA).u.TickCount.High2Time)
+                as u32
+            {
                 break;
             }
             spin_loop_hint();
