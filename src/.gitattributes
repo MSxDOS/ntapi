@@ -1,0 +1,2 @@
+* text=auto eol=lf
+*.rs text whitespace=tab-in-indent,trailing-space,tabwidth=4 diff=cpp
