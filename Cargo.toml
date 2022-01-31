@@ -14,7 +14,7 @@ edition = "2018"
 
 [package.metadata.docs.rs]
 default-target = "x86_64-pc-windows-msvc"
-features = ["nightly"]
+features = ["beta"]
 targets = ["aarch64-pc-windows-msvc", "i686-pc-windows-msvc", "x86_64-pc-windows-msvc"]
 
 [dependencies.winapi]
@@ -27,4 +27,5 @@ func-types = []
 impl-default = ["winapi/impl-default"]
 user = []
 kernel = []
-nightly = []
+beta = []
+nightly = ["beta"]
