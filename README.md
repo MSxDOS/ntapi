@@ -3,7 +3,7 @@
 Rust FFI bindings for Native API. Mostly based on Process Hacker [phnt](https://github.com/processhacker/processhacker/tree/master/phnt) headers as the most complete source of bindings to be found. The comments there also contain useful information on how to use specific things.
 
 ### Minimum supported Rust
-Always the latest stable. Some [features][docs_link] require a nightly compiler.
+Always the latest stable. Some [features][docs_link] require a beta compiler.
 
 [travis_link]: https://travis-ci.org/MSxDOS/ntapi
 [travis_badge]: https://travis-ci.org/MSxDOS/ntapi.svg?branch=master
