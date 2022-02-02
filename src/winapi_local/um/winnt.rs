@@ -12,6 +12,7 @@ pub const fn UInt32x32To64(a: u32, b: u32) -> u64 {
 IFDEF!{
 use crate::ntpebteb::TEB;
 #[inline]
+#[cfg(target_pointer_width = "64")]
 pub unsafe fn _bittest64(Base: *const i64, Offset: i64) -> u8 {
     let out: u8;
     asm!(
@@ -19,25 +20,32 @@ pub unsafe fn _bittest64(Base: *const i64, Offset: i64) -> u8 {
         "setb {0}",
         out(reg_byte) out,
         in(reg) Base,
-        in(reg) Offset);
+        in(reg) Offset,
+        options(nostack, pure, readonly),
+    );
     out
 }
 #[inline]
 pub unsafe fn __readfsdword(Offset: DWORD) -> DWORD {
     let out: u32;
     asm!(
-        "mov {0:e}, fs:[{1:e}]",
-        out(reg) out,
-        in(reg) Offset);
+        "mov {:e}, fs:[{:e}]",
+        lateout(reg) out,
+        in(reg) Offset,
+        options(nostack, pure, readonly),
+    );
     out
 }
 #[inline]
+#[cfg(target_pointer_width = "64")]
 pub unsafe fn __readgsqword(Offset: DWORD) -> DWORD64 {
     let out: u64;
     asm!(
-        "mov {0}, gs:[{1:e}]",
-        out(reg) out,
-        in(reg) Offset);
+        "mov {}, gs:[{:e}]",
+        lateout(reg) out,
+        in(reg) Offset,
+        options(nostack, pure, readonly),
+    );
     out
 }
 #[inline] #[allow(unused_unsafe)]
