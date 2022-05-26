@@ -1,7 +1,7 @@
 use crate::ntapi_base::{CLIENT_ID, KPRIORITY, PCLIENT_ID};
 use crate::ntexapi::{PROCESS_DISK_COUNTERS, PROCESS_ENERGY_VALUES};
 use crate::ntpebteb::{PPEB, PTEB};
-use winapi::ctypes::c_void;
+use winapi::{ctypes::c_void, shared::{ntdef::{LPWSTR, SHORT}, minwindef::DWORD}};
 use winapi::shared::basetsd::{PSIZE_T, SIZE_T, ULONG64, ULONG_PTR};
 use winapi::shared::ntdef::{
     BOOLEAN, HANDLE, LARGE_INTEGER, LIST_ENTRY, LONG, LONGLONG, NTSTATUS, NT_PRODUCT_TYPE,
@@ -31,6 +31,23 @@ pub type GDI_HANDLE_BUFFER = [ULONG; GDI_HANDLE_BUFFER_SIZE];
 pub type GDI_HANDLE_BUFFER32 = [ULONG; GDI_HANDLE_BUFFER_SIZE32];
 pub type GDI_HANDLE_BUFFER64 = [ULONG; GDI_HANDLE_BUFFER_SIZE];
 pub const TLS_EXPANSION_SLOTS: usize = 1024;
+STRUCT!{struct LDR_MODULE {
+    InLoadOrderModuleList: LIST_ENTRY,
+    InMemoryOrderModuleList: LIST_ENTRY,
+    InInitializationOrderModuleList: LIST_ENTRY,
+    BaseAddress: PVOID,
+    EntryPoint: PVOID,
+    SizeOfImage: DWORD,
+    FullDllName: LPWSTR,
+    BaseDllName: LPWSTR,
+    Flags: ULONG,
+    LoadCount: SHORT,
+    TlsIndex: SHORT,
+    SectionHandle: HANDLE,
+    CheckSum: ULONG,
+    TimeDateStamp: ULONG,
+}}
+pub type PLDR_MODULE = *mut LDR_MODULE;
 STRUCT!{struct PEB_LDR_DATA {
     Length: ULONG,
     Initialized: BOOLEAN,
