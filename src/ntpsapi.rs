@@ -39,7 +39,7 @@ STRUCT!{struct LDR_MODULE {
     EntryPoint: PVOID,
     SizeOfImage: ULONG,
     FullDllName: UNICODE_STRING,
-    BaseDllName: UNICODE_STRING,,
+    BaseDllName: UNICODE_STRING,
     Flags: ULONG,
     LoadCount: SHORT,
     TlsIndex: SHORT,
