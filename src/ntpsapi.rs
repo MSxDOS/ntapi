@@ -37,14 +37,13 @@ STRUCT!{struct LDR_MODULE {
     InInitializationOrderModuleList: LIST_ENTRY,
     BaseAddress: PVOID,
     EntryPoint: PVOID,
-    SizeOfImage: DWORD,
-    FullDllName: LPWSTR,
-    BaseDllName: LPWSTR,
+    SizeOfImage: ULONG,
+    FullDllName: UNICODE_STRING,
+    BaseDllName: UNICODE_STRING,,
     Flags: ULONG,
     LoadCount: SHORT,
     TlsIndex: SHORT,
-    SectionHandle: HANDLE,
-    CheckSum: ULONG,
+    HashTableEntry: LIST_ENTRY,
     TimeDateStamp: ULONG,
 }}
 pub type PLDR_MODULE = *mut LDR_MODULE;
