@@ -48,12 +48,14 @@ macro_rules! BITFIELD {
         $($thing:ident $set_thing:ident[$r:expr],)+
     ]) => {
         impl $base {$(
-            #[inline]
+            #[cfg_attr(not(feature = "aggressive-inline"), inline)]
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
             pub const fn $thing(&self) -> $fieldtype {
                 const SIZE: usize = $crate::_core::mem::size_of::<$fieldtype>() * 8;
                 self.$field << (SIZE - $r.end) >> (SIZE - $r.end + $r.start)
             }
-            #[inline]
+            #[cfg_attr(not(feature = "aggressive-inline"), inline)]
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
             pub fn $set_thing(&mut self, val: $fieldtype) {
                 const MASK: $fieldtype = ((1 << ($r.end - $r.start)) - 1) << $r.start;
                 self.$field &= !MASK;
@@ -65,12 +67,14 @@ macro_rules! BITFIELD {
         $($thing:ident $set_thing:ident[$r:expr],)+
     ]) => {
         impl $base {$(
-            #[inline]
+            #[cfg_attr(not(feature = "aggressive-inline"), inline)]
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
             pub unsafe fn $thing(&self) -> $fieldtype {
                 const SIZE: usize = $crate::_core::mem::size_of::<$fieldtype>() * 8;
                 self.$field << (SIZE - $r.end) >> (SIZE - $r.end + $r.start)
             }
-            #[inline]
+            #[cfg_attr(not(feature = "aggressive-inline"), inline)]
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
             pub unsafe fn $set_thing(&mut self, val: $fieldtype) {
                 const MASK: $fieldtype = ((1 << ($r.end - $r.start)) - 1) << $r.start;
                 self.$field &= !MASK;
@@ -89,12 +93,14 @@ macro_rules! UNION {
         }
         impl Copy for $name {}
         impl Clone for $name {
-            #[inline]
+            #[cfg_attr(not(feature = "aggressive-inline"), inline)]
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
             fn clone(&self) -> $name { *self }
         }
         #[cfg(feature = "impl-default")]
         impl Default for $name {
-            #[inline]
+            #[cfg_attr(not(feature = "aggressive-inline"), inline)]
+    #[cfg_attr(feature = "aggressive-inline", inline(always))]
             fn default() -> $name { unsafe { $crate::_core::mem::zeroed() } }
         }
     );

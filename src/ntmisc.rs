@@ -2,7 +2,7 @@ use winapi::shared::ntdef::{HANDLE, NTSTATUS, PULONG, PVOID, ULONG};
 use winapi::um::winnt::STANDARD_RIGHTS_ALL;
 pub const FLT_PORT_CONNECT: u32 = 0x0001;
 pub const FLT_PORT_ALL_ACCESS: u32 = FLT_PORT_CONNECT | STANDARD_RIGHTS_ALL;
-ENUM!{enum VDMSERVICECLASS {
+ENUM! {enum VDMSERVICECLASS {
     VdmStartExecution = 0,
     VdmQueueInterrupt = 1,
     VdmDelayInterrupt = 2,
@@ -20,7 +20,7 @@ ENUM!{enum VDMSERVICECLASS {
     VdmQueryVdmProcess = 14,
 }}
 pub type PVDMSERVICECLASS = *mut VDMSERVICECLASS;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtVdmControl(
         Service: VDMSERVICECLASS,
         ServiceData: PVOID,

@@ -1,7 +1,7 @@
-use core::mem::size_of;
 use crate::ntapi_base::CLIENT_ID;
 use crate::ntpsapi::{GDI_HANDLE_BUFFER, PPEB_LDR_DATA};
 use crate::ntrtl::PRTL_USER_PROCESS_PARAMETERS;
+use core::mem::size_of;
 use winapi::shared::basetsd::{SIZE_T, ULONG_PTR};
 use winapi::shared::guiddef::GUID;
 use winapi::shared::ntdef::{
@@ -11,13 +11,13 @@ use winapi::shared::ntdef::{
 use winapi::um::winnt::{
     ACTIVATION_CONTEXT, FLS_MAXIMUM_AVAILABLE, NT_TIB, PRTL_CRITICAL_SECTION, PSLIST_HEADER,
 };
-STRUCT!{struct RTL_ACTIVATION_CONTEXT_STACK_FRAME {
+STRUCT! {struct RTL_ACTIVATION_CONTEXT_STACK_FRAME {
     Previous: PRTL_ACTIVATION_CONTEXT_STACK_FRAME,
     ActivationContext: *mut ACTIVATION_CONTEXT,
     Flags: ULONG,
 }}
 pub type PRTL_ACTIVATION_CONTEXT_STACK_FRAME = *mut RTL_ACTIVATION_CONTEXT_STACK_FRAME;
-STRUCT!{struct ACTIVATION_CONTEXT_STACK {
+STRUCT! {struct ACTIVATION_CONTEXT_STACK {
     ActiveFrame: *mut RTL_ACTIVATION_CONTEXT_STACK_FRAME,
     FrameListCache: LIST_ENTRY,
     Flags: ULONG,
@@ -25,7 +25,7 @@ STRUCT!{struct ACTIVATION_CONTEXT_STACK {
     StackId: ULONG,
 }}
 pub type PACTIVATION_CONTEXT_STACK = *mut ACTIVATION_CONTEXT_STACK;
-STRUCT!{struct API_SET_NAMESPACE {
+STRUCT! {struct API_SET_NAMESPACE {
     Version: ULONG,
     Size: ULONG,
     Flags: ULONG,
@@ -35,12 +35,12 @@ STRUCT!{struct API_SET_NAMESPACE {
     HashFactor: ULONG,
 }}
 pub type PAPI_SET_NAMESPACE = *mut API_SET_NAMESPACE;
-STRUCT!{struct API_SET_HASH_ENTRY {
+STRUCT! {struct API_SET_HASH_ENTRY {
     Hash: ULONG,
     Index: ULONG,
 }}
 pub type PAPI_SET_HASH_ENTRY = *mut API_SET_HASH_ENTRY;
-STRUCT!{struct API_SET_NAMESPACE_ENTRY {
+STRUCT! {struct API_SET_NAMESPACE_ENTRY {
     Flags: ULONG,
     NameOffset: ULONG,
     NameLength: ULONG,
@@ -49,7 +49,7 @@ STRUCT!{struct API_SET_NAMESPACE_ENTRY {
     ValueCount: ULONG,
 }}
 pub type PAPI_SET_NAMESPACE_ENTRY = *mut API_SET_NAMESPACE_ENTRY;
-STRUCT!{struct API_SET_VALUE_ENTRY {
+STRUCT! {struct API_SET_VALUE_ENTRY {
     Flags: ULONG,
     NameOffset: ULONG,
     NameLength: ULONG,
@@ -57,13 +57,13 @@ STRUCT!{struct API_SET_VALUE_ENTRY {
     ValueLength: ULONG,
 }}
 pub type PAPI_SET_VALUE_ENTRY = *mut API_SET_VALUE_ENTRY;
-UNION!{union PEB_u {
+UNION! {union PEB_u {
     KernelCallbackTable: PVOID,
     UserSharedInfoPtr: PVOID,
 }}
 #[repr(C)]
 pub struct LEAP_SECOND_DATA([u8; 0]); //fixme
-STRUCT!{struct PEB {
+STRUCT! {struct PEB {
     InheritedAddressSpace: BOOLEAN,
     ReadImageFileExecOptions: BOOLEAN,
     BeingDebugged: BOOLEAN,
@@ -152,7 +152,7 @@ STRUCT!{struct PEB {
     LeapSecondFlags: ULONG,
     NtGlobalFlag2: ULONG,
 }}
-BITFIELD!{PEB BitField: BOOLEAN [
+BITFIELD! {PEB BitField: BOOLEAN [
     ImageUsesLargePages set_ImageUsesLargePages[0..1],
     IsProtectedProcess set_IsProtectedProcess[1..2],
     IsImageDynamicallyRelocated set_IsImageDynamicallyRelocated[2..3],
@@ -162,7 +162,7 @@ BITFIELD!{PEB BitField: BOOLEAN [
     IsProtectedProcessLight set_IsProtectedProcessLight[6..7],
     IsLongPathAwareProcess set_IsLongPathAwareProcess[7..8],
 ]}
-BITFIELD!{PEB CrossProcessFlags: ULONG [
+BITFIELD! {PEB CrossProcessFlags: ULONG [
     ProcessInJob set_ProcessInJob[0..1],
     ProcessInitializing set_ProcessInitializing[1..2],
     ProcessUsingVEH set_ProcessUsingVEH[2..3],
@@ -173,48 +173,48 @@ BITFIELD!{PEB CrossProcessFlags: ULONG [
     ProcessImagesHotPatched set_ProcessImagesHotPatched[7..8],
     ReservedBits0 set_ReservedBits0[8..32],
 ]}
-BITFIELD!{PEB TracingFlags: ULONG [
+BITFIELD! {PEB TracingFlags: ULONG [
     HeapTracingEnabled set_HeapTracingEnabled[0..1],
     CritSecTracingEnabled set_CritSecTracingEnabled[1..2],
     LibLoaderTracingEnabled set_LibLoaderTracingEnabled[2..3],
     SpareTracingBits set_SpareTracingBits[3..32],
 ]}
-BITFIELD!{PEB LeapSecondFlags: ULONG [
+BITFIELD! {PEB LeapSecondFlags: ULONG [
     SixtySecondEnabled set_SixtySecondEnabled[0..1],
     Reserved set_Reserved[1..32],
 ]}
 pub type PPEB = *mut PEB;
 pub const GDI_BATCH_BUFFER_SIZE: usize = 310;
-STRUCT!{struct GDI_TEB_BATCH {
+STRUCT! {struct GDI_TEB_BATCH {
     Offset: ULONG,
     HDC: ULONG_PTR,
     Buffer: [ULONG; GDI_BATCH_BUFFER_SIZE],
 }}
 pub type PGDI_TEB_BATCH = *mut GDI_TEB_BATCH;
-STRUCT!{struct TEB_ACTIVE_FRAME_CONTEXT {
+STRUCT! {struct TEB_ACTIVE_FRAME_CONTEXT {
     Flags: ULONG,
     FrameName: PSTR,
 }}
 pub type PTEB_ACTIVE_FRAME_CONTEXT = *mut TEB_ACTIVE_FRAME_CONTEXT;
-STRUCT!{struct TEB_ACTIVE_FRAME {
+STRUCT! {struct TEB_ACTIVE_FRAME {
     Flags: ULONG,
     Previous: *mut TEB_ACTIVE_FRAME,
     Context: PTEB_ACTIVE_FRAME_CONTEXT,
 }}
 pub type PTEB_ACTIVE_FRAME = *mut TEB_ACTIVE_FRAME;
-STRUCT!{struct TEB_u_s {
+STRUCT! {struct TEB_u_s {
     ReservedPad0: UCHAR,
     ReservedPad1: UCHAR,
     ReservedPad2: UCHAR,
     IdealProcessor: UCHAR,
 }}
-UNION!{union TEB_u {
+UNION! {union TEB_u {
     CurrentIdealProcessor: PROCESSOR_NUMBER,
     IdealProcessorValue: ULONG,
     s: TEB_u_s,
 }}
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-STRUCT!{struct TEB {
+STRUCT! {struct TEB {
     NtTib: NT_TIB,
     EnvironmentPointer: PVOID,
     ClientId: CLIENT_ID,
@@ -313,7 +313,7 @@ STRUCT!{struct TEB {
     EffectiveContainerId: GUID,
 }}
 #[cfg(target_arch = "x86")]
-STRUCT!{struct TEB {
+STRUCT! {struct TEB {
     NtTib: NT_TIB,
     EnvironmentPointer: PVOID,
     ClientId: CLIENT_ID,
@@ -410,7 +410,7 @@ STRUCT!{struct TEB {
     ReservedForCrt: ULONGLONG,
     EffectiveContainerId: GUID,
 }}
-BITFIELD!{TEB SameTebFlags: USHORT [
+BITFIELD! {TEB SameTebFlags: USHORT [
     SafeThunkCall set_SafeThunkCall[0..1],
     InDebugPrint set_InDebugPrint[1..2],
     HasFiberData set_HasFiberData[2..3],

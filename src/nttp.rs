@@ -8,18 +8,18 @@ use winapi::um::winnt::{
 #[repr(C)]
 pub struct TP_ALPC([u8; 0]);
 pub type PTP_ALPC = *mut TP_ALPC;
-FN!{stdcall PTP_ALPC_CALLBACK(
+FN! {stdcall PTP_ALPC_CALLBACK(
     Instance: PTP_CALLBACK_INSTANCE,
     Context: PVOID,
     Alpc: PTP_ALPC,
 ) -> ()}
-FN!{stdcall PTP_ALPC_CALLBACK_EX(
+FN! {stdcall PTP_ALPC_CALLBACK_EX(
     Instanc: PTP_CALLBACK_INSTANCE,
     Contex: PVOID,
     Alp: PTP_ALPC,
     ApcContext: PVOID,
 ) -> ()}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn TpAllocPool(
         PoolReturn: *mut PTP_POOL,
         Reserved: PVOID,
@@ -143,14 +143,14 @@ EXTERN!{extern "system" {
         CancelPendingCallbacks: LOGICAL,
     );
 }}
-FN!{stdcall PTP_IO_CALLBACK(
+FN! {stdcall PTP_IO_CALLBACK(
     Instance: PTP_CALLBACK_INSTANCE,
     Context: PVOID,
     ApcContext: PVOID,
     IoSB: PIO_STATUS_BLOCK,
     Io: PTP_IO,
 ) -> ()}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn TpAllocIoCompletion(
         IoReturn: *mut PTP_IO,
         File: HANDLE,
@@ -192,12 +192,12 @@ EXTERN!{extern "system" {
         Alpc: PTP_ALPC,
     );
 }}
-ENUM!{enum TP_TRACE_TYPE {
+ENUM! {enum TP_TRACE_TYPE {
     TpTraceThreadPriority = 1,
     TpTraceThreadAffinity = 2,
     MaxTpTraceType = 3,
 }}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn TpCaptureCaller(
         Type: TP_TRACE_TYPE,
     );

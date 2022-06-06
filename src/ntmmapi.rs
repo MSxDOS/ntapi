@@ -7,7 +7,7 @@ use winapi::shared::ntdef::{
 use winapi::um::winnt::{
     ACCESS_MASK, PCFG_CALL_TARGET_INFO, STANDARD_RIGHTS_REQUIRED, SYNCHRONIZE,
 };
-ENUM!{enum MEMORY_INFORMATION_CLASS {
+ENUM! {enum MEMORY_INFORMATION_CLASS {
     MemoryBasicInformation = 0,
     MemoryWorkingSetInformation = 1,
     MemoryMappedFilenameInformation = 2,
@@ -20,11 +20,11 @@ ENUM!{enum MEMORY_INFORMATION_CLASS {
     MemoryEnclaveImageInformation = 9,
     MemoryBasicInformationCapped = 10,
 }}
-STRUCT!{struct MEMORY_WORKING_SET_BLOCK {
+STRUCT! {struct MEMORY_WORKING_SET_BLOCK {
     Bitfields: ULONG_PTR,
 }}
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-BITFIELD!{MEMORY_WORKING_SET_BLOCK Bitfields: ULONG_PTR [
+BITFIELD! {MEMORY_WORKING_SET_BLOCK Bitfields: ULONG_PTR [
     Protection set_Protection[0..5],
     ShareCount set_ShareCount[5..8],
     Shared set_Shared[8..9],
@@ -32,7 +32,7 @@ BITFIELD!{MEMORY_WORKING_SET_BLOCK Bitfields: ULONG_PTR [
     VirtualPage set_VirtualPage[12..64],
 ]}
 #[cfg(target_arch = "x86")]
-BITFIELD!{MEMORY_WORKING_SET_BLOCK Bitfields: ULONG_PTR [
+BITFIELD! {MEMORY_WORKING_SET_BLOCK Bitfields: ULONG_PTR [
     Protection set_Protection[0..5],
     ShareCount set_ShareCount[5..8],
     Shared set_Shared[8..9],
@@ -40,19 +40,19 @@ BITFIELD!{MEMORY_WORKING_SET_BLOCK Bitfields: ULONG_PTR [
     VirtualPage set_VirtualPage[12..32],
 ]}
 pub type PMEMORY_WORKING_SET_BLOCK = *mut MEMORY_WORKING_SET_BLOCK;
-STRUCT!{struct MEMORY_WORKING_SET_INFORMATION {
+STRUCT! {struct MEMORY_WORKING_SET_INFORMATION {
     NumberOfEntries: ULONG_PTR,
     WorkingSetInfo: [MEMORY_WORKING_SET_BLOCK; 1],
 }}
 pub type PMEMORY_WORKING_SET_INFORMATION = *mut MEMORY_WORKING_SET_INFORMATION;
-STRUCT!{struct MEMORY_REGION_INFORMATION {
+STRUCT! {struct MEMORY_REGION_INFORMATION {
     AllocationBase: PVOID,
     AllocationProtect: ULONG,
     RegionType: ULONG,
     RegionSize: SIZE_T,
     CommitSize: SIZE_T,
 }}
-BITFIELD!{MEMORY_REGION_INFORMATION RegionType: ULONG [
+BITFIELD! {MEMORY_REGION_INFORMATION RegionType: ULONG [
     Private set_Private[0..1],
     MappedDataFile set_MappedDataFile[1..2],
     MappedImage set_MappedImage[2..3],
@@ -65,21 +65,21 @@ BITFIELD!{MEMORY_REGION_INFORMATION RegionType: ULONG [
     Reserved set_Reserved[9..32],
 ]}
 pub type PMEMORY_REGION_INFORMATION = *mut MEMORY_REGION_INFORMATION;
-ENUM!{enum MEMORY_WORKING_SET_EX_LOCATION {
+ENUM! {enum MEMORY_WORKING_SET_EX_LOCATION {
     MemoryLocationInvalid = 0,
     MemoryLocationResident = 1,
     MemoryLocationPagefile = 2,
     MemoryLocationReserved = 3,
 }}
-UNION!{union MEMORY_WORKING_SET_EX_BLOCK_u {
+UNION! {union MEMORY_WORKING_SET_EX_BLOCK_u {
     Bitfields: ULONG_PTR,
     Invalid: ULONG_PTR,
 }}
-STRUCT!{struct MEMORY_WORKING_SET_EX_BLOCK {
+STRUCT! {struct MEMORY_WORKING_SET_EX_BLOCK {
     u: MEMORY_WORKING_SET_EX_BLOCK_u,
 }}
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
+BITFIELD! {unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
     Valid set_Valid[0..1],
     ShareCount set_ShareCount[1..4],
     Win32Protection set_Win32Protection[4..15],
@@ -94,7 +94,7 @@ BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
     ReservedUlong set_ReservedUlong[32..64],
 ]}
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Invalid: ULONG_PTR [
+BITFIELD! {unsafe MEMORY_WORKING_SET_EX_BLOCK_u Invalid: ULONG_PTR [
     Invalid_Valid set_Invalid_Valid[0..1],
     Invalid_Reserved0 set_Invalid_Reserved0[1..15],
     Invalid_Shared set_Invalid_Shared[15..16],
@@ -109,7 +109,7 @@ BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Invalid: ULONG_PTR [
     Invalid_ReservedUlong set_Invalid_ReservedUlong[32..64],
 ]}
 #[cfg(target_arch = "x86")]
-BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
+BITFIELD! {unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
     Valid set_Valid[0..1],
     ShareCount set_ShareCount[1..4],
     Win32Protection set_Win32Protection[4..15],
@@ -123,7 +123,7 @@ BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Bitfields: ULONG_PTR [
     Bad set_Bad[31..32],
 ]}
 #[cfg(target_arch = "x86")]
-BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Invalid: ULONG_PTR [
+BITFIELD! {unsafe MEMORY_WORKING_SET_EX_BLOCK_u Invalid: ULONG_PTR [
     Invalid_Valid set_Invalid_Valid[0..1],
     Invalid_Reserved0 set_Invalid_Reserved0[1..15],
     Invalid_Shared set_Invalid_Shared[15..16],
@@ -137,28 +137,28 @@ BITFIELD!{unsafe MEMORY_WORKING_SET_EX_BLOCK_u Invalid: ULONG_PTR [
     Invalid_Bad set_Invalid_Bad[31..32],
 ]}
 pub type PMEMORY_WORKING_SET_EX_BLOCK = *mut MEMORY_WORKING_SET_EX_BLOCK;
-STRUCT!{struct MEMORY_WORKING_SET_EX_INFORMATION {
+STRUCT! {struct MEMORY_WORKING_SET_EX_INFORMATION {
     VirtualAddress: PVOID,
     VirtualAttributes: MEMORY_WORKING_SET_EX_BLOCK,
 }}
 pub type PMEMORY_WORKING_SET_EX_INFORMATION = *mut MEMORY_WORKING_SET_EX_INFORMATION;
-STRUCT!{struct MEMORY_SHARED_COMMIT_INFORMATION {
+STRUCT! {struct MEMORY_SHARED_COMMIT_INFORMATION {
     CommitSize: SIZE_T,
 }}
 pub type PMEMORY_SHARED_COMMIT_INFORMATION = *mut MEMORY_SHARED_COMMIT_INFORMATION;
-STRUCT!{struct MEMORY_IMAGE_INFORMATION {
+STRUCT! {struct MEMORY_IMAGE_INFORMATION {
     ImageBase: PVOID,
     SizeOfImage: SIZE_T,
     ImageFlags: ULONG,
 }}
-BITFIELD!{MEMORY_IMAGE_INFORMATION ImageFlags: ULONG [
+BITFIELD! {MEMORY_IMAGE_INFORMATION ImageFlags: ULONG [
     ImagePartialMap set_ImagePartialMap[0..1],
     ImageNotExecutable set_ImageNotExecutable[1..2],
     ImageSigningLevel set_ImageSigningLevel[2..6],
     Reserved set_Reserved[6..32],
 ]}
 pub type PMEMORY_IMAGE_INFORMATION = *mut MEMORY_IMAGE_INFORMATION;
-STRUCT!{struct MEMORY_ENCLAVE_IMAGE_INFORMATION {
+STRUCT! {struct MEMORY_ENCLAVE_IMAGE_INFORMATION {
     ImageInfo: MEMORY_IMAGE_INFORMATION,
     UniqueID: [UCHAR; 32],
     AuthorID: [UCHAR; 32],
@@ -184,10 +184,10 @@ pub const MMPFNUSE_METAFILE: u32 = 8;
 pub const MMPFNUSE_AWEPAGE: u32 = 9;
 pub const MMPFNUSE_DRIVERLOCKPAGE: u32 = 10;
 pub const MMPFNUSE_KERNELSTACK: u32 = 11;
-STRUCT!{struct MEMORY_FRAME_INFORMATION {
+STRUCT! {struct MEMORY_FRAME_INFORMATION {
     Bitfields: ULONGLONG,
 }}
-BITFIELD!{MEMORY_FRAME_INFORMATION Bitfields: ULONGLONG [
+BITFIELD! {MEMORY_FRAME_INFORMATION Bitfields: ULONGLONG [
     UseDescription set_UseDescription[0..4],
     ListDescription set_ListDescription[4..7],
     Reserved0 set_Reserved0[7..8],
@@ -196,38 +196,38 @@ BITFIELD!{MEMORY_FRAME_INFORMATION Bitfields: ULONGLONG [
     Priority set_Priority[57..60],
     Reserved set_Reserved[60..64],
 ]}
-STRUCT!{struct FILEOFFSET_INFORMATION {
+STRUCT! {struct FILEOFFSET_INFORMATION {
     Bitfields: ULONGLONG,
 }}
-BITFIELD!{FILEOFFSET_INFORMATION Bitfields: ULONGLONG [
+BITFIELD! {FILEOFFSET_INFORMATION Bitfields: ULONGLONG [
     DontUse set_DontUse[0..9],
     Offset set_Offset[9..57],
     Reserved set_Reserved[57..64],
 ]}
-STRUCT!{struct PAGEDIR_INFORMATION {
+STRUCT! {struct PAGEDIR_INFORMATION {
     Bitfields: ULONGLONG,
 }}
-BITFIELD!{PAGEDIR_INFORMATION Bitfields: ULONGLONG [
+BITFIELD! {PAGEDIR_INFORMATION Bitfields: ULONGLONG [
     DontUse set_DontUse[0..9],
     PageDirectoryBase set_PageDirectoryBase[9..57],
     Reserved set_Reserved[57..64],
 ]}
-STRUCT!{struct UNIQUE_PROCESS_INFORMATION {
+STRUCT! {struct UNIQUE_PROCESS_INFORMATION {
     Bitfields: ULONGLONG,
 }}
-BITFIELD!{UNIQUE_PROCESS_INFORMATION Bitfields: ULONGLONG [
+BITFIELD! {UNIQUE_PROCESS_INFORMATION Bitfields: ULONGLONG [
     DontUse set_DontUse[0..9],
     UniqueProcessKey set_UniqueProcessKey[9..57],
     Reserved set_Reserved[57..64],
 ]}
 pub type PUNIQUE_PROCESS_INFORMATION = *mut UNIQUE_PROCESS_INFORMATION;
-UNION!{union MMPFN_IDENTITY_u1 {
+UNION! {union MMPFN_IDENTITY_u1 {
     e1: MEMORY_FRAME_INFORMATION,
     e2: FILEOFFSET_INFORMATION,
     e3: PAGEDIR_INFORMATION,
     e4: UNIQUE_PROCESS_INFORMATION,
 }}
-UNION!{union MMPFN_IDENTITY_u2 {
+UNION! {union MMPFN_IDENTITY_u2 {
     e1: ULONG_PTR,
     e2_CombinedPage: ULONG_PTR,
     FileObject: ULONG_PTR,
@@ -235,22 +235,22 @@ UNION!{union MMPFN_IDENTITY_u2 {
     ProtoPteAddress: ULONG_PTR,
     VirtualAddress: ULONG_PTR,
 }}
-STRUCT!{struct MMPFN_IDENTITY {
+STRUCT! {struct MMPFN_IDENTITY {
     u1: MMPFN_IDENTITY_u1,
     PageFrameIndex: ULONG_PTR,
     u2: MMPFN_IDENTITY_u2,
 }}
-BITFIELD!{unsafe MMPFN_IDENTITY_u2 e1: ULONG_PTR [
+BITFIELD! {unsafe MMPFN_IDENTITY_u2 e1: ULONG_PTR [
     Image set_Image[0..1],
     Mismatch set_Mismatch[1..2],
 ]}
 pub type PMMPFN_IDENTITY = *mut MMPFN_IDENTITY;
-STRUCT!{struct MMPFN_MEMSNAP_INFORMATION {
+STRUCT! {struct MMPFN_MEMSNAP_INFORMATION {
     InitialPageFrameIndex: ULONG_PTR,
     Count: ULONG_PTR,
 }}
 pub type PMMPFN_MEMSNAP_INFORMATION = *mut MMPFN_MEMSNAP_INFORMATION;
-ENUM!{enum SECTION_INFORMATION_CLASS {
+ENUM! {enum SECTION_INFORMATION_CLASS {
     SectionBasicInformation = 0,
     SectionImageInformation = 1,
     SectionRelocationInformation = 2,
@@ -258,29 +258,29 @@ ENUM!{enum SECTION_INFORMATION_CLASS {
     SectionInternalImageInformation = 4,
     MaxSectionInfoClass = 5,
 }}
-STRUCT!{struct SECTION_BASIC_INFORMATION {
+STRUCT! {struct SECTION_BASIC_INFORMATION {
     BaseAddress: PVOID,
     AllocationAttributes: ULONG,
     MaximumSize: LARGE_INTEGER,
 }}
 pub type PSECTION_BASIC_INFORMATION = *mut SECTION_BASIC_INFORMATION;
-STRUCT!{struct SECTION_IMAGE_INFORMATION_u1_s {
+STRUCT! {struct SECTION_IMAGE_INFORMATION_u1_s {
     SubSystemMinorVersion: USHORT,
     SubSystemMajorVersion: USHORT,
 }}
-UNION!{union SECTION_IMAGE_INFORMATION_u1 {
+UNION! {union SECTION_IMAGE_INFORMATION_u1 {
     s: SECTION_IMAGE_INFORMATION_u1_s,
     SubSystemVersion: ULONG,
 }}
-STRUCT!{struct SECTION_IMAGE_INFORMATION_u2_s {
+STRUCT! {struct SECTION_IMAGE_INFORMATION_u2_s {
     MajorOperatingSystemVersion: USHORT,
     MinorOperatingSystemVersion: USHORT,
 }}
-UNION!{union SECTION_IMAGE_INFORMATION_u2 {
+UNION! {union SECTION_IMAGE_INFORMATION_u2 {
     s: SECTION_IMAGE_INFORMATION_u2_s,
     OperatingSystemVersion: ULONG,
 }}
-STRUCT!{struct SECTION_IMAGE_INFORMATION {
+STRUCT! {struct SECTION_IMAGE_INFORMATION {
     TransferAddress: PVOID,
     ZeroBits: ULONG,
     MaximumStackSize: SIZE_T,
@@ -297,7 +297,7 @@ STRUCT!{struct SECTION_IMAGE_INFORMATION {
     ImageFileSize: ULONG,
     CheckSum: ULONG,
 }}
-BITFIELD!{SECTION_IMAGE_INFORMATION ImageFlags: UCHAR [
+BITFIELD! {SECTION_IMAGE_INFORMATION ImageFlags: UCHAR [
     ComPlusNativeReady set_ComPlusNativeReady[0..1],
     ComPlusILOnly set_ComPlusILOnly[1..2],
     ImageDynamicallyRelocated set_ImageDynamicallyRelocated[2..3],
@@ -307,16 +307,16 @@ BITFIELD!{SECTION_IMAGE_INFORMATION ImageFlags: UCHAR [
     Reserved set_Reserved[6..8],
 ]}
 pub type PSECTION_IMAGE_INFORMATION = *mut SECTION_IMAGE_INFORMATION;
-STRUCT!{struct SECTION_INTERNAL_IMAGE_INFORMATION {
+STRUCT! {struct SECTION_INTERNAL_IMAGE_INFORMATION {
     SectionInformation: SECTION_IMAGE_INFORMATION,
     ExtendedFlags: ULONG,
 }}
-BITFIELD!{SECTION_INTERNAL_IMAGE_INFORMATION ExtendedFlags: ULONG [
+BITFIELD! {SECTION_INTERNAL_IMAGE_INFORMATION ExtendedFlags: ULONG [
     ImageExportSuppressionEnabled set_ImageExportSuppressionEnabled[0..1],
     Reserved set_Reserved[1..32],
 ]}
 pub type PSECTION_INTERNAL_IMAGE_INFORMATION = *mut SECTION_INTERNAL_IMAGE_INFORMATION;
-ENUM!{enum SECTION_INHERIT {
+ENUM! {enum SECTION_INHERIT {
     ViewShare = 1,
     ViewUnmap = 2,
 }}
@@ -330,7 +330,7 @@ pub const MEM_EXECUTE_OPTION_PERMANENT: u32 = 0x8;
 pub const MEM_EXECUTE_OPTION_EXECUTE_DISPATCH_ENABLE: u32 = 0x10;
 pub const MEM_EXECUTE_OPTION_IMAGE_DISPATCH_ENABLE: u32 = 0x20;
 pub const MEM_EXECUTE_OPTION_VALID_FLAGS: u32 = 0x3f;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtAllocateVirtualMemory(
         ProcessHandle: HANDLE,
         BaseAddress: *mut PVOID,
@@ -375,18 +375,18 @@ EXTERN!{extern "system" {
         ReturnLength: PSIZE_T,
     ) -> NTSTATUS;
 }}
-ENUM!{enum VIRTUAL_MEMORY_INFORMATION_CLASS {
+ENUM! {enum VIRTUAL_MEMORY_INFORMATION_CLASS {
     VmPrefetchInformation = 0,
     VmPagePriorityInformation = 1,
     VmCfgCallTargetInformation = 2,
     VmPageDirtyStateInformation = 3,
 }}
-STRUCT!{struct MEMORY_RANGE_ENTRY {
+STRUCT! {struct MEMORY_RANGE_ENTRY {
     VirtualAddress: PVOID,
     NumberOfBytes: SIZE_T,
 }}
 pub type PMEMORY_RANGE_ENTRY = *mut MEMORY_RANGE_ENTRY;
-STRUCT!{struct CFG_CALL_TARGET_LIST_INFORMATION {
+STRUCT! {struct CFG_CALL_TARGET_LIST_INFORMATION {
     NumberOfEntries: ULONG,
     Reserved: ULONG,
     NumberOfEntriesProcessed: PULONG,
@@ -395,7 +395,7 @@ STRUCT!{struct CFG_CALL_TARGET_LIST_INFORMATION {
     FileOffset: ULONGLONG,
 }}
 pub type PCFG_CALL_TARGET_LIST_INFORMATION = *mut CFG_CALL_TARGET_LIST_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtSetInformationVirtualMemory(
         ProcessHandle: HANDLE,
         VmInformationClass: VIRTUAL_MEMORY_INFORMATION_CLASS,
@@ -480,9 +480,11 @@ EXTERN!{extern "system" {
 }}
 pub const MEMORY_PARTITION_QUERY_ACCESS: u32 = 0x0001;
 pub const MEMORY_PARTITION_MODIFY_ACCESS: u32 = 0x0002;
-pub const MEMORY_PARTITION_ALL_ACCESS: u32 = STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE
-    | MEMORY_PARTITION_QUERY_ACCESS | MEMORY_PARTITION_MODIFY_ACCESS;
-ENUM!{enum MEMORY_PARTITION_INFORMATION_CLASS {
+pub const MEMORY_PARTITION_ALL_ACCESS: u32 = STANDARD_RIGHTS_REQUIRED
+    | SYNCHRONIZE
+    | MEMORY_PARTITION_QUERY_ACCESS
+    | MEMORY_PARTITION_MODIFY_ACCESS;
+ENUM! {enum MEMORY_PARTITION_INFORMATION_CLASS {
     SystemMemoryPartitionInformation = 0,
     SystemMemoryPartitionMoveMemory = 1,
     SystemMemoryPartitionAddPagefile = 2,
@@ -491,7 +493,7 @@ ENUM!{enum MEMORY_PARTITION_INFORMATION_CLASS {
     SystemMemoryPartitionGetMemoryEvents = 5,
     SystemMemoryPartitionMax = 6,
 }}
-STRUCT!{struct MEMORY_PARTITION_CONFIGURATION_INFORMATION {
+STRUCT! {struct MEMORY_PARTITION_CONFIGURATION_INFORMATION {
     Flags: ULONG,
     NumaNode: ULONG,
     Channel: ULONG,
@@ -513,39 +515,39 @@ STRUCT!{struct MEMORY_PARTITION_CONFIGURATION_INFORMATION {
 }}
 pub type PMEMORY_PARTITION_CONFIGURATION_INFORMATION =
     *mut MEMORY_PARTITION_CONFIGURATION_INFORMATION;
-STRUCT!{struct MEMORY_PARTITION_TRANSFER_INFORMATION {
+STRUCT! {struct MEMORY_PARTITION_TRANSFER_INFORMATION {
     NumberOfPages: ULONG_PTR,
     NumaNode: ULONG,
     Flags: ULONG,
 }}
 pub type PMEMORY_PARTITION_TRANSFER_INFORMATION = *mut MEMORY_PARTITION_TRANSFER_INFORMATION;
-STRUCT!{struct MEMORY_PARTITION_PAGEFILE_INFORMATION {
+STRUCT! {struct MEMORY_PARTITION_PAGEFILE_INFORMATION {
     PageFileName: UNICODE_STRING,
     MinimumSize: LARGE_INTEGER,
     MaximumSize: LARGE_INTEGER,
     Flags: ULONG,
 }}
 pub type PMEMORY_PARTITION_PAGEFILE_INFORMATION = *mut MEMORY_PARTITION_PAGEFILE_INFORMATION;
-STRUCT!{struct MEMORY_PARTITION_PAGE_COMBINE_INFORMATION {
+STRUCT! {struct MEMORY_PARTITION_PAGE_COMBINE_INFORMATION {
     StopHandle: HANDLE,
     Flags: ULONG,
     TotalNumberOfPages: ULONG_PTR,
 }}
 pub type PMEMORY_PARTITION_PAGE_COMBINE_INFORMATION =
     *mut MEMORY_PARTITION_PAGE_COMBINE_INFORMATION;
-STRUCT!{struct MEMORY_PARTITION_PAGE_RANGE {
+STRUCT! {struct MEMORY_PARTITION_PAGE_RANGE {
     StartPage: ULONG_PTR,
     NumberOfPages: ULONG_PTR,
 }}
 pub type PMEMORY_PARTITION_PAGE_RANGE = *mut MEMORY_PARTITION_PAGE_RANGE;
-STRUCT!{struct MEMORY_PARTITION_INITIAL_ADD_INFORMATION {
+STRUCT! {struct MEMORY_PARTITION_INITIAL_ADD_INFORMATION {
     Flags: ULONG,
     NumberOfRanges: ULONG,
     NumberOfPagesAdded: ULONG_PTR,
     PartitionRanges: [MEMORY_PARTITION_PAGE_RANGE; 1],
 }}
 pub type PMEMORY_PARTITION_INITIAL_ADD_INFORMATION = *mut MEMORY_PARTITION_INITIAL_ADD_INFORMATION;
-STRUCT!{struct MEMORY_PARTITION_MEMORY_EVENTS_INFORMATION {
+STRUCT! {struct MEMORY_PARTITION_MEMORY_EVENTS_INFORMATION {
     Flags: ULONG,
     HandleAttributes: ULONG,
     DesiredAccess: ULONG,
@@ -553,13 +555,13 @@ STRUCT!{struct MEMORY_PARTITION_MEMORY_EVENTS_INFORMATION {
     HighCommitCondition: HANDLE,
     MaximumCommitCondition: HANDLE,
 }}
-BITFIELD!{MEMORY_PARTITION_MEMORY_EVENTS_INFORMATION Flags: ULONG [
+BITFIELD! {MEMORY_PARTITION_MEMORY_EVENTS_INFORMATION Flags: ULONG [
     CommitEvents set_CommitEvents[0..1],
     Spare set_Spare[1..32],
 ]}
 pub type PMEMORY_PARTITION_MEMORY_EVENTS_INFORMATION =
     *mut MEMORY_PARTITION_MEMORY_EVENTS_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtCreatePartition(
         PartitionHandle: PHANDLE,
         DesiredAccess: ACCESS_MASK,

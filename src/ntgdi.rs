@@ -15,23 +15,28 @@ pub const GDI_HANDLE_STOCK_MASK: ULONG = 0x1;
 pub const GDI_HANDLE_UNIQUE_SHIFT: ULONG = 24;
 pub const GDI_HANDLE_UNIQUE_BITS: ULONG = 8;
 pub const GDI_HANDLE_UNIQUE_MASK: ULONG = 0xff;
-#[inline]
+#[cfg_attr(not(feature = "aggressive-inline"), inline)]
+#[cfg_attr(feature = "aggressive-inline", inline(always))]
 pub const fn GDI_HANDLE_INDEX(Handle: ULONG) -> ULONG {
     Handle & GDI_HANDLE_INDEX_MASK
 }
-#[inline]
+#[cfg_attr(not(feature = "aggressive-inline"), inline)]
+#[cfg_attr(feature = "aggressive-inline", inline(always))]
 pub const fn GDI_HANDLE_TYPE(Handle: ULONG) -> ULONG {
     Handle >> GDI_HANDLE_TYPE_SHIFT & GDI_HANDLE_TYPE_MASK
 }
-#[inline]
+#[cfg_attr(not(feature = "aggressive-inline"), inline)]
+#[cfg_attr(feature = "aggressive-inline", inline(always))]
 pub const fn GDI_HANDLE_ALTTYPE(Handle: ULONG) -> ULONG {
     Handle >> GDI_HANDLE_ALTTYPE_SHIFT & GDI_HANDLE_ALTTYPE_MASK
 }
-#[inline]
+#[cfg_attr(not(feature = "aggressive-inline"), inline)]
+#[cfg_attr(feature = "aggressive-inline", inline(always))]
 pub const fn GDI_HANDLE_STOCK(Handle: ULONG) -> ULONG {
     Handle >> GDI_HANDLE_STOCK_SHIFT & GDI_HANDLE_STOCK_MASK
 }
-#[inline]
+#[cfg_attr(not(feature = "aggressive-inline"), inline)]
+#[cfg_attr(feature = "aggressive-inline", inline(always))]
 pub const fn GDI_MAKE_HANDLE(Index: ULONG, Unique: ULONG) -> ULONG {
     Unique << GDI_HANDLE_INDEX_BITS | Index
 }
@@ -66,12 +71,15 @@ pub const GDI_TEMP_TYPE: ULONG = 27;
 pub const GDI_DRVOBJ_TYPE: ULONG = 28;
 pub const GDI_DCIOBJ_TYPE: ULONG = 29;
 pub const GDI_SPOOL_TYPE: ULONG = 30;
-#[inline]
+#[cfg_attr(not(feature = "aggressive-inline"), inline)]
+#[cfg_attr(feature = "aggressive-inline", inline(always))]
 pub const fn GDI_CLIENT_TYPE_FROM_HANDLE(Handle: ULONG) -> ULONG {
-    Handle & (GDI_HANDLE_ALTTYPE_MASK << GDI_HANDLE_ALTTYPE_SHIFT | GDI_HANDLE_TYPE_MASK
-        << GDI_HANDLE_TYPE_SHIFT)
+    Handle
+        & (GDI_HANDLE_ALTTYPE_MASK << GDI_HANDLE_ALTTYPE_SHIFT
+            | GDI_HANDLE_TYPE_MASK << GDI_HANDLE_TYPE_SHIFT)
 }
-#[inline]
+#[cfg_attr(not(feature = "aggressive-inline"), inline)]
+#[cfg_attr(feature = "aggressive-inline", inline(always))]
 pub const fn GDI_CLIENT_TYPE_FROM_UNIQUE(Unique: ULONG) -> ULONG {
     GDI_CLIENT_TYPE_FROM_HANDLE(Unique << 16)
 }
@@ -92,23 +100,23 @@ pub const GDI_CLIENT_METADC16_TYPE: ULONG = GDI_CLIENT_CLIENTOBJ_TYPE | GDI_ALTT
 pub const GDI_CLIENT_METAFILE_TYPE: ULONG = GDI_CLIENT_CLIENTOBJ_TYPE | GDI_ALTTYPE_2;
 pub const GDI_CLIENT_METAFILE16_TYPE: ULONG = GDI_CLIENT_CLIENTOBJ_TYPE | GDI_ALTTYPE_1;
 pub const GDI_CLIENT_PEN_TYPE: ULONG = GDI_CLIENT_BRUSH_TYPE | GDI_ALTTYPE_1;
-UNION!{union GDI_HANDLE_ENTRY_u {
+UNION! {union GDI_HANDLE_ENTRY_u {
     Object: PVOID,
     NextFree: PVOID,
 }}
-STRUCT!{struct GDI_HANDLE_ENTRY_Owner_s {
+STRUCT! {struct GDI_HANDLE_ENTRY_Owner_s {
     ProcessId: USHORT,
     Bitfields: USHORT,
 }}
-BITFIELD!{GDI_HANDLE_ENTRY_Owner_s Bitfields: USHORT [
+BITFIELD! {GDI_HANDLE_ENTRY_Owner_s Bitfields: USHORT [
     Lock set_Lock[0..1],
     Count set_Count[1..16],
 ]}
-UNION!{union GDI_HANDLE_ENTRY_Owner {
+UNION! {union GDI_HANDLE_ENTRY_Owner {
     s: GDI_HANDLE_ENTRY_Owner_s,
     Value: ULONG,
 }}
-STRUCT!{struct GDI_HANDLE_ENTRY {
+STRUCT! {struct GDI_HANDLE_ENTRY {
     u: GDI_HANDLE_ENTRY_u,
     Owner: GDI_HANDLE_ENTRY_Owner,
     Unique: USHORT,
@@ -117,7 +125,7 @@ STRUCT!{struct GDI_HANDLE_ENTRY {
     UserPointer: PVOID,
 }}
 pub type PGDI_HANDLE_ENTRY = *mut GDI_HANDLE_ENTRY;
-STRUCT!{struct GDI_SHARED_MEMORY {
+STRUCT! {struct GDI_SHARED_MEMORY {
     Handles: [GDI_HANDLE_ENTRY; GDI_MAX_HANDLE_COUNT],
 }}
 pub type PGDI_SHARED_MEMORY = *mut GDI_SHARED_MEMORY;

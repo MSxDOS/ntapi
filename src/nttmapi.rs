@@ -10,7 +10,7 @@ use winapi::um::winnt::{
     RESOURCEMANAGER_INFORMATION_CLASS, TRANSACTIONMANAGER_INFORMATION_CLASS,
     TRANSACTION_INFORMATION_CLASS,
 };
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtCreateTransactionManager(
         TmHandle: PHANDLE,
         DesiredAccess: ACCESS_MASK,

@@ -22,6 +22,7 @@ version = "0.3.9"
 features = ["cfg", "evntrace", "in6addr", "inaddr", "minwinbase", "ntsecapi", "windef", "winioctl"]
 
 [features]
+aggressive-inline = []
 default = ["user"]
 func-types = []
 impl-default = ["winapi/impl-default"]
