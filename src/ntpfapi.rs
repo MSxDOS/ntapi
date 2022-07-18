@@ -20,13 +20,13 @@ ENUM! {enum PF_ENABLE_STATUS {
     PfSvDisabled = 2,
     PfSvMaxEnableStatus = 3,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_TRACE_LIMITS {
+STRUCT! {struct PF_TRACE_LIMITS {
     MaxNumPages: ULONG,
     MaxNumSections: ULONG,
     TimerPeriod: LONGLONG,
 }}
 pub type PPF_TRACE_LIMITS = *mut PF_TRACE_LIMITS;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_SYSTEM_PREFETCH_PARAMETERS {
+STRUCT! {struct PF_SYSTEM_PREFETCH_PARAMETERS {
     EnableStatus: [PF_ENABLE_STATUS; 2],
     TraceLimits: [PF_TRACE_LIMITS; 2],
     MaxNumActiveTraces: ULONG,
@@ -36,7 +36,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_SYSTEM_PREFE
 }}
 pub type PPF_SYSTEM_PREFETCH_PARAMETERS = *mut PF_SYSTEM_PREFETCH_PARAMETERS;
 pub const PF_BOOT_CONTROL_VERSION: u32 = 1;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_BOOT_CONTROL {
+STRUCT! {struct PF_BOOT_CONTROL {
     Version: ULONG,
     DisableBootPrefetching: ULONG,
 }}
@@ -50,7 +50,7 @@ ENUM! {enum PREFETCHER_INFORMATION_CLASS {
 }}
 pub const PREFETCHER_INFORMATION_VERSION: ULONG = 23;
 pub const PREFETCHER_INFORMATION_MAGIC: ULONG = 0x6b756843;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PREFETCHER_INFORMATION {
+STRUCT! {struct PREFETCHER_INFORMATION {
     Version: ULONG,
     Magic: ULONG,
     PrefetcherInformationClass: PREFETCHER_INFORMATION_CLASS,
@@ -58,7 +58,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PREFETCHER_INFO
     PrefetcherInformationLength: ULONG,
 }}
 pub type PPREFETCHER_INFORMATION = *mut PREFETCHER_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_SYSTEM_SUPERFETCH_PARAMETERS {
+STRUCT! {struct PF_SYSTEM_SUPERFETCH_PARAMETERS {
     EnabledComponents: ULONG,
     BootID: ULONG,
     SavedSectInfoTracesMax: ULONG,
@@ -70,7 +70,7 @@ pub type PPF_SYSTEM_SUPERFETCH_PARAMETERS = *mut PF_SYSTEM_SUPERFETCH_PARAMETERS
 pub const PF_PFN_PRIO_REQUEST_VERSION: u32 = 1;
 pub const PF_PFN_PRIO_REQUEST_QUERY_MEMORY_LIST: u32 = 0x1;
 pub const PF_PFN_PRIO_REQUEST_VALID_FLAGS: u32 = 0x1;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_PFN_PRIO_REQUEST {
+STRUCT! {struct PF_PFN_PRIO_REQUEST {
     Version: ULONG,
     RequestFlags: ULONG,
     PfnCount: ULONG_PTR,
@@ -88,7 +88,7 @@ UNION! {union PFS_PRIVATE_PAGE_SOURCE_u {
     SessionId: ULONG,
     ProcessId: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PFS_PRIVATE_PAGE_SOURCE {
+STRUCT! {struct PFS_PRIVATE_PAGE_SOURCE {
     Type: PFS_PRIVATE_PAGE_SOURCE_TYPE,
     u: PFS_PRIVATE_PAGE_SOURCE_u,
     ImagePathHash: ULONG,
@@ -100,7 +100,7 @@ UNION! {union PF_PRIVSOURCE_INFO_u {
     StoreSizePages: ULONG_PTR,
 }}
 pub type PPFS_PRIVATE_PAGE_SOURCE = *mut PFS_PRIVATE_PAGE_SOURCE;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_PRIVSOURCE_INFO {
+STRUCT! {struct PF_PRIVSOURCE_INFO {
     DbInfo: PFS_PRIVATE_PAGE_SOURCE,
     EProcess: PVOID,
     WsPrivatePages: SIZE_T,
@@ -121,7 +121,7 @@ BITFIELD! {PF_PRIVSOURCE_INFO BitFields: ULONG [
 ]}
 pub type PPF_PRIVSOURCE_INFO = *mut PF_PRIVSOURCE_INFO;
 pub const PF_PRIVSOURCE_QUERY_REQUEST_VERSION: u32 = 3;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_PRIVSOURCE_QUERY_REQUEST {
+STRUCT! {struct PF_PRIVSOURCE_QUERY_REQUEST {
     Version: ULONG,
     Flags: ULONG,
     InfoCount: ULONG,
@@ -136,7 +136,7 @@ ENUM! {enum PF_PHASED_SCENARIO_TYPE {
     PfScenarioTypeMax = 4,
 }}
 pub const PF_SCENARIO_PHASE_INFO_VERSION: u32 = 4;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_SCENARIO_PHASE_INFO {
+STRUCT! {struct PF_SCENARIO_PHASE_INFO {
     Version: ULONG,
     ScenType: PF_PHASED_SCENARIO_TYPE,
     PhaseId: ULONG,
@@ -145,7 +145,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_SCENARIO_PHA
     FUSUserId: ULONG,
 }}
 pub type PPF_SCENARIO_PHASE_INFO = *mut PF_SCENARIO_PHASE_INFO;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_MEMORY_LIST_NODE {
+STRUCT! {struct PF_MEMORY_LIST_NODE {
     Bitfields: ULONGLONG,
     StandbyLowPageCount: ULONGLONG,
     StandbyMediumPageCount: ULONGLONG,
@@ -159,27 +159,27 @@ BITFIELD! {PF_MEMORY_LIST_NODE Bitfields: ULONGLONG [
 ]}
 pub type PPF_MEMORY_LIST_NODE = *mut PF_MEMORY_LIST_NODE;
 pub const PF_MEMORY_LIST_INFO_VERSION: u32 = 1;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_MEMORY_LIST_INFO {
+STRUCT! {struct PF_MEMORY_LIST_INFO {
     Version: ULONG,
     Size: ULONG,
     NodeCount: ULONG,
     Nodes: [PF_MEMORY_LIST_NODE; 1],
 }}
 pub type PPF_MEMORY_LIST_INFO = *mut PF_MEMORY_LIST_INFO;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_PHYSICAL_MEMORY_RANGE {
+STRUCT! {struct PF_PHYSICAL_MEMORY_RANGE {
     BasePfn: ULONG_PTR,
     PageCount: ULONG_PTR,
 }}
 pub type PPF_PHYSICAL_MEMORY_RANGE = *mut PF_PHYSICAL_MEMORY_RANGE;
 pub const PF_PHYSICAL_MEMORY_RANGE_INFO_VERSION: u32 = 1;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_PHYSICAL_MEMORY_RANGE_INFO {
+STRUCT! {struct PF_PHYSICAL_MEMORY_RANGE_INFO {
     Version: ULONG,
     RangeCount: ULONG,
     Ranges: [PF_PHYSICAL_MEMORY_RANGE; 1],
 }}
 pub type PPF_PHYSICAL_MEMORY_RANGE_INFO = *mut PF_PHYSICAL_MEMORY_RANGE_INFO;
 pub const PF_REPURPOSED_BY_PREFETCH_INFO_VERSION: u32 = 1;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PF_REPURPOSED_BY_PREFETCH_INFO {
+STRUCT! {struct PF_REPURPOSED_BY_PREFETCH_INFO {
     Version: ULONG,
     RepurposedByPrefetch: ULONG,
 }}
@@ -209,7 +209,7 @@ ENUM! {enum SUPERFETCH_INFORMATION_CLASS {
 }}
 pub const SUPERFETCH_INFORMATION_VERSION: ULONG = 45;
 pub const SUPERFETCH_INFORMATION_MAGIC: ULONG = 0x6b756843;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct SUPERFETCH_INFORMATION {
+STRUCT! {struct SUPERFETCH_INFORMATION {
     Version: ULONG,
     Magic: ULONG,
     InfoClass: SUPERFETCH_INFORMATION_CLASS,

@@ -15,12 +15,12 @@ FN! {stdcall PLDR_INIT_ROUTINE(
     Reason: ULONG,
     Context: PVOID,
 ) -> BOOLEAN}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_SERVICE_TAG_RECORD {
+STRUCT! {struct LDR_SERVICE_TAG_RECORD {
     Next: *mut LDR_SERVICE_TAG_RECORD,
     ServiceTag: ULONG,
 }}
 pub type PLDR_SERVICE_TAG_RECORD = *mut LDR_SERVICE_TAG_RECORD;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDRP_CSLIST {
+STRUCT! {struct LDRP_CSLIST {
     Tail: PSINGLE_LIST_ENTRY,
 }}
 pub type PLDRP_CSLIST = *mut LDRP_CSLIST;
@@ -45,7 +45,7 @@ UNION! {union LDR_DDAG_NODE_u {
     Dependencies: LDRP_CSLIST,
     RemovalLink: SINGLE_LIST_ENTRY,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DDAG_NODE {
+STRUCT! {struct LDR_DDAG_NODE {
     Modules: LIST_ENTRY,
     ServiceTagList: PLDR_SERVICE_TAG_RECORD,
     LoadCount: ULONG,
@@ -58,7 +58,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DDAG_NODE {
     PreorderNumber: ULONG,
 }}
 pub type PLDR_DDAG_NODE = *mut LDR_DDAG_NODE;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DEPENDENCY_RECORD {
+STRUCT! {struct LDR_DEPENDENCY_RECORD {
     DependencyLink: SINGLE_LIST_ENTRY,
     DependencyNode: PLDR_DDAG_NODE,
     IncomingDependencyLink: SINGLE_LIST_ENTRY,
@@ -101,7 +101,7 @@ pub const LDRP_REDIRECTED: ULONG = 0x10000000;
 pub const LDRP_NON_PAGED_DEBUG_INFO: ULONG = 0x20000000;
 pub const LDRP_MM_LOADED: ULONG = 0x40000000;
 pub const LDRP_COMPAT_DATABASE_PROCESSED: ULONG = 0x80000000;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDRP_LOAD_CONTEXT {
+STRUCT! {struct LDRP_LOAD_CONTEXT {
     BaseDllName: UNICODE_STRING,
     somestruct: PVOID,
     Flags: ULONG,
@@ -129,7 +129,7 @@ UNION! {union LDR_DATA_TABLE_ENTRY_u2 {
     FlagGroup: [UCHAR; 4],
     Flags: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DATA_TABLE_ENTRY {
+STRUCT! {struct LDR_DATA_TABLE_ENTRY {
     InLoadOrderLinks: LIST_ENTRY,
     InMemoryOrderLinks: LIST_ENTRY,
     u1: LDR_DATA_TABLE_ENTRY_u1,
@@ -346,12 +346,12 @@ EXTERN! {extern "system" {
         ImageCharacteristics: PUSHORT,
     ) -> NTSTATUS;
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_IMPORT_CALLBACK_INFO {
+STRUCT! {struct LDR_IMPORT_CALLBACK_INFO {
     ImportCallbackRoutine: PLDR_IMPORT_MODULE_CALLBACK,
     ImportCallbackParameter: PVOID,
 }}
 pub type PLDR_IMPORT_CALLBACK_INFO = *mut LDR_IMPORT_CALLBACK_INFO;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_SECTION_INFO {
+STRUCT! {struct LDR_SECTION_INFO {
     SectionHandle: HANDLE,
     DesiredAccess: ACCESS_MASK,
     ObjA: POBJECT_ATTRIBUTES,
@@ -359,7 +359,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_SECTION_INF
     AllocationAttributes: ULONG,
 }}
 pub type PLDR_SECTION_INFO = *mut LDR_SECTION_INFO;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_VERIFY_IMAGE_INFO {
+STRUCT! {struct LDR_VERIFY_IMAGE_INFO {
     Size: ULONG,
     Flags: ULONG,
     CallbackInfo: LDR_IMPORT_CALLBACK_INFO,
@@ -380,7 +380,7 @@ EXTERN! {extern "system" {
 }}
 pub const LDR_DLL_NOTIFICATION_REASON_LOADED: ULONG = 1;
 pub const LDR_DLL_NOTIFICATION_REASON_UNLOADED: ULONG = 2;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DLL_LOADED_NOTIFICATION_DATA {
+STRUCT! {struct LDR_DLL_LOADED_NOTIFICATION_DATA {
     Flags: ULONG,
     FullDllName: PUNICODE_STRING,
     BaseDllName: PUNICODE_STRING,
@@ -388,7 +388,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DLL_LOADED_
     SizeOfImage: ULONG,
 }}
 pub type PLDR_DLL_LOADED_NOTIFICATION_DATA = *mut LDR_DLL_LOADED_NOTIFICATION_DATA;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DLL_UNLOADED_NOTIFICATION_DATA {
+STRUCT! {struct LDR_DLL_UNLOADED_NOTIFICATION_DATA {
     Flags: ULONG,
     FullDllName: PCUNICODE_STRING,
     BaseDllName: PCUNICODE_STRING,
@@ -417,15 +417,15 @@ EXTERN! {extern "system" {
         Cookie: PVOID,
     ) -> NTSTATUS;
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_MITIGATION_OPTIONS_MAP {
+STRUCT! {struct PS_MITIGATION_OPTIONS_MAP {
     Map: [ULONG_PTR; 2],
 }}
 pub type PPS_MITIGATION_OPTIONS_MAP = *mut PS_MITIGATION_OPTIONS_MAP;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_MITIGATION_AUDIT_OPTIONS_MAP {
+STRUCT! {struct PS_MITIGATION_AUDIT_OPTIONS_MAP {
     Map: [ULONG_PTR; 2],
 }}
 pub type PPS_MITIGATION_AUDIT_OPTIONS_MAP = *mut PS_MITIGATION_AUDIT_OPTIONS_MAP;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_SYSTEM_DLL_INIT_BLOCK {
+STRUCT! {struct PS_SYSTEM_DLL_INIT_BLOCK {
     Size: ULONG,
     SystemDllWowRelocation: ULONG_PTR,
     SystemDllNativeRelocation: ULONG_PTR,
@@ -472,7 +472,7 @@ EXTERN! {extern "system" {
         ResourceLength: *mut ULONG,
     ) -> NTSTATUS;
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_RESOURCE_INFO {
+STRUCT! {struct LDR_RESOURCE_INFO {
     Type: ULONG_PTR,
     Name: ULONG_PTR,
     Language: ULONG_PTR,
@@ -496,7 +496,7 @@ EXTERN! {extern "system" {
         ResourceDirectory: *mut PIMAGE_RESOURCE_DIRECTORY,
     ) -> NTSTATUS;
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_ENUM_RESOURCE_ENTRY_Path_s {
+STRUCT! {struct LDR_ENUM_RESOURCE_ENTRY_Path_s {
     Id: USHORT,
     NameIsPresent: USHORT,
 }}
@@ -505,7 +505,7 @@ UNION! {union LDR_ENUM_RESOURCE_ENTRY_Path {
     Name: PIMAGE_RESOURCE_DIRECTORY_STRING,
     s: LDR_ENUM_RESOURCE_ENTRY_Path_s,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_ENUM_RESOURCE_ENTRY {
+STRUCT! {struct LDR_ENUM_RESOURCE_ENTRY {
     Path: [LDR_ENUM_RESOURCE_ENTRY_Path; 3],
     Data: PVOID,
     Size: ULONG,
@@ -536,7 +536,7 @@ EXTERN! {extern "system" {
         Entry: *mut PLDR_DATA_TABLE_ENTRY,
     ) -> NTSTATUS;
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_PROCESS_MODULE_INFORMATION {
+STRUCT! {struct RTL_PROCESS_MODULE_INFORMATION {
     Section: HANDLE,
     MappedBase: PVOID,
     ImageBase: PVOID,
@@ -549,12 +549,12 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_PROCESS_MOD
     FullPathName: [UCHAR; 256],
 }}
 pub type PRTL_PROCESS_MODULE_INFORMATION = *mut RTL_PROCESS_MODULE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_PROCESS_MODULES {
+STRUCT! {struct RTL_PROCESS_MODULES {
     NumberOfModules: ULONG,
     Modules: [RTL_PROCESS_MODULE_INFORMATION; 1],
 }}
 pub type PRTL_PROCESS_MODULES = *mut RTL_PROCESS_MODULES;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_PROCESS_MODULE_INFORMATION_EX {
+STRUCT! {struct RTL_PROCESS_MODULE_INFORMATION_EX {
     NextOffset: USHORT,
     BaseInfo: RTL_PROCESS_MODULE_INFORMATION,
     ImageChecksum: ULONG,
@@ -615,12 +615,12 @@ UNION! {union DELAYLOAD_PROC_DESCRIPTOR_Description {
     Name: PCSTR,
     Ordinal: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct DELAYLOAD_PROC_DESCRIPTOR {
+STRUCT! {struct DELAYLOAD_PROC_DESCRIPTOR {
     ImportDescribedByName: ULONG,
     Description: DELAYLOAD_PROC_DESCRIPTOR_Description,
 }}
 pub type PDELAYLOAD_PROC_DESCRIPTOR = *mut DELAYLOAD_PROC_DESCRIPTOR;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct DELAYLOAD_INFO {
+STRUCT! {struct DELAYLOAD_INFO {
     Size: ULONG,
     DelayloadDescriptor: PCIMAGE_DELAYLOAD_DESCRIPTOR,
     ThunkAddress: PIMAGE_THUNK_DATA,

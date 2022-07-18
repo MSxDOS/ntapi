@@ -114,7 +114,7 @@ UNION! {union IO_STATUS_BLOCK_u {
     Status: NTSTATUS,
     Pointer: PVOID,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct IO_STATUS_BLOCK {
+STRUCT! {struct IO_STATUS_BLOCK {
     u: IO_STATUS_BLOCK_u,
     Information: ULONG_PTR,
 }}
@@ -124,7 +124,7 @@ FN! {stdcall PIO_APC_ROUTINE(
     IoStatusBlock: PIO_STATUS_BLOCK,
     Reserved: ULONG,
 ) -> ()}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_IO_COMPLETION_INFORMATION {
+STRUCT! {struct FILE_IO_COMPLETION_INFORMATION {
     KeyContext: PVOID,
     ApcContext: PVOID,
     IoStatusBlock: IO_STATUS_BLOCK,
@@ -209,7 +209,7 @@ ENUM! {enum FILE_INFORMATION_CLASS {
     FileMaximumInformation = 76,
 }}
 pub type PFILE_INFORMATION_CLASS = *mut FILE_INFORMATION_CLASS;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_BASIC_INFORMATION {
+STRUCT! {struct FILE_BASIC_INFORMATION {
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
@@ -217,7 +217,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_BASIC_INFO
     FileAttributes: ULONG,
 }}
 pub type PFILE_BASIC_INFORMATION = *mut FILE_BASIC_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STANDARD_INFORMATION {
+STRUCT! {struct FILE_STANDARD_INFORMATION {
     AllocationSize: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     NumberOfLinks: ULONG,
@@ -225,7 +225,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STANDARD_I
     Directory: BOOLEAN,
 }}
 pub type PFILE_STANDARD_INFORMATION = *mut FILE_STANDARD_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STANDARD_INFORMATION_EX {
+STRUCT! {struct FILE_STANDARD_INFORMATION_EX {
     AllocationSize: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     NumberOfLinks: ULONG,
@@ -235,36 +235,36 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STANDARD_I
     MetadataAttribute: BOOLEAN,
 }}
 pub type PFILE_STANDARD_INFORMATION_EX = *mut FILE_STANDARD_INFORMATION_EX;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_INTERNAL_INFORMATION {
+STRUCT! {struct FILE_INTERNAL_INFORMATION {
     IndexNumber: LARGE_INTEGER,
 }}
 pub type PFILE_INTERNAL_INFORMATION = *mut FILE_INTERNAL_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_EA_INFORMATION {
+STRUCT! {struct FILE_EA_INFORMATION {
     EaSize: ULONG,
 }}
 pub type PFILE_EA_INFORMATION = *mut FILE_EA_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ACCESS_INFORMATION {
+STRUCT! {struct FILE_ACCESS_INFORMATION {
     AccessFlags: ACCESS_MASK,
 }}
 pub type PFILE_ACCESS_INFORMATION = *mut FILE_ACCESS_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_POSITION_INFORMATION {
+STRUCT! {struct FILE_POSITION_INFORMATION {
     CurrentByteOffset: LARGE_INTEGER,
 }}
 pub type PFILE_POSITION_INFORMATION = *mut FILE_POSITION_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MODE_INFORMATION {
+STRUCT! {struct FILE_MODE_INFORMATION {
     Mode: ULONG,
 }}
 pub type PFILE_MODE_INFORMATION = *mut FILE_MODE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ALIGNMENT_INFORMATION {
+STRUCT! {struct FILE_ALIGNMENT_INFORMATION {
     AlignmentRequirement: ULONG,
 }}
 pub type PFILE_ALIGNMENT_INFORMATION = *mut FILE_ALIGNMENT_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_NAME_INFORMATION {
+STRUCT! {struct FILE_NAME_INFORMATION {
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_NAME_INFORMATION = *mut FILE_NAME_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ALL_INFORMATION {
+STRUCT! {struct FILE_ALL_INFORMATION {
     BasicInformation: FILE_BASIC_INFORMATION,
     StandardInformation: FILE_STANDARD_INFORMATION,
     InternalInformation: FILE_INTERNAL_INFORMATION,
@@ -276,7 +276,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ALL_INFORM
     NameInformation: FILE_NAME_INFORMATION,
 }}
 pub type PFILE_ALL_INFORMATION = *mut FILE_ALL_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_NETWORK_OPEN_INFORMATION {
+STRUCT! {struct FILE_NETWORK_OPEN_INFORMATION {
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
@@ -286,16 +286,16 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_NETWORK_OP
     FileAttributes: ULONG,
 }}
 pub type PFILE_NETWORK_OPEN_INFORMATION = *mut FILE_NETWORK_OPEN_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ATTRIBUTE_TAG_INFORMATION {
+STRUCT! {struct FILE_ATTRIBUTE_TAG_INFORMATION {
     FileAttributes: ULONG,
     ReparseTag: ULONG,
 }}
 pub type PFILE_ATTRIBUTE_TAG_INFORMATION = *mut FILE_ATTRIBUTE_TAG_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ALLOCATION_INFORMATION {
+STRUCT! {struct FILE_ALLOCATION_INFORMATION {
     AllocationSize: LARGE_INTEGER,
 }}
 pub type PFILE_ALLOCATION_INFORMATION = *mut FILE_ALLOCATION_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_COMPRESSION_INFORMATION {
+STRUCT! {struct FILE_COMPRESSION_INFORMATION {
     CompressedFileSize: LARGE_INTEGER,
     CompressionFormat: USHORT,
     CompressionUnitShift: UCHAR,
@@ -304,40 +304,40 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_COMPRESSIO
     Reserved: [UCHAR; 3],
 }}
 pub type PFILE_COMPRESSION_INFORMATION = *mut FILE_COMPRESSION_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_DISPOSITION_INFORMATION {
+STRUCT! {struct FILE_DISPOSITION_INFORMATION {
     DeleteFileA: BOOLEAN,
 }}
 pub type PFILE_DISPOSITION_INFORMATION = *mut FILE_DISPOSITION_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_END_OF_FILE_INFORMATION {
+STRUCT! {struct FILE_END_OF_FILE_INFORMATION {
     EndOfFile: LARGE_INTEGER,
 }}
 pub type PFILE_END_OF_FILE_INFORMATION = *mut FILE_END_OF_FILE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_VALID_DATA_LENGTH_INFORMATION {
+STRUCT! {struct FILE_VALID_DATA_LENGTH_INFORMATION {
     ValidDataLength: LARGE_INTEGER,
 }}
 pub type PFILE_VALID_DATA_LENGTH_INFORMATION = *mut FILE_VALID_DATA_LENGTH_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_LINK_INFORMATION {
+STRUCT! {struct FILE_LINK_INFORMATION {
     ReplaceIfExists: BOOLEAN,
     RootDirectory: HANDLE,
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_LINK_INFORMATION = *mut FILE_LINK_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MOVE_CLUSTER_INFORMATION {
+STRUCT! {struct FILE_MOVE_CLUSTER_INFORMATION {
     ClusterCount: ULONG,
     RootDirectory: HANDLE,
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_MOVE_CLUSTER_INFORMATION = *mut FILE_MOVE_CLUSTER_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_RENAME_INFORMATION {
+STRUCT! {struct FILE_RENAME_INFORMATION {
     ReplaceIfExists: BOOLEAN,
     RootDirectory: HANDLE,
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_RENAME_INFORMATION = *mut FILE_RENAME_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STREAM_INFORMATION {
+STRUCT! {struct FILE_STREAM_INFORMATION {
     NextEntryOffset: ULONG,
     StreamNameLength: ULONG,
     StreamSize: LARGE_INTEGER,
@@ -345,23 +345,23 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STREAM_INF
     StreamName: [WCHAR; 1],
 }}
 pub type PFILE_STREAM_INFORMATION = *mut FILE_STREAM_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_TRACKING_INFORMATION {
+STRUCT! {struct FILE_TRACKING_INFORMATION {
     DestinationFile: HANDLE,
     ObjectInformationLength: ULONG,
     ObjectInformation: [CHAR; 1],
 }}
 pub type PFILE_TRACKING_INFORMATION = *mut FILE_TRACKING_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_COMPLETION_INFORMATION {
+STRUCT! {struct FILE_COMPLETION_INFORMATION {
     Port: HANDLE,
     Key: PVOID,
 }}
 pub type PFILE_COMPLETION_INFORMATION = *mut FILE_COMPLETION_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_INFORMATION {
+STRUCT! {struct FILE_PIPE_INFORMATION {
     ReadMode: ULONG,
     CompletionMode: ULONG,
 }}
 pub type PFILE_PIPE_INFORMATION = *mut FILE_PIPE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_LOCAL_INFORMATION {
+STRUCT! {struct FILE_PIPE_LOCAL_INFORMATION {
     NamedPipeType: ULONG,
     NamedPipeConfiguration: ULONG,
     MaximumInstances: ULONG,
@@ -374,12 +374,12 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_LOCAL
     NamedPipeEnd: ULONG,
 }}
 pub type PFILE_PIPE_LOCAL_INFORMATION = *mut FILE_PIPE_LOCAL_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_REMOTE_INFORMATION {
+STRUCT! {struct FILE_PIPE_REMOTE_INFORMATION {
     CollectDataTime: LARGE_INTEGER,
     MaximumCollectionCount: ULONG,
 }}
 pub type PFILE_PIPE_REMOTE_INFORMATION = *mut FILE_PIPE_REMOTE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MAILSLOT_QUERY_INFORMATION {
+STRUCT! {struct FILE_MAILSLOT_QUERY_INFORMATION {
     MaximumMessageSize: ULONG,
     MailslotQuota: ULONG,
     NextMessageSize: ULONG,
@@ -387,41 +387,41 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MAILSLOT_Q
     ReadTimeout: LARGE_INTEGER,
 }}
 pub type PFILE_MAILSLOT_QUERY_INFORMATION = *mut FILE_MAILSLOT_QUERY_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MAILSLOT_SET_INFORMATION {
+STRUCT! {struct FILE_MAILSLOT_SET_INFORMATION {
     ReadTimeout: PLARGE_INTEGER,
 }}
 pub type PFILE_MAILSLOT_SET_INFORMATION = *mut FILE_MAILSLOT_SET_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_REPARSE_POINT_INFORMATION {
+STRUCT! {struct FILE_REPARSE_POINT_INFORMATION {
     FileReference: LONGLONG,
     Tag: ULONG,
 }}
 pub type PFILE_REPARSE_POINT_INFORMATION = *mut FILE_REPARSE_POINT_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_LINK_ENTRY_INFORMATION {
+STRUCT! {struct FILE_LINK_ENTRY_INFORMATION {
     NextEntryOffset: ULONG,
     ParentFileId: LONGLONG,
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_LINK_ENTRY_INFORMATION = *mut FILE_LINK_ENTRY_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_LINKS_INFORMATION {
+STRUCT! {struct FILE_LINKS_INFORMATION {
     BytesNeeded: ULONG,
     EntriesReturned: ULONG,
     Entry: FILE_LINK_ENTRY_INFORMATION,
 }}
 pub type PFILE_LINKS_INFORMATION = *mut FILE_LINKS_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_NETWORK_PHYSICAL_NAME_INFORMATION {
+STRUCT! {struct FILE_NETWORK_PHYSICAL_NAME_INFORMATION {
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_NETWORK_PHYSICAL_NAME_INFORMATION = *mut FILE_NETWORK_PHYSICAL_NAME_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STANDARD_LINK_INFORMATION {
+STRUCT! {struct FILE_STANDARD_LINK_INFORMATION {
     NumberOfAccessibleLinks: ULONG,
     TotalNumberOfLinks: ULONG,
     DeletePending: BOOLEAN,
     Directory: BOOLEAN,
 }}
 pub type PFILE_STANDARD_LINK_INFORMATION = *mut FILE_STANDARD_LINK_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_SFIO_RESERVE_INFORMATION {
+STRUCT! {struct FILE_SFIO_RESERVE_INFORMATION {
     RequestsPerPeriod: ULONG,
     Period: ULONG,
     RetryFailures: BOOLEAN,
@@ -430,7 +430,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_SFIO_RESER
     NumOutstandingRequests: ULONG,
 }}
 pub type PFILE_SFIO_RESERVE_INFORMATION = *mut FILE_SFIO_RESERVE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_SFIO_VOLUME_INFORMATION {
+STRUCT! {struct FILE_SFIO_VOLUME_INFORMATION {
     MaximumRequestsPerPeriod: ULONG,
     MinimumPeriod: ULONG,
     MinimumTransferSize: ULONG,
@@ -444,11 +444,11 @@ ENUM! {enum IO_PRIORITY_HINT {
     IoPriorityCritical = 4,
     MaxIoPriorityTypes = 5,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_IO_PRIORITY_HINT_INFORMATION {
+STRUCT! {struct FILE_IO_PRIORITY_HINT_INFORMATION {
     PriorityHint: IO_PRIORITY_HINT,
 }}
 pub type PFILE_IO_PRIORITY_HINT_INFORMATION = *mut FILE_IO_PRIORITY_HINT_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_IO_PRIORITY_HINT_INFORMATION_EX {
+STRUCT! {struct FILE_IO_PRIORITY_HINT_INFORMATION_EX {
     PriorityHint: IO_PRIORITY_HINT,
     BoostOutstanding: BOOLEAN,
 }}
@@ -456,40 +456,40 @@ pub type PFILE_IO_PRIORITY_HINT_INFORMATION_EX = *mut FILE_IO_PRIORITY_HINT_INFO
 pub const FILE_SKIP_COMPLETION_PORT_ON_SUCCESS: u32 = 0x1;
 pub const FILE_SKIP_SET_EVENT_ON_HANDLE: u32 = 0x2;
 pub const FILE_SKIP_SET_USER_EVENT_ON_FAST_IO: u32 = 0x4;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_IO_COMPLETION_NOTIFICATION_INFORMATION {
+STRUCT! {struct FILE_IO_COMPLETION_NOTIFICATION_INFORMATION {
     Flags: ULONG,
 }}
 pub type PFILE_IO_COMPLETION_NOTIFICATION_INFORMATION =
     *mut FILE_IO_COMPLETION_NOTIFICATION_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PROCESS_IDS_USING_FILE_INFORMATION {
+STRUCT! {struct FILE_PROCESS_IDS_USING_FILE_INFORMATION {
     NumberOfProcessIdsInList: ULONG,
     ProcessIdList: [ULONG_PTR; 1],
 }}
 pub type PFILE_PROCESS_IDS_USING_FILE_INFORMATION = *mut FILE_PROCESS_IDS_USING_FILE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_IS_REMOTE_DEVICE_INFORMATION {
+STRUCT! {struct FILE_IS_REMOTE_DEVICE_INFORMATION {
     IsRemote: BOOLEAN,
 }}
 pub type PFILE_IS_REMOTE_DEVICE_INFORMATION = *mut FILE_IS_REMOTE_DEVICE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_NUMA_NODE_INFORMATION {
+STRUCT! {struct FILE_NUMA_NODE_INFORMATION {
     NodeNumber: USHORT,
 }}
 pub type PFILE_NUMA_NODE_INFORMATION = *mut FILE_NUMA_NODE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_IOSTATUSBLOCK_RANGE_INFORMATION {
+STRUCT! {struct FILE_IOSTATUSBLOCK_RANGE_INFORMATION {
     IoStatusBlockRange: PUCHAR,
     Length: ULONG,
 }}
 pub type PFILE_IOSTATUSBLOCK_RANGE_INFORMATION = *mut FILE_IOSTATUSBLOCK_RANGE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_REMOTE_PROTOCOL_INFORMATION_GenericReserved {
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_GenericReserved {
     Reserved: [ULONG; 8],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Server {
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Server {
     Capabilities: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Share {
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Share {
     Capabilities: ULONG,
     CachingFlags: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2 {
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2 {
     Server: FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Server,
     Share: FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Share,
 }}
@@ -497,7 +497,7 @@ UNION! {union FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific {
     Smb2: FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2,
     Reserved: [ULONG; 16],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_REMOTE_PROTOCOL_INFORMATION {
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION {
     StructureVersion: USHORT,
     StructureSize: USHORT,
     Protocol: ULONG,
@@ -511,24 +511,24 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_REMOTE_PRO
 }}
 pub type PFILE_REMOTE_PROTOCOL_INFORMATION = *mut FILE_REMOTE_PROTOCOL_INFORMATION;
 pub const CHECKSUM_ENFORCEMENT_OFF: u32 = 0x00000001;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_INTEGRITY_STREAM_INFORMATION {
+STRUCT! {struct FILE_INTEGRITY_STREAM_INFORMATION {
     ChecksumAlgorithm: USHORT,
     ChecksumChunkShift: UCHAR,
     ClusterShift: UCHAR,
     Flags: ULONG,
 }}
 pub type PFILE_INTEGRITY_STREAM_INFORMATION = *mut FILE_INTEGRITY_STREAM_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_VOLUME_NAME_INFORMATION {
+STRUCT! {struct FILE_VOLUME_NAME_INFORMATION {
     DeviceNameLength: ULONG,
     DeviceName: [WCHAR; 1],
 }}
 pub type PFILE_VOLUME_NAME_INFORMATION = *mut FILE_VOLUME_NAME_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_INFORMATION {
+STRUCT! {struct FILE_ID_INFORMATION {
     VolumeSerialNumber: ULONGLONG,
     FileId: FILE_ID_128,
 }}
 pub type PFILE_ID_INFORMATION = *mut FILE_ID_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_EXTD_DIR_INFORMATION {
+STRUCT! {struct FILE_ID_EXTD_DIR_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -545,14 +545,14 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_EXTD_DI
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_ID_EXTD_DIR_INFORMATION = *mut FILE_ID_EXTD_DIR_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_LINK_ENTRY_FULL_ID_INFORMATION {
+STRUCT! {struct FILE_LINK_ENTRY_FULL_ID_INFORMATION {
     NextEntryOffset: ULONG,
     ParentFileId: FILE_ID_128,
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_LINK_ENTRY_FULL_ID_INFORMATION = *mut FILE_LINK_ENTRY_FULL_ID_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_EXTD_BOTH_DIR_INFORMATION {
+STRUCT! {struct FILE_ID_EXTD_BOTH_DIR_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -571,7 +571,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_EXTD_BO
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_ID_EXTD_BOTH_DIR_INFORMATION = *mut FILE_ID_EXTD_BOTH_DIR_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STAT_INFORMATION {
+STRUCT! {struct FILE_STAT_INFORMATION {
     FileId: LARGE_INTEGER,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
@@ -585,7 +585,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STAT_INFOR
     EffectiveAccess: ULONG,
 }}
 pub type PFILE_STAT_INFORMATION = *mut FILE_STAT_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MEMORY_PARTITION_INFORMATION_Flags_s {
+STRUCT! {struct FILE_MEMORY_PARTITION_INFORMATION_Flags_s {
     NoCrossPartitionAccess: UCHAR,
     Spare: [UCHAR; 3],
 }}
@@ -593,12 +593,12 @@ UNION! {union FILE_MEMORY_PARTITION_INFORMATION_Flags {
     s: FILE_MEMORY_PARTITION_INFORMATION_Flags_s,
     AllFlags: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MEMORY_PARTITION_INFORMATION {
+STRUCT! {struct FILE_MEMORY_PARTITION_INFORMATION {
     OwnerPartitionHandle: HANDLE,
     Flags: FILE_MEMORY_PARTITION_INFORMATION_Flags,
 }}
 pub type PFILE_MEMORY_PARTITION_INFORMATION = *mut FILE_MEMORY_PARTITION_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STAT_LX_INFORMATION {
+STRUCT! {struct FILE_STAT_LX_INFORMATION {
     FileId: LARGE_INTEGER,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
@@ -618,11 +618,11 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_STAT_LX_IN
     LxDeviceIdMinor: ULONG,
 }}
 pub type PFILE_STAT_LX_INFORMATION = *mut FILE_STAT_LX_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_CASE_SENSITIVE_INFORMATION {
+STRUCT! {struct FILE_CASE_SENSITIVE_INFORMATION {
     Flags: ULONG,
 }}
 pub type PFILE_CASE_SENSITIVE_INFORMATION = *mut FILE_CASE_SENSITIVE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_DIRECTORY_INFORMATION {
+STRUCT! {struct FILE_DIRECTORY_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -636,7 +636,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_DIRECTORY_
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_DIRECTORY_INFORMATION = *mut FILE_DIRECTORY_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FULL_DIR_INFORMATION {
+STRUCT! {struct FILE_FULL_DIR_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -651,7 +651,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FULL_DIR_I
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_FULL_DIR_INFORMATION = *mut FILE_FULL_DIR_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_FULL_DIR_INFORMATION {
+STRUCT! {struct FILE_ID_FULL_DIR_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -667,7 +667,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_FULL_DI
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_ID_FULL_DIR_INFORMATION = *mut FILE_ID_FULL_DIR_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_BOTH_DIR_INFORMATION {
+STRUCT! {struct FILE_BOTH_DIR_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -684,7 +684,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_BOTH_DIR_I
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_BOTH_DIR_INFORMATION = *mut FILE_BOTH_DIR_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_BOTH_DIR_INFORMATION {
+STRUCT! {struct FILE_ID_BOTH_DIR_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -702,14 +702,14 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_BOTH_DI
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_ID_BOTH_DIR_INFORMATION = *mut FILE_ID_BOTH_DIR_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_NAMES_INFORMATION {
+STRUCT! {struct FILE_NAMES_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     FileNameLength: ULONG,
     FileName: [WCHAR; 1],
 }}
 pub type PFILE_NAMES_INFORMATION = *mut FILE_NAMES_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_ID_GLOBAL_TX_DIR_INFORMATION {
+STRUCT! {struct FILE_ID_GLOBAL_TX_DIR_INFORMATION {
     NextEntryOffset: ULONG,
     FileIndex: ULONG,
     CreationTime: LARGE_INTEGER,
@@ -729,7 +729,7 @@ pub type PFILE_ID_GLOBAL_TX_DIR_INFORMATION = *mut FILE_ID_GLOBAL_TX_DIR_INFORMA
 pub const FILE_ID_GLOBAL_TX_DIR_INFO_FLAG_WRITELOCKED: u32 = 0x00000001;
 pub const FILE_ID_GLOBAL_TX_DIR_INFO_FLAG_VISIBLE_TO_TX: u32 = 0x00000002;
 pub const FILE_ID_GLOBAL_TX_DIR_INFO_FLAG_VISIBLE_OUTSIDE_TX: u32 = 0x00000004;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_OBJECTID_INFORMATION_u_s {
+STRUCT! {struct FILE_OBJECTID_INFORMATION_u_s {
     BirthVolumeId: [UCHAR; 16],
     BirthObjectId: [UCHAR; 16],
     DomainId: [UCHAR; 16],
@@ -738,13 +738,13 @@ UNION! {union FILE_OBJECTID_INFORMATION_u {
     s: FILE_OBJECTID_INFORMATION_u_s,
     ExtendedInfo: [UCHAR; 48],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_OBJECTID_INFORMATION {
+STRUCT! {struct FILE_OBJECTID_INFORMATION {
     FileReference: LONGLONG,
     ObjectId: [UCHAR; 16],
     u: FILE_OBJECTID_INFORMATION_u,
 }}
 pub type PFILE_OBJECTID_INFORMATION = *mut FILE_OBJECTID_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FULL_EA_INFORMATION {
+STRUCT! {struct FILE_FULL_EA_INFORMATION {
     NextEntryOffset: ULONG,
     Flags: UCHAR,
     EaNameLength: UCHAR,
@@ -752,19 +752,19 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FULL_EA_IN
     EaName: [CHAR; 1],
 }}
 pub type PFILE_FULL_EA_INFORMATION = *mut FILE_FULL_EA_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_GET_EA_INFORMATION {
+STRUCT! {struct FILE_GET_EA_INFORMATION {
     NextEntryOffset: ULONG,
     EaNameLength: UCHAR,
     EaName: [CHAR; 1],
 }}
 pub type PFILE_GET_EA_INFORMATION = *mut FILE_GET_EA_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_GET_QUOTA_INFORMATION {
+STRUCT! {struct FILE_GET_QUOTA_INFORMATION {
     NextEntryOffset: ULONG,
     SidLength: ULONG,
     Sid: SID,
 }}
 pub type PFILE_GET_QUOTA_INFORMATION = *mut FILE_GET_QUOTA_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_QUOTA_INFORMATION {
+STRUCT! {struct FILE_QUOTA_INFORMATION {
     NextEntryOffset: ULONG,
     SidLength: ULONG,
     ChangeTime: LARGE_INTEGER,
@@ -792,12 +792,12 @@ ENUM! {enum FS_INFORMATION_CLASS {
     FileFsMaximumInformation = 15,
 }}
 pub type PFS_INFORMATION_CLASS = *mut FS_INFORMATION_CLASS;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_LABEL_INFORMATION {
+STRUCT! {struct FILE_FS_LABEL_INFORMATION {
     VolumeLabelLength: ULONG,
     VolumeLabel: [WCHAR; 1],
 }}
 pub type PFILE_FS_LABEL_INFORMATION = *mut FILE_FS_LABEL_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_VOLUME_INFORMATION {
+STRUCT! {struct FILE_FS_VOLUME_INFORMATION {
     VolumeCreationTime: LARGE_INTEGER,
     VolumeSerialNumber: ULONG,
     VolumeLabelLength: ULONG,
@@ -805,14 +805,14 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_VOLUME_
     VolumeLabel: [WCHAR; 1],
 }}
 pub type PFILE_FS_VOLUME_INFORMATION = *mut FILE_FS_VOLUME_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_SIZE_INFORMATION {
+STRUCT! {struct FILE_FS_SIZE_INFORMATION {
     TotalAllocationUnits: LARGE_INTEGER,
     AvailableAllocationUnits: LARGE_INTEGER,
     SectorsPerAllocationUnit: ULONG,
     BytesPerSector: ULONG,
 }}
 pub type PFILE_FS_SIZE_INFORMATION = *mut FILE_FS_SIZE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_CONTROL_INFORMATION {
+STRUCT! {struct FILE_FS_CONTROL_INFORMATION {
     FreeSpaceStartFiltering: LARGE_INTEGER,
     FreeSpaceThreshold: LARGE_INTEGER,
     FreeSpaceStopFiltering: LARGE_INTEGER,
@@ -821,7 +821,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_CONTROL
     FileSystemControlFlags: ULONG,
 }}
 pub type PFILE_FS_CONTROL_INFORMATION = *mut FILE_FS_CONTROL_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_FULL_SIZE_INFORMATION {
+STRUCT! {struct FILE_FS_FULL_SIZE_INFORMATION {
     TotalAllocationUnits: LARGE_INTEGER,
     CallerAvailableAllocationUnits: LARGE_INTEGER,
     ActualAvailableAllocationUnits: LARGE_INTEGER,
@@ -829,37 +829,37 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_FULL_SI
     BytesPerSector: ULONG,
 }}
 pub type PFILE_FS_FULL_SIZE_INFORMATION = *mut FILE_FS_FULL_SIZE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_OBJECTID_INFORMATION {
+STRUCT! {struct FILE_FS_OBJECTID_INFORMATION {
     ObjectId: [UCHAR; 16],
     ExtendedInfo: [UCHAR; 48],
 }}
 pub type PFILE_FS_OBJECTID_INFORMATION = *mut FILE_FS_OBJECTID_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_DEVICE_INFORMATION {
+STRUCT! {struct FILE_FS_DEVICE_INFORMATION {
     DeviceType: DWORD,
     Characteristics: ULONG,
 }}
 pub type PFILE_FS_DEVICE_INFORMATION = *mut FILE_FS_DEVICE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_ATTRIBUTE_INFORMATION {
+STRUCT! {struct FILE_FS_ATTRIBUTE_INFORMATION {
     FileSystemAttributes: ULONG,
     MaximumComponentNameLength: LONG,
     FileSystemNameLength: ULONG,
     FileSystemName: [WCHAR; 1],
 }}
 pub type PFILE_FS_ATTRIBUTE_INFORMATION = *mut FILE_FS_ATTRIBUTE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_DRIVER_PATH_INFORMATION {
+STRUCT! {struct FILE_FS_DRIVER_PATH_INFORMATION {
     DriverInPath: BOOLEAN,
     DriverNameLength: ULONG,
     DriverName: [WCHAR; 1],
 }}
 pub type PFILE_FS_DRIVER_PATH_INFORMATION = *mut FILE_FS_DRIVER_PATH_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_VOLUME_FLAGS_INFORMATION {
+STRUCT! {struct FILE_FS_VOLUME_FLAGS_INFORMATION {
     Flags: ULONG,
 }}
 pub type PFILE_FS_VOLUME_FLAGS_INFORMATION = *mut FILE_FS_VOLUME_FLAGS_INFORMATION;
 pub const SSINFO_FLAGS_ALIGNED_DEVICE: u32 = 0x00000001;
 pub const SSINFO_FLAGS_PARTITION_ALIGNED_ON_DEVICE: u32 = 0x00000002;
 pub const SSINFO_OFFSET_UNKNOWN: u32 = 0xffffffff;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_SECTOR_SIZE_INFORMATION {
+STRUCT! {struct FILE_FS_SECTOR_SIZE_INFORMATION {
     LogicalBytesPerSector: ULONG,
     PhysicalBytesPerSectorForAtomicity: ULONG,
     PhysicalBytesPerSectorForPerformance: ULONG,
@@ -869,17 +869,17 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_SECTOR_
     ByteOffsetForPartitionAlignment: ULONG,
 }}
 pub type PFILE_FS_SECTOR_SIZE_INFORMATION = *mut FILE_FS_SECTOR_SIZE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_DATA_COPY_INFORMATION {
+STRUCT! {struct FILE_FS_DATA_COPY_INFORMATION {
     NumberOfCopies: ULONG,
 }}
 pub type PFILE_FS_DATA_COPY_INFORMATION = *mut FILE_FS_DATA_COPY_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_METADATA_SIZE_INFORMATION {
+STRUCT! {struct FILE_FS_METADATA_SIZE_INFORMATION {
     TotalMetadataAllocationUnits: LARGE_INTEGER,
     SectorsPerAllocationUnit: ULONG,
     BytesPerSector: ULONG,
 }}
 pub type PFILE_FS_METADATA_SIZE_INFORMATION = *mut FILE_FS_METADATA_SIZE_INFORMATION;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_FS_FULL_SIZE_INFORMATION_EX {
+STRUCT! {struct FILE_FS_FULL_SIZE_INFORMATION_EX {
     ActualTotalAllocationUnits: ULONGLONG,
     ActualAvailableAllocationUnits: ULONGLONG,
     ActualPoolUnavailableAllocationUnits: ULONGLONG,
@@ -1170,7 +1170,7 @@ pub const IO_COMPLETION_QUERY_STATE: u32 = 0x0001;
 ENUM! {enum IO_COMPLETION_INFORMATION_CLASS {
     IoCompletionBasicInformation = 0,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct IO_COMPLETION_BASIC_INFORMATION {
+STRUCT! {struct IO_COMPLETION_BASIC_INFORMATION {
     Depth: LONG,
 }}
 pub type PIO_COMPLETION_BASIC_INFORMATION = *mut IO_COMPLETION_BASIC_INFORMATION;
@@ -1332,7 +1332,7 @@ ENUM! {enum BUS_DATA_TYPE {
 }}
 pub type PBUS_DATA_TYPE = *mut BUS_DATA_TYPE;
 pub const SYMLINK_FLAG_RELATIVE: u32 = 1;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct REPARSE_DATA_BUFFER_u_SymbolicLinkReparseBuffer {
+STRUCT! {struct REPARSE_DATA_BUFFER_u_SymbolicLinkReparseBuffer {
     SubstituteNameOffset: USHORT,
     SubstituteNameLength: USHORT,
     PrintNameOffset: USHORT,
@@ -1340,14 +1340,14 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct REPARSE_DATA_BU
     Flags: ULONG,
     PathBuffer: [WCHAR; 1],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct REPARSE_DATA_BUFFER_u_MountPointReparseBuffer {
+STRUCT! {struct REPARSE_DATA_BUFFER_u_MountPointReparseBuffer {
     SubstituteNameOffset: USHORT,
     SubstituteNameLength: USHORT,
     PrintNameOffset: USHORT,
     PrintNameLength: USHORT,
     PathBuffer: [WCHAR; 1],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct REPARSE_DATA_BUFFER_u_GenericReparseBuffer {
+STRUCT! {struct REPARSE_DATA_BUFFER_u_GenericReparseBuffer {
     DataBuffer: [UCHAR; 1],
 }}
 UNION! {union REPARSE_DATA_BUFFER_u {
@@ -1355,7 +1355,7 @@ UNION! {union REPARSE_DATA_BUFFER_u {
     MountPointReparseBuffer: REPARSE_DATA_BUFFER_u_MountPointReparseBuffer,
     GenericReparseBuffer: REPARSE_DATA_BUFFER_u_GenericReparseBuffer,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct REPARSE_DATA_BUFFER {
+STRUCT! {struct REPARSE_DATA_BUFFER {
     ReparseTag: ULONG,
     ReparseDataLength: USHORT,
     Reserved: USHORT,
@@ -1431,12 +1431,12 @@ pub const FSTL_PIPE_INTERNAL_READ_OVFLOW: u32 = CTL_CODE(
 );
 pub const FILE_PIPE_READ_DATA: u32 = 0x00000000;
 pub const FILE_PIPE_WRITE_SPACE: u32 = 0x00000001;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_ASSIGN_EVENT_BUFFER {
+STRUCT! {struct FILE_PIPE_ASSIGN_EVENT_BUFFER {
     EventHandle: HANDLE,
     KeyValue: ULONG,
 }}
 pub type PFILE_PIPE_ASSIGN_EVENT_BUFFER = *mut FILE_PIPE_ASSIGN_EVENT_BUFFER;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_PEEK_BUFFER {
+STRUCT! {struct FILE_PIPE_PEEK_BUFFER {
     NamedPipeState: ULONG,
     ReadDataAvailable: ULONG,
     NumberOfMessages: ULONG,
@@ -1444,7 +1444,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_PEEK_
     Data: [CHAR; 1],
 }}
 pub type PFILE_PIPE_PEEK_BUFFER = *mut FILE_PIPE_PEEK_BUFFER;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_EVENT_BUFFER {
+STRUCT! {struct FILE_PIPE_EVENT_BUFFER {
     NamedPipeState: ULONG,
     EntryType: ULONG,
     ByteCount: ULONG,
@@ -1452,20 +1452,20 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_EVENT
     NumberRequests: ULONG,
 }}
 pub type PFILE_PIPE_EVENT_BUFFER = *mut FILE_PIPE_EVENT_BUFFER;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_WAIT_FOR_BUFFER {
+STRUCT! {struct FILE_PIPE_WAIT_FOR_BUFFER {
     Timeout: LARGE_INTEGER,
     NameLength: ULONG,
     TimeoutSpecified: BOOLEAN,
     Name: [WCHAR; 1],
 }}
 pub type PFILE_PIPE_WAIT_FOR_BUFFER = *mut FILE_PIPE_WAIT_FOR_BUFFER;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_CLIENT_PROCESS_BUFFER {
+STRUCT! {struct FILE_PIPE_CLIENT_PROCESS_BUFFER {
     ClientSession: PVOID,
     ClientProcess: PVOID,
 }}
 pub type PFILE_PIPE_CLIENT_PROCESS_BUFFER = *mut FILE_PIPE_CLIENT_PROCESS_BUFFER;
 pub const FILE_PIPE_COMPUTER_NAME_LENGTH: usize = 15;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_PIPE_CLIENT_PROCESS_BUFFER_EX {
+STRUCT! {struct FILE_PIPE_CLIENT_PROCESS_BUFFER_EX {
     ClientSession: PVOID,
     ClientProcess: PVOID,
     ClientComputerNameLength: USHORT,
@@ -1476,7 +1476,7 @@ pub const MAILSLOT_CLASS_FIRSTCLASS: u32 = 1;
 pub const MAILSLOT_CLASS_SECONDCLASS: u32 = 2;
 pub const FSCTL_MAILSLOT_PEEK: u32 =
     CTL_CODE(FILE_DEVICE_MAILSLOT, 0, METHOD_NEITHER, FILE_READ_DATA);
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct FILE_MAILSLOT_PEEK_BUFFER {
+STRUCT! {struct FILE_MAILSLOT_PEEK_BUFFER {
     ReadDataAvailable: ULONG,
     NumberOfMessages: ULONG,
     MessageLength: ULONG,

@@ -23,7 +23,6 @@ features = ["cfg", "evntrace", "in6addr", "inaddr", "minwinbase", "ntsecapi", "w
 
 [features]
 aggressive-inline = []
-logging = ["winapi/impl-debug"]
 default = ["user"]
 func-types = []
 impl-default = ["winapi/impl-default"]

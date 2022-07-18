@@ -104,7 +104,7 @@ UNION! {union GDI_HANDLE_ENTRY_u {
     Object: PVOID,
     NextFree: PVOID,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct GDI_HANDLE_ENTRY_Owner_s {
+STRUCT! {struct GDI_HANDLE_ENTRY_Owner_s {
     ProcessId: USHORT,
     Bitfields: USHORT,
 }}
@@ -116,7 +116,7 @@ UNION! {union GDI_HANDLE_ENTRY_Owner {
     s: GDI_HANDLE_ENTRY_Owner_s,
     Value: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct GDI_HANDLE_ENTRY {
+STRUCT! {struct GDI_HANDLE_ENTRY {
     u: GDI_HANDLE_ENTRY_u,
     Owner: GDI_HANDLE_ENTRY_Owner,
     Unique: USHORT,
@@ -125,7 +125,7 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct GDI_HANDLE_ENTR
     UserPointer: PVOID,
 }}
 pub type PGDI_HANDLE_ENTRY = *mut GDI_HANDLE_ENTRY;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct GDI_SHARED_MEMORY {
+STRUCT! {struct GDI_SHARED_MEMORY {
     Handles: [GDI_HANDLE_ENTRY; GDI_MAX_HANDLE_COUNT],
 }}
 pub type PGDI_SHARED_MEMORY = *mut GDI_SHARED_MEMORY;

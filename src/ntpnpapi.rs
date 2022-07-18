@@ -15,35 +15,35 @@ ENUM! {enum PLUGPLAY_EVENT_CATEGORY {
     MaxPlugEventCategory = 10,
 }}
 pub type PPLUGPLAY_EVENT_CATEGORY = *mut PLUGPLAY_EVENT_CATEGORY;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_DeviceClass {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_DeviceClass {
     ClassGuid: GUID,
     SymbolicLinkName: [WCHAR; 1],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_TargetDevice {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_TargetDevice {
     DeviceIds: [WCHAR; 1],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_InstallDevice {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_InstallDevice {
     DeviceId: [WCHAR; 1],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_CustomNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_CustomNotification {
     NotificationStructure: PVOID,
     DeviceIds: [WCHAR; 1],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_ProfileNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_ProfileNotification {
     Notification: PVOID,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_PowerNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_PowerNotification {
     NotificationCode: ULONG,
     NotificationData: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_VetoNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_VetoNotification {
     VetoType: PNP_VETO_TYPE,
     DeviceIdVetoNameBuffer: [WCHAR; 1],
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_BlockedDriverNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_BlockedDriverNotification {
     BlockedDriverGuid: GUID,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK_u_InvalidIDNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_InvalidIDNotification {
     ParentId: [WCHAR; 1],
 }}
 UNION! {union PLUGPLAY_EVENT_BLOCK_u {
@@ -57,7 +57,7 @@ UNION! {union PLUGPLAY_EVENT_BLOCK_u {
     BlockedDriverNotification: PLUGPLAY_EVENT_BLOCK_u_BlockedDriverNotification,
     InvalidIDNotification: PLUGPLAY_EVENT_BLOCK_u_InvalidIDNotification,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PLUGPLAY_EVENT_BLOCK {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK {
     EventGuid: GUID,
     EventCategory: PLUGPLAY_EVENT_CATEGORY,
     Result: PULONG,

@@ -34,7 +34,7 @@ ENUM! {enum WOW64_SHARED_INFORMATION {
     SharedNtdll32LdrSystemDllInitBlock = 10,
     Wow64SharedPageEntriesCount = 11,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_BALANCED_NODE32_u_s {
+STRUCT! {struct RTL_BALANCED_NODE32_u_s {
     Left: ULONG, // WOW64_POINTER
     Right: ULONG, // WOW64_POINTER
 }}
@@ -42,17 +42,17 @@ UNION! {union RTL_BALANCED_NODE32_u {
     Children: [ULONG; 2], // WOW64_POINTER
     s: RTL_BALANCED_NODE32_u_s,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_BALANCED_NODE32 {
+STRUCT! {struct RTL_BALANCED_NODE32 {
     u: RTL_BALANCED_NODE32_u,
     ParentValue: ULONG,
 }}
 pub type PRTL_BALANCED_NODE32 = *mut RTL_BALANCED_NODE32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_RB_TREE32 {
+STRUCT! {struct RTL_RB_TREE32 {
     Root: ULONG, // WOW64_POINTER
     Min: ULONG, // WOW64_POINTER
 }}
 pub type PRTL_RB_TREE32 = *mut RTL_RB_TREE32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PEB_LDR_DATA32 {
+STRUCT! {struct PEB_LDR_DATA32 {
     Length: ULONG,
     Initialized: BOOLEAN,
     SsHandle: ULONG,
@@ -64,12 +64,12 @@ STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PEB_LDR_DATA32 
     ShutdownThreadId: ULONG,
 }}
 pub type PPEB_LDR_DATA32 = *mut PEB_LDR_DATA32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_SERVICE_TAG_RECORD32 {
+STRUCT! {struct LDR_SERVICE_TAG_RECORD32 {
     Next: ULONG,
     ServiceTag: ULONG,
 }}
 pub type PLDR_SERVICE_TAG_RECORD32 = *mut LDR_SERVICE_TAG_RECORD32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDRP_CSLIST32 {
+STRUCT! {struct LDRP_CSLIST32 {
     Tail: ULONG, // WOW64_POINTER
 }}
 pub type PLDRP_CSLIST32 = *mut LDRP_CSLIST32;
@@ -77,7 +77,7 @@ UNION! {union LDR_DDAG_NODE32_u {
     Dependencies: LDRP_CSLIST32,
     RemovalLink: SINGLE_LIST_ENTRY32,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DDAG_NODE32 {
+STRUCT! {struct LDR_DDAG_NODE32 {
     Modules: LIST_ENTRY32,
     ServiceTagList: ULONG, // WOW64_POINTER
     LoadCount: ULONG,
@@ -101,7 +101,7 @@ UNION! {union LDR_DATA_TABLE_ENTRY32_u2 {
     FlagGroup: [UCHAR; 4],
     Flags: ULONG,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_DATA_TABLE_ENTRY32 {
+STRUCT! {struct LDR_DATA_TABLE_ENTRY32 {
     InLoadOrderLinks: LIST_ENTRY32,
     InMemoryOrderLinks: LIST_ENTRY32,
     u1: LDR_DATA_TABLE_ENTRY32_u1,
@@ -163,19 +163,19 @@ BITFIELD! {unsafe LDR_DATA_TABLE_ENTRY32_u2 Flags: ULONG [
     CompatDatabaseProcessed set_CompatDatabaseProcessed[31..32],
 ]}
 pub type PLDR_DATA_TABLE_ENTRY32 = *mut LDR_DATA_TABLE_ENTRY32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct CURDIR32 {
+STRUCT! {struct CURDIR32 {
     DosPath: UNICODE_STRING32,
     Handle: ULONG, // WOW64_POINTER
 }}
 pub type PCURDIR32 = *mut CURDIR32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_DRIVE_LETTER_CURDIR32 {
+STRUCT! {struct RTL_DRIVE_LETTER_CURDIR32 {
     Flags: USHORT,
     Length: USHORT,
     TimeStamp: ULONG,
     DosPath: STRING32,
 }}
 pub type PRTL_DRIVE_LETTER_CURDIR32 = *mut RTL_DRIVE_LETTER_CURDIR32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_USER_PROCESS_PARAMETERS32 {
+STRUCT! {struct RTL_USER_PROCESS_PARAMETERS32 {
     MaximumLength: ULONG,
     Length: ULONG,
     Flags: ULONG,
@@ -215,7 +215,7 @@ UNION! {union PEB32_u {
     KernelCallbackTable: ULONG, // WOW64_POINTER
     UserSharedInfoPtr: ULONG, // WOW64_POINTER
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PEB32 {
+STRUCT! {struct PEB32 {
     InheritedAddressSpace: BOOLEAN,
     ReadImageFileExecOptions: BOOLEAN,
     BeingDebugged: BOOLEAN,
@@ -327,13 +327,13 @@ BITFIELD! {PEB32 TracingFlags: ULONG [
 ]}
 pub type PPEB32 = *mut PEB32;
 pub const GDI_BATCH_BUFFER_SIZE: usize = 310;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct GDI_TEB_BATCH32 {
+STRUCT! {struct GDI_TEB_BATCH32 {
     Offset: ULONG,
     HDC: ULONG,
     Buffer: [ULONG; GDI_BATCH_BUFFER_SIZE],
 }}
 pub type PGDI_TEB_BATCH32 = *mut GDI_TEB_BATCH32;
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct TEB32_u_s {
+STRUCT! {struct TEB32_u_s {
     ReservedPad0: UCHAR,
     ReservedPad1: UCHAR,
     ReservedPad2: UCHAR,
@@ -344,7 +344,7 @@ UNION! {union TEB32_u {
     IdealProcessorValue: ULONG,
     s: TEB32_u_s,
 }}
-STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct TEB32 {
+STRUCT! {struct TEB32 {
     NtTib: NT_TIB32,
     EnvironmentPointer: ULONG, // WOW64_POINTER
     ClientId: CLIENT_ID32,
