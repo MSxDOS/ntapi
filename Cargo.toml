@@ -18,12 +18,13 @@ features = ["beta"]
 targets = ["aarch64-pc-windows-msvc", "i686-pc-windows-msvc", "x86_64-pc-windows-msvc"]
 
 [dependencies.winapi]
-version = "0.3.9"
+# version = "0.3.9"
 features = ["cfg", "evntrace", "in6addr", "inaddr", "minwinbase", "ntsecapi", "windef", "winioctl"]
+git = "https://github.com/Ostoic/winapi-rs"
 
 [features]
 aggressive-inline = []
-sym = ["winapi/impl-debug"]
+logging = ["winapi/impl-debug"]
 default = ["user"]
 func-types = []
 impl-default = ["winapi/impl-default"]
