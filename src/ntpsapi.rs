@@ -23,8 +23,7 @@ use winapi::um::winnt::{
 use winapi::{
     ctypes::c_void,
     shared::{
-        minwindef::DWORD,
-        ntdef::{LPWSTR, SHORT},
+        ntdef::SHORT,
     },
 };
 pub const GDI_HANDLE_BUFFER_SIZE32: usize = 34;
