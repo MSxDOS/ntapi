@@ -80,7 +80,7 @@ UNION! {union MEM_EXTENDED_PARAMETER_u {
     Handle: HANDLE,
     ULong: DWORD,
 }}
-STRUCT! {#[debug] struct MEM_EXTENDED_PARAMETER {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct MEM_EXTENDED_PARAMETER {
     BitFields: ULONG64,
     u: MEM_EXTENDED_PARAMETER_u,
 }}

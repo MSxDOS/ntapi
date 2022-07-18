@@ -23,14 +23,14 @@ ENUM! {enum KEY_INFORMATION_CLASS {
     KeyLayerInformation = 9,
     MaxKeyInfoClass = 10,
 }}
-STRUCT! {#[debug] struct KEY_BASIC_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_BASIC_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     NameLength: ULONG,
     Name: [WCHAR; 1],
 }}
 pub type PKEY_BASIC_INFORMATION = *mut KEY_BASIC_INFORMATION;
-STRUCT! {#[debug] struct KEY_NODE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_NODE_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     ClassOffset: ULONG,
@@ -39,7 +39,7 @@ STRUCT! {#[debug] struct KEY_NODE_INFORMATION {
     Name: [WCHAR; 1],
 }}
 pub type PKEY_NODE_INFORMATION = *mut KEY_NODE_INFORMATION;
-STRUCT! {#[debug] struct KEY_FULL_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_FULL_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     ClassOffset: ULONG,
@@ -53,12 +53,12 @@ STRUCT! {#[debug] struct KEY_FULL_INFORMATION {
     Class: [WCHAR; 1],
 }}
 pub type PKEY_FULL_INFORMATION = *mut KEY_FULL_INFORMATION;
-STRUCT! {#[debug] struct KEY_NAME_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_NAME_INFORMATION {
     NameLength: ULONG,
     Name: [WCHAR; 1],
 }}
 pub type PKEY_NAME_INFORMATION = *mut KEY_NAME_INFORMATION;
-STRUCT! {#[debug] struct KEY_CACHED_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_CACHED_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
     TitleIndex: ULONG,
     SubKeys: ULONG,
@@ -70,11 +70,11 @@ STRUCT! {#[debug] struct KEY_CACHED_INFORMATION {
     Name: [WCHAR; 1],
 }}
 pub type PKEY_CACHED_INFORMATION = *mut KEY_CACHED_INFORMATION;
-STRUCT! {#[debug] struct KEY_FLAGS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_FLAGS_INFORMATION {
     UserFlags: ULONG,
 }}
 pub type PKEY_FLAGS_INFORMATION = *mut KEY_FLAGS_INFORMATION;
-STRUCT! {#[debug] struct KEY_VIRTUALIZATION_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_VIRTUALIZATION_INFORMATION {
     Bitfields: ULONG,
 }}
 BITFIELD! {KEY_VIRTUALIZATION_INFORMATION Bitfields: ULONG [
@@ -86,7 +86,7 @@ BITFIELD! {KEY_VIRTUALIZATION_INFORMATION Bitfields: ULONG [
     Reserved set_Reserved[5..32],
 ]}
 pub type PKEY_VIRTUALIZATION_INFORMATION = *mut KEY_VIRTUALIZATION_INFORMATION;
-STRUCT! {#[debug] struct KEY_TRUST_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_TRUST_INFORMATION {
     Bitfields: ULONG,
 }}
 BITFIELD! {KEY_TRUST_INFORMATION Bitfields: ULONG [
@@ -94,7 +94,7 @@ BITFIELD! {KEY_TRUST_INFORMATION Bitfields: ULONG [
     Reserved set_Reserved[1..32],
 ]}
 pub type PKEY_TRUST_INFORMATION = *mut KEY_TRUST_INFORMATION;
-STRUCT! {#[debug] struct KEY_LAYER_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_LAYER_INFORMATION {
     IsTombstone: ULONG,
     IsSupersedeLocal: ULONG,
     IsSupersedeTree: ULONG,
@@ -112,19 +112,19 @@ ENUM! {enum KEY_SET_INFORMATION_CLASS {
     KeySetLayerInformation = 6,
     MaxKeySetInfoClass = 7,
 }}
-STRUCT! {#[debug] struct KEY_WRITE_TIME_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_WRITE_TIME_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
 }}
 pub type PKEY_WRITE_TIME_INFORMATION = *mut KEY_WRITE_TIME_INFORMATION;
-STRUCT! {#[debug] struct KEY_WOW64_FLAGS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_WOW64_FLAGS_INFORMATION {
     UserFlags: ULONG,
 }}
 pub type PKEY_WOW64_FLAGS_INFORMATION = *mut KEY_WOW64_FLAGS_INFORMATION;
-STRUCT! {#[debug] struct KEY_HANDLE_TAGS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_HANDLE_TAGS_INFORMATION {
     HandleTags: ULONG,
 }}
 pub type PKEY_HANDLE_TAGS_INFORMATION = *mut KEY_HANDLE_TAGS_INFORMATION;
-STRUCT! {#[debug] struct KEY_SET_LAYER_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_SET_LAYER_INFORMATION {
     Bitfields: ULONG,
 }}
 BITFIELD! {KEY_SET_LAYER_INFORMATION Bitfields: ULONG [
@@ -135,11 +135,11 @@ BITFIELD! {KEY_SET_LAYER_INFORMATION Bitfields: ULONG [
     Reserved set_Reserved[4..32],
 ]}
 pub type PKEY_SET_LAYER_INFORMATION = *mut KEY_SET_LAYER_INFORMATION;
-STRUCT! {#[debug] struct KEY_CONTROL_FLAGS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_CONTROL_FLAGS_INFORMATION {
     ControlFlags: ULONG,
 }}
 pub type PKEY_CONTROL_FLAGS_INFORMATION = *mut KEY_CONTROL_FLAGS_INFORMATION;
-STRUCT! {#[debug] struct KEY_SET_VIRTUALIZATION_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_SET_VIRTUALIZATION_INFORMATION {
     HandleTags: ULONG,
 }}
 BITFIELD! {KEY_SET_VIRTUALIZATION_INFORMATION HandleTags: ULONG [
@@ -158,14 +158,14 @@ ENUM! {enum KEY_VALUE_INFORMATION_CLASS {
     KeyValueLayerInformation = 5,
     MaxKeyValueInfoClass = 6,
 }}
-STRUCT! {#[debug] struct KEY_VALUE_BASIC_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_VALUE_BASIC_INFORMATION {
     TitleIndex: ULONG,
     Type: ULONG,
     NameLength: ULONG,
     Name: [WCHAR; 1],
 }}
 pub type PKEY_VALUE_BASIC_INFORMATION = *mut KEY_VALUE_BASIC_INFORMATION;
-STRUCT! {#[debug] struct KEY_VALUE_FULL_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_VALUE_FULL_INFORMATION {
     TitleIndex: ULONG,
     Type: ULONG,
     DataOffset: ULONG,
@@ -174,25 +174,25 @@ STRUCT! {#[debug] struct KEY_VALUE_FULL_INFORMATION {
     Name: [WCHAR; 1],
 }}
 pub type PKEY_VALUE_FULL_INFORMATION = *mut KEY_VALUE_FULL_INFORMATION;
-STRUCT! {#[debug] struct KEY_VALUE_PARTIAL_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_VALUE_PARTIAL_INFORMATION {
     TitleIndex: ULONG,
     Type: ULONG,
     DataLength: ULONG,
     Data: [UCHAR; 1],
 }}
 pub type PKEY_VALUE_PARTIAL_INFORMATION = *mut KEY_VALUE_PARTIAL_INFORMATION;
-STRUCT! {#[debug] struct KEY_VALUE_PARTIAL_INFORMATION_ALIGN64 {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_VALUE_PARTIAL_INFORMATION_ALIGN64 {
     Type: ULONG,
     DataLength: ULONG,
     Data: [UCHAR; 1],
 }}
 pub type PKEY_VALUE_PARTIAL_INFORMATION_ALIGN64 = *mut KEY_VALUE_PARTIAL_INFORMATION_ALIGN64;
-STRUCT! {#[debug] struct KEY_VALUE_LAYER_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_VALUE_LAYER_INFORMATION {
     IsTombstone: ULONG,
     Reserved: ULONG,
 }}
 pub type PKEY_VALUE_LAYER_INFORMATION = *mut KEY_VALUE_LAYER_INFORMATION;
-STRUCT! {#[debug] struct KEY_VALUE_ENTRY {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_VALUE_ENTRY {
     ValueName: PUNICODE_STRING,
     DataLength: ULONG,
     DataOffset: ULONG,
@@ -204,19 +204,19 @@ ENUM! {enum REG_ACTION {
     KeyRemoved = 1,
     KeyModified = 2,
 }}
-STRUCT! {#[debug] struct REG_NOTIFY_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct REG_NOTIFY_INFORMATION {
     NextEntryOffset: ULONG,
     Action: REG_ACTION,
     KeyLength: ULONG,
     Key: [WCHAR; 1],
 }}
 pub type PREG_NOTIFY_INFORMATION = *mut REG_NOTIFY_INFORMATION;
-STRUCT! {#[debug] struct KEY_PID_ARRAY {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_PID_ARRAY {
     PID: HANDLE,
     KeyName: UNICODE_STRING,
 }}
 pub type PKEY_PID_ARRAY = *mut KEY_PID_ARRAY;
-STRUCT! {#[debug] struct KEY_OPEN_SUBKEYS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KEY_OPEN_SUBKEYS_INFORMATION {
     Count: ULONG,
     KeyArray: [KEY_PID_ARRAY; 1],
 }}

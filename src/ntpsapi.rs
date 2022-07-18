@@ -36,7 +36,7 @@ pub type GDI_HANDLE_BUFFER = [ULONG; GDI_HANDLE_BUFFER_SIZE];
 pub type GDI_HANDLE_BUFFER32 = [ULONG; GDI_HANDLE_BUFFER_SIZE32];
 pub type GDI_HANDLE_BUFFER64 = [ULONG; GDI_HANDLE_BUFFER_SIZE];
 pub const TLS_EXPANSION_SLOTS: usize = 1024;
-STRUCT! {#[debug] struct LDR_MODULE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct LDR_MODULE {
     InLoadOrderModuleList: LIST_ENTRY,
     InMemoryOrderModuleList: LIST_ENTRY,
     InInitializationOrderModuleList: LIST_ENTRY,
@@ -52,7 +52,7 @@ STRUCT! {#[debug] struct LDR_MODULE {
     TimeDateStamp: ULONG,
 }}
 pub type PLDR_MODULE = *mut LDR_MODULE;
-STRUCT! {#[debug] struct PEB_LDR_DATA {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PEB_LDR_DATA {
     Length: ULONG,
     Initialized: BOOLEAN,
     SsHandle: HANDLE,
@@ -64,18 +64,18 @@ STRUCT! {#[debug] struct PEB_LDR_DATA {
     ShutdownThreadId: HANDLE,
 }}
 pub type PPEB_LDR_DATA = *mut PEB_LDR_DATA;
-STRUCT! {#[debug] struct INITIAL_TEB_OldInitialTeb {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct INITIAL_TEB_OldInitialTeb {
     OldStackBase: PVOID,
     OldStackLimit: PVOID,
 }}
-STRUCT! {#[debug] struct INITIAL_TEB {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct INITIAL_TEB {
     OldInitialTeb: INITIAL_TEB_OldInitialTeb,
     StackBase: PVOID,
     StackLimit: PVOID,
     StackAllocationBase: PVOID,
 }}
 pub type PINITIAL_TEB = *mut INITIAL_TEB;
-STRUCT! {#[debug] struct WOW64_PROCESS {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct WOW64_PROCESS {
     Wow64: PVOID,
 }}
 pub type PWOW64_PROCESS = *mut WOW64_PROCESS;
@@ -234,11 +234,11 @@ ENUM! {enum THREADINFOCLASS {
     ThreadWorkloadClass = 50,
     MaxThreadInfoClass = 51,
 }}
-STRUCT! {#[debug] struct PAGE_PRIORITY_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PAGE_PRIORITY_INFORMATION {
     PagePriority: ULONG,
 }}
 pub type PPAGE_PRIORITY_INFORMATION = *mut PAGE_PRIORITY_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_BASIC_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_BASIC_INFORMATION {
     ExitStatus: NTSTATUS,
     PebBaseAddress: PPEB,
     AffinityMask: ULONG_PTR,
@@ -247,7 +247,7 @@ STRUCT! {#[debug] struct PROCESS_BASIC_INFORMATION {
     InheritedFromUniqueProcessId: HANDLE,
 }}
 pub type PPROCESS_BASIC_INFORMATION = *mut PROCESS_BASIC_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_EXTENDED_BASIC_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_EXTENDED_BASIC_INFORMATION {
     Size: SIZE_T,
     BasicInfo: PROCESS_BASIC_INFORMATION,
     Flags: ULONG,
@@ -265,7 +265,7 @@ BITFIELD! {PROCESS_EXTENDED_BASIC_INFORMATION Flags: ULONG [
     SpareBits set_SpareBits[9..32],
 ]}
 pub type PPROCESS_EXTENDED_BASIC_INFORMATION = *mut PROCESS_EXTENDED_BASIC_INFORMATION;
-STRUCT! {#[debug] struct VM_COUNTERS {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct VM_COUNTERS {
     PeakVirtualSize: SIZE_T,
     VirtualSize: SIZE_T,
     PageFaultCount: ULONG,
@@ -279,7 +279,7 @@ STRUCT! {#[debug] struct VM_COUNTERS {
     PeakPagefileUsage: SIZE_T,
 }}
 pub type PVM_COUNTERS = *mut VM_COUNTERS;
-STRUCT! {#[debug] struct VM_COUNTERS_EX {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct VM_COUNTERS_EX {
     PeakVirtualSize: SIZE_T,
     VirtualSize: SIZE_T,
     PageFaultCount: ULONG,
@@ -294,20 +294,20 @@ STRUCT! {#[debug] struct VM_COUNTERS_EX {
     PrivateUsage: SIZE_T,
 }}
 pub type PVM_COUNTERS_EX = *mut VM_COUNTERS_EX;
-STRUCT! {#[debug] struct VM_COUNTERS_EX2 {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct VM_COUNTERS_EX2 {
     CountersEx: VM_COUNTERS_EX,
     PrivateWorkingSetSize: SIZE_T,
     SharedCommitUsage: SIZE_T,
 }}
 pub type PVM_COUNTERS_EX2 = *mut VM_COUNTERS_EX2;
-STRUCT! {#[debug] struct KERNEL_USER_TIMES {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct KERNEL_USER_TIMES {
     CreateTime: LARGE_INTEGER,
     ExitTime: LARGE_INTEGER,
     KernelTime: LARGE_INTEGER,
     UserTime: LARGE_INTEGER,
 }}
 pub type PKERNEL_USER_TIMES = *mut KERNEL_USER_TIMES;
-STRUCT! {#[debug] struct POOLED_USAGE_AND_LIMITS {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct POOLED_USAGE_AND_LIMITS {
     PeakPagedPoolUsage: SIZE_T,
     PagedPoolUsage: SIZE_T,
     PagedPoolLimit: SIZE_T,
@@ -322,32 +322,32 @@ pub type PPOOLED_USAGE_AND_LIMITS = *mut POOLED_USAGE_AND_LIMITS;
 pub const PROCESS_EXCEPTION_PORT_ALL_STATE_BITS: ULONG_PTR = 0x00000003;
 pub const PROCESS_EXCEPTION_PORT_ALL_STATE_FLAGS: ULONG_PTR =
     (1 << PROCESS_EXCEPTION_PORT_ALL_STATE_BITS) - 1;
-STRUCT! {#[debug] struct PROCESS_EXCEPTION_PORT {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_EXCEPTION_PORT {
     ExceptionPortHandle: HANDLE,
     StateFlags: ULONG,
 }}
 pub type PPROCESS_EXCEPTION_PORT = *mut PROCESS_EXCEPTION_PORT;
-STRUCT! {#[debug] struct PROCESS_ACCESS_TOKEN {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_ACCESS_TOKEN {
     Token: HANDLE,
     Thread: HANDLE,
 }}
 pub type PPROCESS_ACCESS_TOKEN = *mut PROCESS_ACCESS_TOKEN;
-STRUCT! {#[debug] struct PROCESS_LDT_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_LDT_INFORMATION {
     Start: ULONG,
     Length: ULONG,
     LdtEntries: [LDT_ENTRY; 1],
 }}
 pub type PPROCESS_LDT_INFORMATION = *mut PROCESS_LDT_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_LDT_SIZE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_LDT_SIZE {
     Length: ULONG,
 }}
 pub type PPROCESS_LDT_SIZE = *mut PROCESS_LDT_SIZE;
-STRUCT! {#[debug] struct PROCESS_WS_WATCH_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_WS_WATCH_INFORMATION {
     FaultingPc: PVOID,
     FaultingVa: PVOID,
 }}
 pub type PPROCESS_WS_WATCH_INFORMATION = *mut PROCESS_WS_WATCH_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_WS_WATCH_INFORMATION_EX {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_WS_WATCH_INFORMATION_EX {
     BasicInfo: PROCESS_WS_WATCH_INFORMATION,
     FaultingThreadId: ULONG_PTR,
     Flags: ULONG_PTR,
@@ -360,19 +360,19 @@ pub const PROCESS_PRIORITY_CLASS_HIGH: u32 = 3;
 pub const PROCESS_PRIORITY_CLASS_REALTIME: u32 = 4;
 pub const PROCESS_PRIORITY_CLASS_BELOW_NORMAL: u32 = 5;
 pub const PROCESS_PRIORITY_CLASS_ABOVE_NORMAL: u32 = 6;
-STRUCT! {#[debug] struct PROCESS_PRIORITY_CLASS {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_PRIORITY_CLASS {
     Foreground: BOOLEAN,
     PriorityClass: UCHAR,
 }}
 pub type PPROCESS_PRIORITY_CLASS = *mut PROCESS_PRIORITY_CLASS;
-STRUCT! {#[debug] struct PROCESS_FOREGROUND_BACKGROUND {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_FOREGROUND_BACKGROUND {
     Foreground: BOOLEAN,
 }}
 pub type PPROCESS_FOREGROUND_BACKGROUND = *mut PROCESS_FOREGROUND_BACKGROUND;
-STRUCT! {#[debug] struct PROCESS_DEVICEMAP_INFORMATION_Set {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_DEVICEMAP_INFORMATION_Set {
     DirectoryHandle: HANDLE,
 }}
-STRUCT! {#[debug] struct PROCESS_DEVICEMAP_INFORMATION_Query {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_DEVICEMAP_INFORMATION_Query {
     DriveMap: ULONG,
     DriveType: [UCHAR; 32],
 }}
@@ -382,10 +382,10 @@ UNION! {union PROCESS_DEVICEMAP_INFORMATION {
 }}
 pub type PPROCESS_DEVICEMAP_INFORMATION = *mut PROCESS_DEVICEMAP_INFORMATION;
 pub const PROCESS_LUID_DOSDEVICES_ONLY: ULONG = 0x00000001;
-STRUCT! {#[debug] struct PROCESS_DEVICEMAP_INFORMATION_EX_u_Set {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_DEVICEMAP_INFORMATION_EX_u_Set {
     DirectoryHandle: HANDLE,
 }}
-STRUCT! {#[debug] struct PROCESS_DEVICEMAP_INFORMATION_EX_u_Query {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_DEVICEMAP_INFORMATION_EX_u_Query {
     DriveMap: ULONG,
     DriveType: [UCHAR; 32],
 }}
@@ -393,24 +393,24 @@ UNION! {union PROCESS_DEVICEMAP_INFORMATION_EX_u {
     Set: PROCESS_DEVICEMAP_INFORMATION_EX_u_Set,
     Query: PROCESS_DEVICEMAP_INFORMATION_EX_u_Query,
 }}
-STRUCT! {#[debug] struct PROCESS_DEVICEMAP_INFORMATION_EX {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_DEVICEMAP_INFORMATION_EX {
     u: PROCESS_DEVICEMAP_INFORMATION_EX_u,
     Flags: ULONG,
 }}
 pub type PPROCESS_DEVICEMAP_INFORMATION_EX = *mut PROCESS_DEVICEMAP_INFORMATION_EX;
-STRUCT! {#[debug] struct PROCESS_SESSION_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_SESSION_INFORMATION {
     SessionId: ULONG,
 }}
 pub type PPROCESS_SESSION_INFORMATION = *mut PROCESS_SESSION_INFORMATION;
 pub const PROCESS_HANDLE_EXCEPTIONS_ENABLED: ULONG = 0x00000001;
 pub const PROCESS_HANDLE_RAISE_EXCEPTION_ON_INVALID_HANDLE_CLOSE_DISABLED: ULONG = 0x00000000;
 pub const PROCESS_HANDLE_RAISE_EXCEPTION_ON_INVALID_HANDLE_CLOSE_ENABLED: ULONG = 0x00000001;
-STRUCT! {#[debug] struct PROCESS_HANDLE_TRACING_ENABLE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_HANDLE_TRACING_ENABLE {
     Flags: ULONG,
 }}
 pub type PPROCESS_HANDLE_TRACING_ENABLE = *mut PROCESS_HANDLE_TRACING_ENABLE;
 pub const PROCESS_HANDLE_TRACING_MAX_SLOTS: ULONG = 0x20000;
-STRUCT! {#[debug] struct PROCESS_HANDLE_TRACING_ENABLE_EX {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_HANDLE_TRACING_ENABLE_EX {
     Flags: ULONG,
     TotalSlots: ULONG,
 }}
@@ -419,20 +419,20 @@ pub const PROCESS_HANDLE_TRACING_MAX_STACKS: usize = 16;
 pub const PROCESS_HANDLE_TRACE_TYPE_OPEN: ULONG = 1;
 pub const PROCESS_HANDLE_TRACE_TYPE_CLOSE: ULONG = 2;
 pub const PROCESS_HANDLE_TRACE_TYPE_BADREF: ULONG = 3;
-STRUCT! {#[debug] struct PROCESS_HANDLE_TRACING_ENTRY {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_HANDLE_TRACING_ENTRY {
     Handle: HANDLE,
     ClientId: CLIENT_ID,
     Type: ULONG,
     Stacks: [PVOID; PROCESS_HANDLE_TRACING_MAX_STACKS],
 }}
 pub type PPROCESS_HANDLE_TRACING_ENTRY = *mut PROCESS_HANDLE_TRACING_ENTRY;
-STRUCT! {#[debug] struct PROCESS_HANDLE_TRACING_QUERY {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_HANDLE_TRACING_QUERY {
     Handle: HANDLE,
     TotalTraces: ULONG,
     HandleTrace: [PROCESS_HANDLE_TRACING_ENTRY; 1],
 }}
 pub type PPROCESS_HANDLE_TRACING_QUERY = *mut PROCESS_HANDLE_TRACING_QUERY;
-STRUCT! {#[debug] struct THREAD_TLS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_TLS_INFORMATION {
     Flags: ULONG,
     NewTlsData: PVOID,
     OldTlsData: PVOID,
@@ -445,7 +445,7 @@ ENUM! {enum PROCESS_TLS_INFORMATION_TYPE {
     MaxProcessTlsOperation = 2,
 }}
 pub type PPROCESS_TLS_INFORMATION_TYPE = *mut PROCESS_TLS_INFORMATION_TYPE;
-STRUCT! {#[debug] struct PROCESS_TLS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_TLS_INFORMATION {
     Flags: ULONG,
     OperationType: ULONG,
     ThreadDataCount: ULONG,
@@ -454,20 +454,20 @@ STRUCT! {#[debug] struct PROCESS_TLS_INFORMATION {
     ThreadData: [THREAD_TLS_INFORMATION; 1],
 }}
 pub type PPROCESS_TLS_INFORMATION = *mut PROCESS_TLS_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_INSTRUMENTATION_CALLBACK_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_INSTRUMENTATION_CALLBACK_INFORMATION {
     Version: ULONG,
     Reserved: ULONG,
     Callback: PVOID,
 }}
 pub type PPROCESS_INSTRUMENTATION_CALLBACK_INFORMATION =
     *mut PROCESS_INSTRUMENTATION_CALLBACK_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_STACK_ALLOCATION_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_STACK_ALLOCATION_INFORMATION {
     ReserveSize: SIZE_T,
     ZeroBits: SIZE_T,
     StackBase: PVOID,
 }}
 pub type PPROCESS_STACK_ALLOCATION_INFORMATION = *mut PROCESS_STACK_ALLOCATION_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_STACK_ALLOCATION_INFORMATION_EX {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_STACK_ALLOCATION_INFORMATION_EX {
     PreferredNode: ULONG,
     Reserved0: ULONG,
     Reserved1: ULONG,
@@ -475,7 +475,7 @@ STRUCT! {#[debug] struct PROCESS_STACK_ALLOCATION_INFORMATION_EX {
     AllocInfo: PROCESS_STACK_ALLOCATION_INFORMATION,
 }}
 pub type PPROCESS_STACK_ALLOCATION_INFORMATION_EX = *mut PROCESS_STACK_ALLOCATION_INFORMATION_EX;
-STRUCT! {#[debug] struct PROCESS_AFFINITY_UPDATE_MODE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_AFFINITY_UPDATE_MODE {
     Flags: ULONG,
 }}
 BITFIELD! {PROCESS_AFFINITY_UPDATE_MODE Flags: ULONG [
@@ -484,7 +484,7 @@ BITFIELD! {PROCESS_AFFINITY_UPDATE_MODE Flags: ULONG [
     Reserved set_Reserved[2..32],
 ]}
 pub type PPROCESS_AFFINITY_UPDATE_MODE = *mut PROCESS_AFFINITY_UPDATE_MODE;
-STRUCT! {#[debug] struct PROCESS_MEMORY_ALLOCATION_MODE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_MEMORY_ALLOCATION_MODE {
     Flags: ULONG,
 }}
 BITFIELD! {PROCESS_MEMORY_ALLOCATION_MODE Flags: ULONG [
@@ -492,23 +492,23 @@ BITFIELD! {PROCESS_MEMORY_ALLOCATION_MODE Flags: ULONG [
     Reserved set_Reserved[1..32],
 ]}
 pub type PPROCESS_MEMORY_ALLOCATION_MODE = *mut PROCESS_MEMORY_ALLOCATION_MODE;
-STRUCT! {#[debug] struct PROCESS_HANDLE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_HANDLE_INFORMATION {
     HandleCount: ULONG,
     HandleCountHighWatermark: ULONG,
 }}
 pub type PPROCESS_HANDLE_INFORMATION = *mut PROCESS_HANDLE_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_CYCLE_TIME_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_CYCLE_TIME_INFORMATION {
     AccumulatedCycles: ULONGLONG,
     CurrentCycleCount: ULONGLONG,
 }}
 pub type PPROCESS_CYCLE_TIME_INFORMATION = *mut PROCESS_CYCLE_TIME_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_WINDOW_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_WINDOW_INFORMATION {
     WindowFlags: ULONG,
     WindowTitleLength: USHORT,
     WindowTitle: [WCHAR; 1],
 }}
 pub type PPROCESS_WINDOW_INFORMATION = *mut PROCESS_WINDOW_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_HANDLE_TABLE_ENTRY_INFO {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_HANDLE_TABLE_ENTRY_INFO {
     HandleValue: HANDLE,
     HandleCount: ULONG_PTR,
     PointerCount: ULONG_PTR,
@@ -518,7 +518,7 @@ STRUCT! {#[debug] struct PROCESS_HANDLE_TABLE_ENTRY_INFO {
     Reserved: ULONG,
 }}
 pub type PPROCESS_HANDLE_TABLE_ENTRY_INFO = *mut PROCESS_HANDLE_TABLE_ENTRY_INFO;
-STRUCT! {#[debug] struct PROCESS_HANDLE_SNAPSHOT_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_HANDLE_SNAPSHOT_INFORMATION {
     NumberOfHandles: ULONG_PTR,
     Reserved: ULONG_PTR,
     Handles: [PROCESS_HANDLE_TABLE_ENTRY_INFO; 1],
@@ -539,17 +539,17 @@ UNION! {union PROCESS_MITIGATION_POLICY_INFORMATION_u {
     ChildProcessPolicy: PROCESS_MITIGATION_CHILD_PROCESS_POLICY,
     // SideChannelIsolationPolicy: PROCESS_MITIGATION_SIDE_CHANNEL_ISOLATION_POLICY, //TODO
 }}
-STRUCT! {#[debug] struct PROCESS_MITIGATION_POLICY_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_MITIGATION_POLICY_INFORMATION {
     Policy: PROCESS_MITIGATION_POLICY,
     u: PROCESS_MITIGATION_POLICY_INFORMATION_u,
 }}
 pub type PPROCESS_MITIGATION_POLICY_INFORMATION = *mut PROCESS_MITIGATION_POLICY_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_KEEPALIVE_COUNT_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_KEEPALIVE_COUNT_INFORMATION {
     WakeCount: ULONG,
     NoWakeCount: ULONG,
 }}
 pub type PPROCESS_KEEPALIVE_COUNT_INFORMATION = *mut PROCESS_KEEPALIVE_COUNT_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_REVOKE_FILE_HANDLES_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_REVOKE_FILE_HANDLES_INFORMATION {
     TargetDevicePath: UNICODE_STRING,
 }}
 pub type PPROCESS_REVOKE_FILE_HANDLES_INFORMATION = *mut PROCESS_REVOKE_FILE_HANDLES_INFORMATION;
@@ -558,7 +558,7 @@ ENUM! {enum PROCESS_WORKING_SET_OPERATION {
     ProcessWorkingSetEmpty = 1,
     ProcessWorkingSetOperationMax = 2,
 }}
-STRUCT! {#[debug] struct PROCESS_WORKING_SET_CONTROL {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_WORKING_SET_CONTROL {
     Version: ULONG,
     Operation: PROCESS_WORKING_SET_OPERATION,
     Flags: ULONG,
@@ -608,7 +608,7 @@ pub fn InitializePsProtection(
     aProtectionLevelPtr.set_Audit(aAudit);
     aProtectionLevelPtr.set_Type(aType as u8);
 }
-STRUCT! {#[debug] struct PS_PROTECTION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_PROTECTION {
     Level: UCHAR,
 }}
 pub type PPS_PROTECTION = *mut PS_PROTECTION;
@@ -617,12 +617,12 @@ BITFIELD! {PS_PROTECTION Level: UCHAR [
     Audit set_Audit[3..4],
     Signer set_Signer[4..8],
 ]}
-STRUCT! {#[debug] struct PROCESS_FAULT_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_FAULT_INFORMATION {
     FaultFlags: ULONG,
     AdditionalInfo: ULONG,
 }}
 pub type PPROCESS_FAULT_INFORMATION = *mut PROCESS_FAULT_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_TELEMETRY_ID_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_TELEMETRY_ID_INFORMATION {
     HeaderSize: ULONG,
     ProcessId: ULONG,
     ProcessStartKey: ULONGLONG,
@@ -642,7 +642,7 @@ STRUCT! {#[debug] struct PROCESS_TELEMETRY_ID_INFORMATION {
     CommandLineOffset: ULONG,
 }}
 pub type PPROCESS_TELEMETRY_ID_INFORMATION = *mut PROCESS_TELEMETRY_ID_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_COMMIT_RELEASE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_COMMIT_RELEASE_INFORMATION {
     Version: ULONG,
     s: ULONG,
     CommitDebt: SIZE_T,
@@ -656,7 +656,7 @@ BITFIELD! {PROCESS_COMMIT_RELEASE_INFORMATION s: ULONG [
     Spare set_Spare[3..32],
 ]}
 pub type PPROCESS_COMMIT_RELEASE_INFORMATION = *mut PROCESS_COMMIT_RELEASE_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_JOB_MEMORY_INFO {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_JOB_MEMORY_INFO {
     SharedCommitUsage: ULONGLONG,
     PrivateCommitUsage: ULONGLONG,
     PeakPrivateCommitUsage: ULONGLONG,
@@ -664,19 +664,19 @@ STRUCT! {#[debug] struct PROCESS_JOB_MEMORY_INFO {
     TotalCommitLimit: ULONGLONG,
 }}
 pub type PPROCESS_JOB_MEMORY_INFO = *mut PROCESS_JOB_MEMORY_INFO;
-STRUCT! {#[debug] struct PROCESS_CHILD_PROCESS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_CHILD_PROCESS_INFORMATION {
     ProhibitChildProcesses: BOOLEAN,
     AlwaysAllowSecureChildProcess: BOOLEAN,
     AuditProhibitChildProcesses: BOOLEAN,
 }}
 pub type PPROCESS_CHILD_PROCESS_INFORMATION = *mut PROCESS_CHILD_PROCESS_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_WAKE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_WAKE_INFORMATION {
     NotificationChannel: ULONGLONG,
     WakeCounters: [ULONG; 7],
     WakeFilter: *mut JOBOBJECT_WAKE_FILTER,
 }}
 pub type PPROCESS_WAKE_INFORMATION = *mut PROCESS_WAKE_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_ENERGY_TRACKING_STATE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_ENERGY_TRACKING_STATE {
     StateUpdateMask: ULONG,
     StateDesiredValue: ULONG,
     StateSequence: ULONG,
@@ -687,7 +687,7 @@ pub type PPROCESS_ENERGY_TRACKING_STATE = *mut PROCESS_ENERGY_TRACKING_STATE;
 BITFIELD! {PROCESS_ENERGY_TRACKING_STATE UpdateTag: ULONG [
     UpdateTag set_UpdateTag[0..1],
 ]}
-STRUCT! {#[debug] struct MANAGE_WRITES_TO_EXECUTABLE_MEMORY {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct MANAGE_WRITES_TO_EXECUTABLE_MEMORY {
     BitFields: ULONG,
 }}
 BITFIELD! {MANAGE_WRITES_TO_EXECUTABLE_MEMORY BitFields: ULONG [
@@ -703,7 +703,7 @@ pub const PROCESS_READWRITEVM_LOGGING_ENABLE_READVM: UCHAR = 1;
 pub const PROCESS_READWRITEVM_LOGGING_ENABLE_WRITEVM: UCHAR = 2;
 pub const PROCESS_READWRITEVM_LOGGING_ENABLE_READVM_V: UCHAR = 1;
 pub const PROCESS_READWRITEVM_LOGGING_ENABLE_WRITEVM_V: UCHAR = 2;
-STRUCT! {#[debug] struct PROCESS_READWRITEVM_LOGGING_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_READWRITEVM_LOGGING_INFORMATION {
     Flags: UCHAR,
 }}
 BITFIELD! {PROCESS_READWRITEVM_LOGGING_INFORMATION Flags: UCHAR [
@@ -718,7 +718,7 @@ UNION! {union PROCESS_UPTIME_INFORMATION_u {
     Terminated: ULONG,
 }}
 pub type PPROCESS_READWRITEVM_LOGGING_INFORMATION = *mut PROCESS_READWRITEVM_LOGGING_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_UPTIME_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_UPTIME_INFORMATION {
     QueryInterruptTime: ULONGLONG,
     QueryUnbiasedTime: ULONGLONG,
     EndInterruptTime: ULONGLONG,
@@ -728,7 +728,7 @@ STRUCT! {#[debug] struct PROCESS_UPTIME_INFORMATION {
     u: PROCESS_UPTIME_INFORMATION_u,
 }}
 pub type PPROCESS_UPTIME_INFORMATION = *mut PROCESS_UPTIME_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_SYSTEM_RESOURCE_MANAGEMENT {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_SYSTEM_RESOURCE_MANAGEMENT {
     Flags: ULONG,
 }}
 pub type PPROCESS_SYSTEM_RESOURCE_MANAGEMENT = *mut PROCESS_SYSTEM_RESOURCE_MANAGEMENT;
@@ -736,16 +736,16 @@ BITFIELD! {PROCESS_SYSTEM_RESOURCE_MANAGEMENT Flags: ULONG [
     Foreground set_Foreground[0..1],
     Reserved set_Reserved[1..32],
 ]}
-STRUCT! {#[debug] struct PROCESS_SECURITY_DOMAIN_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_SECURITY_DOMAIN_INFORMATION {
     SecurityDomain: ULONGLONG,
 }}
 pub type PPROCESS_SECURITY_DOMAIN_INFORMATION = *mut PROCESS_SECURITY_DOMAIN_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION {
     ProcessHandle: HANDLE,
 }}
 pub type PPROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION =
     *mut PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_LOGGING_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_LOGGING_INFORMATION {
     Flags: ULONG,
     BitFields: ULONG,
 }}
@@ -757,12 +757,12 @@ BITFIELD! {PROCESS_LOGGING_INFORMATION BitFields: ULONG [
     Reserved set_Reserved[4..32],
 ]}
 pub type PPROCESS_LOGGING_INFORMATION = *mut PROCESS_LOGGING_INFORMATION;
-STRUCT! {#[debug] struct PROCESS_LEAP_SECOND_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PROCESS_LEAP_SECOND_INFORMATION {
     Flags: ULONG,
     Reserved: ULONG,
 }}
 pub type PPROCESS_LEAP_SECOND_INFORMATION = *mut PROCESS_LEAP_SECOND_INFORMATION;
-STRUCT! {#[debug] struct THREAD_BASIC_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_BASIC_INFORMATION {
     ExitStatus: NTSTATUS,
     TebBaseAddress: PTEB,
     ClientId: CLIENT_ID,
@@ -771,32 +771,32 @@ STRUCT! {#[debug] struct THREAD_BASIC_INFORMATION {
     BasePriority: LONG,
 }}
 pub type PTHREAD_BASIC_INFORMATION = *mut THREAD_BASIC_INFORMATION;
-STRUCT! {#[debug] struct THREAD_LAST_SYSCALL_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_LAST_SYSCALL_INFORMATION {
     FirstArgument: PVOID,
     SystemCallNumber: USHORT,
     Pad: [USHORT; 1],
     WaitTime: ULONG64,
 }}
 pub type PTHREAD_LAST_SYSCALL_INFORMATION = *mut THREAD_LAST_SYSCALL_INFORMATION;
-STRUCT! {#[debug] struct THREAD_CYCLE_TIME_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_CYCLE_TIME_INFORMATION {
     AccumulatedCycles: ULONGLONG,
     CurrentCycleCount: ULONGLONG,
 }}
 pub type PTHREAD_CYCLE_TIME_INFORMATION = *mut THREAD_CYCLE_TIME_INFORMATION;
-STRUCT! {#[debug] struct THREAD_TEB_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_TEB_INFORMATION {
     TebInformation: PVOID,
     TebOffset: ULONG,
     BytesToRead: ULONG,
 }}
 pub type PTHREAD_TEB_INFORMATION = *mut THREAD_TEB_INFORMATION;
-STRUCT! {#[debug] struct COUNTER_READING {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct COUNTER_READING {
     Type: HARDWARE_COUNTER_TYPE,
     Index: ULONG,
     Start: ULONG64,
     Total: ULONG64,
 }}
 pub type PCOUNTER_READING = *mut COUNTER_READING;
-STRUCT! {#[debug] struct THREAD_PERFORMANCE_DATA {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_PERFORMANCE_DATA {
     Size: USHORT,
     Version: USHORT,
     ProcessorNumber: PROCESSOR_NUMBER,
@@ -809,7 +809,7 @@ STRUCT! {#[debug] struct THREAD_PERFORMANCE_DATA {
     HwCounters: [COUNTER_READING; MAX_HW_COUNTERS],
 }}
 pub type PTHREAD_PERFORMANCE_DATA = *mut THREAD_PERFORMANCE_DATA;
-STRUCT! {#[debug] struct THREAD_PROFILING_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_PROFILING_INFORMATION {
     HardwareCounters: ULONG64,
     Flags: ULONG,
     Enable: ULONG,
@@ -817,7 +817,7 @@ STRUCT! {#[debug] struct THREAD_PROFILING_INFORMATION {
 }}
 pub type PTHREAD_PROFILING_INFORMATION = *mut THREAD_PROFILING_INFORMATION;
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-STRUCT! {#[debug] #[repr(align(16))] struct RTL_UMS_CONTEXT {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  #[repr(align(16))] struct RTL_UMS_CONTEXT {
     Link: SINGLE_LIST_ENTRY,
     __padding: u64,
     Context: CONTEXT,
@@ -841,7 +841,7 @@ STRUCT! {#[debug] #[repr(align(16))] struct RTL_UMS_CONTEXT {
     YieldCount: ULONG,
 }}
 #[cfg(target_arch = "x86")]
-STRUCT! {#[debug] struct RTL_UMS_CONTEXT {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_UMS_CONTEXT {
     Link: SINGLE_LIST_ENTRY,
     Context: CONTEXT,
     Teb: PVOID,
@@ -871,14 +871,14 @@ ENUM! {enum THREAD_UMS_INFORMATION_COMMAND {
     UmsInformationCommandDetach = 2,
     UmsInformationCommandQuery = 3,
 }}
-STRUCT! {#[debug] struct RTL_UMS_COMPLETION_LIST {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct RTL_UMS_COMPLETION_LIST {
     ThreadListHead: PSINGLE_LIST_ENTRY,
     CompletionEvent: PVOID,
     CompletionFlags: ULONG,
     InternalListHead: SINGLE_LIST_ENTRY,
 }}
 pub type PRTL_UMS_COMPLETION_LIST = *mut RTL_UMS_COMPLETION_LIST;
-STRUCT! {#[debug] struct THREAD_UMS_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_UMS_INFORMATION {
     Command: THREAD_UMS_INFORMATION_COMMAND,
     CompletionList: PRTL_UMS_COMPLETION_LIST,
     UmsContext: PRTL_UMS_CONTEXT,
@@ -890,7 +890,7 @@ BITFIELD! {THREAD_UMS_INFORMATION Flags: ULONG [
     SpareBits set_SpareBits[2..32],
 ]}
 pub type PTHREAD_UMS_INFORMATION = *mut THREAD_UMS_INFORMATION;
-STRUCT! {#[debug] struct THREAD_NAME_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct THREAD_NAME_INFORMATION {
     ThreadName: UNICODE_STRING,
 }}
 pub type PTHREAD_NAME_INFORMATION = *mut THREAD_NAME_INFORMATION;
@@ -1193,19 +1193,19 @@ UNION! {union PS_ATTRIBUTE_u {
     Value: ULONG_PTR,
     ValuePtr: PVOID,
 }}
-STRUCT! {#[debug] struct PS_ATTRIBUTE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_ATTRIBUTE {
     Attribute: ULONG_PTR,
     Size: SIZE_T,
     u: PS_ATTRIBUTE_u,
     ReturnLength: PSIZE_T,
 }}
 pub type PPS_ATTRIBUTE = *mut PS_ATTRIBUTE;
-STRUCT! {#[debug] struct PS_ATTRIBUTE_LIST {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_ATTRIBUTE_LIST {
     TotalLength: SIZE_T,
     Attributes: [PS_ATTRIBUTE; 1],
 }}
 pub type PPS_ATTRIBUTE_LIST = *mut PS_ATTRIBUTE_LIST;
-STRUCT! {#[debug] struct PS_MEMORY_RESERVE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_MEMORY_RESERVE {
     ReserveAddress: PVOID,
     ReserveSize: SIZE_T,
 }}
@@ -1219,7 +1219,7 @@ ENUM! {enum PS_STD_HANDLE_STATE {
 pub const PS_STD_INPUT_HANDLE: u32 = 0x1;
 pub const PS_STD_OUTPUT_HANDLE: u32 = 0x2;
 pub const PS_STD_ERROR_HANDLE: u32 = 0x4;
-STRUCT! {#[debug] struct PS_STD_HANDLE_INFO {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_STD_HANDLE_INFO {
     Flags: ULONG,
     StdHandleSubsystemType: ULONG,
 }}
@@ -1228,7 +1228,7 @@ BITFIELD! {PS_STD_HANDLE_INFO Flags: ULONG [
     StdHandleState set_StdHandleState[0..2],
     PseudoHandleMask set_PseudoHandleMask[2..5],
 ]}
-STRUCT! {#[debug] struct PS_BNO_ISOLATION_PARAMETERS {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_BNO_ISOLATION_PARAMETERS {
     IsolationPrefix: UNICODE_STRING,
     HandleCount: ULONG,
     Handles: *mut PVOID,
@@ -1279,7 +1279,7 @@ ENUM! {enum PS_CREATE_STATE {
     PsCreateSuccess = 6,
     PsCreateMaximumStates = 7,
 }}
-STRUCT! {#[debug] struct PS_CREATE_INFO_u_InitState {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_CREATE_INFO_u_InitState {
     InitFlags: ULONG,
     AdditionalFileAccess: ACCESS_MASK,
 }}
@@ -1292,7 +1292,7 @@ BITFIELD! {PS_CREATE_INFO_u_InitState InitFlags: ULONG [
     SpareBits2 set_SpareBits2[8..16],
     ProhibitedImageCharacteristics set_ProhibitedImageCharacteristics[16..32],
 ]}
-STRUCT! {#[debug] struct PS_CREATE_INFO_u_SuccessState {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_CREATE_INFO_u_SuccessState {
     OutputFlags: ULONG,
     FileHandle: HANDLE,
     SectionHandle: HANDLE,
@@ -1321,7 +1321,7 @@ UNION! {union PS_CREATE_INFO_u {
     IFEOKey: HANDLE,
     SuccessState: PS_CREATE_INFO_u_SuccessState,
 }}
-STRUCT! {#[debug] struct PS_CREATE_INFO {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct PS_CREATE_INFO {
     Size: SIZE_T,
     State: PS_CREATE_STATE,
     u: PS_CREATE_INFO_u,
@@ -1369,7 +1369,7 @@ EXTERN! {extern "system" {
         AttributeList: PPS_ATTRIBUTE_LIST,
     ) -> NTSTATUS;
 }}
-STRUCT! {#[debug] struct JOBOBJECT_EXTENDED_ACCOUNTING_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_EXTENDED_ACCOUNTING_INFORMATION {
     BasicInfo: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION,
     IoInfo: IO_COUNTERS,
     DiskIoInfo: PROCESS_DISK_COUNTERS,
@@ -1380,26 +1380,26 @@ STRUCT! {#[debug] struct JOBOBJECT_EXTENDED_ACCOUNTING_INFORMATION {
 }}
 pub type PJOBOBJECT_EXTENDED_ACCOUNTING_INFORMATION =
     *mut JOBOBJECT_EXTENDED_ACCOUNTING_INFORMATION;
-STRUCT! {#[debug] struct JOBOBJECT_WAKE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_WAKE_INFORMATION {
     NotificationChannel: HANDLE,
     WakeCounters: [ULONG64; 7],
 }}
 pub type PJOBOBJECT_WAKE_INFORMATION = *mut JOBOBJECT_WAKE_INFORMATION;
-STRUCT! {#[debug] struct JOBOBJECT_WAKE_INFORMATION_V1 {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_WAKE_INFORMATION_V1 {
     NotificationChannel: HANDLE,
     WakeCounters: [ULONG64; 4],
 }}
 pub type PJOBOBJECT_WAKE_INFORMATION_V1 = *mut JOBOBJECT_WAKE_INFORMATION_V1;
-STRUCT! {#[debug] struct JOBOBJECT_INTERFERENCE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_INTERFERENCE_INFORMATION {
     Count: ULONG64,
 }}
 pub type PJOBOBJECT_INTERFERENCE_INFORMATION = *mut JOBOBJECT_INTERFERENCE_INFORMATION;
-STRUCT! {#[debug] struct JOBOBJECT_WAKE_FILTER {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_WAKE_FILTER {
     HighEdgeFilter: ULONG,
     LowEdgeFilter: ULONG,
 }}
 pub type PJOBOBJECT_WAKE_FILTER = *mut JOBOBJECT_WAKE_FILTER;
-STRUCT! {#[debug] struct JOBOBJECT_FREEZE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_FREEZE_INFORMATION {
     Flags: ULONG,
     Freeze: BOOLEAN,
     Swap: BOOLEAN,
@@ -1413,18 +1413,18 @@ BITFIELD! {JOBOBJECT_FREEZE_INFORMATION Flags: ULONG [
     SwapOperation set_SwapOperation[2..3],
     Reserved set_Reserved[3..32],
 ]}
-STRUCT! {#[debug] struct JOBOBJECT_MEMORY_USAGE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_MEMORY_USAGE_INFORMATION {
     JobMemory: ULONG64,
     PeakJobMemoryUsed: ULONG64,
 }}
 pub type PJOBOBJECT_MEMORY_USAGE_INFORMATION = *mut JOBOBJECT_MEMORY_USAGE_INFORMATION;
-STRUCT! {#[debug] struct JOBOBJECT_MEMORY_USAGE_INFORMATION_V2 {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_MEMORY_USAGE_INFORMATION_V2 {
     BasicInfo: JOBOBJECT_MEMORY_USAGE_INFORMATION,
     JobSharedMemory: ULONG64,
     Reserved: [ULONG64; 2],
 }}
 pub type PJOBOBJECT_MEMORY_USAGE_INFORMATION_V2 = *mut JOBOBJECT_MEMORY_USAGE_INFORMATION_V2;
-STRUCT! {#[debug] struct SILO_USER_SHARED_DATA {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct SILO_USER_SHARED_DATA {
     ServiceSessionId: ULONG64,
     ActiveConsoleId: ULONG,
     ConsoleSessionForegroundProcessId: LONGLONG,
@@ -1436,12 +1436,12 @@ STRUCT! {#[debug] struct SILO_USER_SHARED_DATA {
     UserModeGlobalLogger: [USHORT; 16],
 }}
 pub type PSILO_USER_SHARED_DATA = *mut SILO_USER_SHARED_DATA;
-STRUCT! {#[debug] struct SILOOBJECT_ROOT_DIRECTORY {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct SILOOBJECT_ROOT_DIRECTORY {
     ControlFlags: ULONG,
     Path: UNICODE_STRING,
 }}
 pub type PSILOOBJECT_ROOT_DIRECTORY = *mut SILOOBJECT_ROOT_DIRECTORY;
-STRUCT! {#[debug] struct JOBOBJECT_ENERGY_TRACKING_STATE {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct JOBOBJECT_ENERGY_TRACKING_STATE {
     Value: ULONG64,
     UpdateMask: ULONG,
     DesiredState: ULONG,

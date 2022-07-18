@@ -28,7 +28,7 @@ ENUM! {enum OBJECT_INFORMATION_CLASS {
     ObjectSessionObjectInformation = 6,
     MaxObjectInfoClass = 7,
 }}
-STRUCT! {#[debug] struct OBJECT_BASIC_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct OBJECT_BASIC_INFORMATION {
     Attributes: ULONG,
     GrantedAccess: ACCESS_MASK,
     HandleCount: ULONG,
@@ -42,11 +42,11 @@ STRUCT! {#[debug] struct OBJECT_BASIC_INFORMATION {
     CreationTime: LARGE_INTEGER,
 }}
 pub type POBJECT_BASIC_INFORMATION = *mut OBJECT_BASIC_INFORMATION;
-STRUCT! {#[debug] struct OBJECT_NAME_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct OBJECT_NAME_INFORMATION {
     Name: UNICODE_STRING,
 }}
 pub type POBJECT_NAME_INFORMATION = *mut OBJECT_NAME_INFORMATION;
-STRUCT! {#[debug] struct OBJECT_TYPE_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct OBJECT_TYPE_INFORMATION {
     TypeName: UNICODE_STRING,
     TotalNumberOfObjects: ULONG,
     TotalNumberOfHandles: ULONG,
@@ -72,11 +72,11 @@ STRUCT! {#[debug] struct OBJECT_TYPE_INFORMATION {
     DefaultNonPagedPoolCharge: ULONG,
 }}
 pub type POBJECT_TYPE_INFORMATION = *mut OBJECT_TYPE_INFORMATION;
-STRUCT! {#[debug] struct OBJECT_TYPES_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct OBJECT_TYPES_INFORMATION {
     NumberOfTypes: ULONG,
 }}
 pub type POBJECT_TYPES_INFORMATION = *mut OBJECT_TYPES_INFORMATION;
-STRUCT! {#[debug] struct OBJECT_HANDLE_FLAG_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct OBJECT_HANDLE_FLAG_INFORMATION {
     Inherit: BOOLEAN,
     ProtectFromClose: BOOLEAN,
 }}
@@ -177,7 +177,7 @@ EXTERN! {extern "system" {
         ObjectAttributes: POBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
 }}
-STRUCT! {#[debug] struct OBJECT_DIRECTORY_INFORMATION {
+STRUCT! {#[cfg_attr(feature = "logging", derive(Debug))]  struct OBJECT_DIRECTORY_INFORMATION {
     Name: UNICODE_STRING,
     TypeName: UNICODE_STRING,
 }}
