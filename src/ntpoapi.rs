@@ -16,7 +16,7 @@ ENUM! {enum POWER_STATE_TYPE {
     DevicePowerState = 1,
 }}
 pub type PPOWER_STATE_TYPE = *mut POWER_STATE_TYPE;
-STRUCT! {struct SYSTEM_POWER_STATE_CONTEXT {
+STRUCT! {#[debug] struct SYSTEM_POWER_STATE_CONTEXT {
     ContextAsUlong: ULONG,
 }}
 BITFIELD! {SYSTEM_POWER_STATE_CONTEXT ContextAsUlong: ULONG [
@@ -29,7 +29,7 @@ BITFIELD! {SYSTEM_POWER_STATE_CONTEXT ContextAsUlong: ULONG [
     Reserved2 set_Reserved2[22..32],
 ]}
 pub type PSYSTEM_POWER_STATE_CONTEXT = *mut SYSTEM_POWER_STATE_CONTEXT;
-STRUCT! {struct COUNTED_REASON_CONTEXT_u_s {
+STRUCT! {#[debug] struct COUNTED_REASON_CONTEXT_u_s {
     ResourceFileName: UNICODE_STRING,
     ResourceReasonId: USHORT,
     StringCount: ULONG,
@@ -39,7 +39,7 @@ UNION! {union COUNTED_REASON_CONTEXT_u {
     s: COUNTED_REASON_CONTEXT_u_s,
     SimpleString: UNICODE_STRING,
 }}
-STRUCT! {struct COUNTED_REASON_CONTEXT {
+STRUCT! {#[debug] struct COUNTED_REASON_CONTEXT {
     Version: ULONG,
     Flags: ULONG,
     u: COUNTED_REASON_CONTEXT_u,
@@ -66,7 +66,7 @@ FN! {stdcall PENTER_STATE_HANDLER(
     NumberProcessors: LONG,
     Number: PLONG,
 ) -> NTSTATUS}
-STRUCT! {struct POWER_STATE_HANDLER {
+STRUCT! {#[debug] struct POWER_STATE_HANDLER {
     Type: POWER_STATE_HANDLER_TYPE,
     RtcWake: BOOLEAN,
     Spare: [UCHAR; 3],
@@ -79,12 +79,12 @@ FN! {stdcall PENTER_STATE_NOTIFY_HANDLER(
     Context: PVOID,
     Entering: BOOLEAN,
 ) -> NTSTATUS}
-STRUCT! {struct POWER_STATE_NOTIFY_HANDLER {
+STRUCT! {#[debug] struct POWER_STATE_NOTIFY_HANDLER {
     Handler: PENTER_STATE_NOTIFY_HANDLER,
     Context: PVOID,
 }}
 pub type PPOWER_STATE_NOTIFY_HANDLER = *mut POWER_STATE_NOTIFY_HANDLER;
-STRUCT! {struct PROCESSOR_POWER_INFORMATION {
+STRUCT! {#[debug] struct PROCESSOR_POWER_INFORMATION {
     Number: ULONG,
     MaxMhz: ULONG,
     CurrentMhz: ULONG,
@@ -93,7 +93,7 @@ STRUCT! {struct PROCESSOR_POWER_INFORMATION {
     CurrentIdleState: ULONG,
 }}
 pub type PPROCESSOR_POWER_INFORMATION = *mut PROCESSOR_POWER_INFORMATION;
-STRUCT! {struct SYSTEM_POWER_INFORMATION {
+STRUCT! {#[debug] struct SYSTEM_POWER_INFORMATION {
     MaxIdlenessAllowed: ULONG,
     Idleness: ULONG,
     TimeRemaining: ULONG,

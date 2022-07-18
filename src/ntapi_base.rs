@@ -20,22 +20,22 @@ pub const fn NT_NTWIN32(Status: NTSTATUS) -> bool {
 pub const fn WIN32_FROM_NTSTATUS(Status: NTSTATUS) -> ULONG {
     (Status as u32) & 0xffff
 }
-STRUCT! {struct CLIENT_ID {
+STRUCT! {#[debug] struct CLIENT_ID {
     UniqueProcess: HANDLE,
     UniqueThread: HANDLE,
 }}
 pub type PCLIENT_ID = *mut CLIENT_ID;
-STRUCT! {struct CLIENT_ID32 {
+STRUCT! {#[debug] struct CLIENT_ID32 {
     UniqueProcess: ULONG,
     UniqueThread: ULONG,
 }}
 pub type PCLIENT_ID32 = *mut CLIENT_ID32;
-STRUCT! {struct CLIENT_ID64 {
+STRUCT! {#[debug] struct CLIENT_ID64 {
     UniqueProcess: ULONGLONG,
     UniqueThread: ULONGLONG,
 }}
 pub type PCLIENT_ID64 = *mut CLIENT_ID64;
-STRUCT! {struct KSYSTEM_TIME {
+STRUCT! {#[debug] struct KSYSTEM_TIME {
     LowPart: ULONG,
     High1Time: LONG,
     High2Time: LONG,

@@ -150,7 +150,7 @@ FN! {stdcall PRTL_AVL_MATCH_FUNCTION(
     UserData: PVOID,
     MatchData: PVOID,
 ) -> NTSTATUS}
-STRUCT! {struct RTL_BALANCED_LINKS {
+STRUCT! {#[debug] struct RTL_BALANCED_LINKS {
     Parent: *mut RTL_BALANCED_LINKS,
     LeftChild: *mut RTL_BALANCED_LINKS,
     RightChild: *mut RTL_BALANCED_LINKS,
@@ -158,7 +158,7 @@ STRUCT! {struct RTL_BALANCED_LINKS {
     Reserved: [UCHAR; 3],
 }}
 pub type PRTL_BALANCED_LINKS = *mut RTL_BALANCED_LINKS;
-STRUCT! {struct RTL_AVL_TABLE {
+STRUCT! {#[debug] struct RTL_AVL_TABLE {
     BalancedRoot: RTL_BALANCED_LINKS,
     OrderedPointer: PVOID,
     WhichOrderedElement: ULONG,
@@ -241,7 +241,7 @@ EXTERN! {extern "system" {
         Table: PRTL_AVL_TABLE,
     ) -> BOOLEAN;
 }}
-STRUCT! {struct RTL_SPLAY_LINKS {
+STRUCT! {#[debug] struct RTL_SPLAY_LINKS {
     Parent: *mut RTL_SPLAY_LINKS,
     LeftChild: *mut RTL_SPLAY_LINKS,
     RightChild: *mut RTL_SPLAY_LINKS,
@@ -333,7 +333,7 @@ FN! {stdcall PRTL_GENERIC_FREE_ROUTINE(
     Table: *mut RTL_GENERIC_TABLE,
     Buffer: PVOID,
 ) -> ()}
-STRUCT! {struct RTL_GENERIC_TABLE {
+STRUCT! {#[debug] struct RTL_GENERIC_TABLE {
     TableRoot: PRTL_SPLAY_LINKS,
     InsertOrderList: LIST_ENTRY,
     OrderedPointer: PLIST_ENTRY,
@@ -400,7 +400,7 @@ EXTERN! {extern "system" {
         Table: PRTL_GENERIC_TABLE,
     ) -> BOOLEAN;
 }}
-STRUCT! {struct RTL_RB_TREE {
+STRUCT! {#[debug] struct RTL_RB_TREE {
     Root: PRTL_BALANCED_NODE,
     Min: PRTL_BALANCED_NODE,
 }}
@@ -419,7 +419,7 @@ EXTERN! {extern "system" {
 }}
 pub const RTL_HASH_ALLOCATED_HEADER: u32 = 0x00000001;
 pub const RTL_HASH_RESERVED_SIGNATURE: u32 = 0;
-STRUCT! {struct RTL_DYNAMIC_HASH_TABLE_ENTRY {
+STRUCT! {#[debug] struct RTL_DYNAMIC_HASH_TABLE_ENTRY {
     Linkage: LIST_ENTRY,
     Signature: ULONG_PTR,
 }}
@@ -429,19 +429,19 @@ pub type PRTL_DYNAMIC_HASH_TABLE_ENTRY = *mut RTL_DYNAMIC_HASH_TABLE_ENTRY;
 pub const fn HASH_ENTRY_KEY(x: &RTL_DYNAMIC_HASH_TABLE_ENTRY) -> ULONG_PTR {
     x.Signature
 }
-STRUCT! {struct RTL_DYNAMIC_HASH_TABLE_CONTEXT {
+STRUCT! {#[debug] struct RTL_DYNAMIC_HASH_TABLE_CONTEXT {
     ChainHead: PLIST_ENTRY,
     PrevLinkage: PLIST_ENTRY,
     Signature: ULONG_PTR,
 }}
 pub type PRTL_DYNAMIC_HASH_TABLE_CONTEXT = *mut RTL_DYNAMIC_HASH_TABLE_CONTEXT;
-STRUCT! {struct RTL_DYNAMIC_HASH_TABLE_ENUMERATOR {
+STRUCT! {#[debug] struct RTL_DYNAMIC_HASH_TABLE_ENUMERATOR {
     HashEntry: RTL_DYNAMIC_HASH_TABLE_ENTRY,
     ChainHead: PLIST_ENTRY,
     BucketIndex: ULONG,
 }}
 pub type PRTL_DYNAMIC_HASH_TABLE_ENUMERATOR = *mut RTL_DYNAMIC_HASH_TABLE_ENUMERATOR;
-STRUCT! {struct RTL_DYNAMIC_HASH_TABLE {
+STRUCT! {#[debug] struct RTL_DYNAMIC_HASH_TABLE {
     Flags: ULONG,
     Shift: ULONG,
     TableSize: ULONG,
@@ -604,7 +604,7 @@ EXTERN! {extern "system" {
         ThreadHandle: HANDLE,
     );
 }}
-STRUCT! {struct RTL_RESOURCE {
+STRUCT! {#[debug] struct RTL_RESOURCE {
     CriticalSection: RTL_CRITICAL_SECTION,
     SharedSemaphore: HANDLE,
     NumberOfWaitingShared: ULONG,
@@ -1161,7 +1161,7 @@ EXTERN! {extern "system" {
         DestinationStringLength: PLONG,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct PREFIX_TABLE_ENTRY {
+STRUCT! {#[debug] struct PREFIX_TABLE_ENTRY {
     NodeTypeCode: CSHORT,
     NameLength: CSHORT,
     NextPrefixTree: *mut PREFIX_TABLE_ENTRY,
@@ -1169,7 +1169,7 @@ STRUCT! {struct PREFIX_TABLE_ENTRY {
     Prefix: PSTRING,
 }}
 pub type PPREFIX_TABLE_ENTRY = *mut PREFIX_TABLE_ENTRY;
-STRUCT! {struct PREFIX_TABLE {
+STRUCT! {#[debug] struct PREFIX_TABLE {
     NodeTypeCode: CSHORT,
     NameLength: CSHORT,
     NextPrefixTree: PPREFIX_TABLE_ENTRY,
@@ -1193,7 +1193,7 @@ EXTERN! {extern "system" {
         FullName: PSTRING,
     ) -> PPREFIX_TABLE_ENTRY;
 }}
-STRUCT! {struct UNICODE_PREFIX_TABLE_ENTRY {
+STRUCT! {#[debug] struct UNICODE_PREFIX_TABLE_ENTRY {
     NodeTypeCode: CSHORT,
     NameLength: CSHORT,
     NextPrefixTree: *mut UNICODE_PREFIX_TABLE_ENTRY,
@@ -1202,7 +1202,7 @@ STRUCT! {struct UNICODE_PREFIX_TABLE_ENTRY {
     Prefix: PUNICODE_STRING,
 }}
 pub type PUNICODE_PREFIX_TABLE_ENTRY = *mut UNICODE_PREFIX_TABLE_ENTRY;
-STRUCT! {struct UNICODE_PREFIX_TABLE {
+STRUCT! {#[debug] struct UNICODE_PREFIX_TABLE {
     NodeTypeCode: CSHORT,
     NameLength: CSHORT,
     NextPrefixTree: PUNICODE_PREFIX_TABLE_ENTRY,
@@ -1232,7 +1232,7 @@ EXTERN! {extern "system" {
         Restart: BOOLEAN,
     ) -> PUNICODE_PREFIX_TABLE_ENTRY;
 }}
-STRUCT! {struct COMPRESSED_DATA_INFO {
+STRUCT! {#[debug] struct COMPRESSED_DATA_INFO {
     CompressionFormatAndEngine: USHORT,
     CompressionUnitShift: UCHAR,
     ChunkShift: UCHAR,
@@ -1374,14 +1374,14 @@ EXTERN! {extern "system" {
 }}
 pub const DOS_MAX_COMPONENT_LENGTH: u32 = 255;
 pub const DOS_MAX_PATH_LENGTH: u32 = DOS_MAX_COMPONENT_LENGTH + 5;
-STRUCT! {struct CURDIR {
+STRUCT! {#[debug] struct CURDIR {
     DosPath: UNICODE_STRING,
     Handle: HANDLE,
 }}
 pub type PCURDIR = *mut CURDIR;
 pub const RTL_USER_PROC_CURDIR_CLOSE: u32 = 0x00000002;
 pub const RTL_USER_PROC_CURDIR_INHERIT: u32 = 0x00000003;
-STRUCT! {struct RTL_DRIVE_LETTER_CURDIR {
+STRUCT! {#[debug] struct RTL_DRIVE_LETTER_CURDIR {
     Flags: USHORT,
     Length: USHORT,
     TimeStamp: ULONG,
@@ -1390,7 +1390,7 @@ STRUCT! {struct RTL_DRIVE_LETTER_CURDIR {
 pub type PRTL_DRIVE_LETTER_CURDIR = *mut RTL_DRIVE_LETTER_CURDIR;
 pub const RTL_MAX_DRIVE_LETTERS: usize = 32;
 pub const RTL_DRIVE_LETTER_VALID: USHORT = 0x0001;
-STRUCT! {struct RTL_USER_PROCESS_PARAMETERS {
+STRUCT! {#[debug] struct RTL_USER_PROCESS_PARAMETERS {
     MaximumLength: ULONG,
     Length: ULONG,
     Flags: ULONG,
@@ -1474,7 +1474,7 @@ EXTERN! {extern "system" {
         ProcessParameters: PRTL_USER_PROCESS_PARAMETERS,
     ) -> PRTL_USER_PROCESS_PARAMETERS;
 }}
-STRUCT! {struct RTL_USER_PROCESS_INFORMATION {
+STRUCT! {#[debug] struct RTL_USER_PROCESS_INFORMATION {
     Length: ULONG,
     Process: HANDLE,
     Thread: HANDLE,
@@ -1525,7 +1525,7 @@ EXTERN! {extern "system" {
         Shared: LOGICAL,
     );
 }}
-STRUCT! {struct RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION {
+STRUCT! {#[debug] struct RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION {
     ReflectionProcessHandle: HANDLE,
     ReflectionThreadHandle: HANDLE,
     ReflectionClientId: CLIENT_ID,
@@ -1601,12 +1601,12 @@ EXTERN! {extern "system" {
         AllocationBase: PVOID,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct CONTEXT_CHUNK {
+STRUCT! {#[debug] struct CONTEXT_CHUNK {
     Offset: LONG,
     Length: ULONG,
 }}
 pub type PCONTEXT_CHUNK = *mut CONTEXT_CHUNK;
-STRUCT! {struct CONTEXT_EX {
+STRUCT! {#[debug] struct CONTEXT_EX {
     All: CONTEXT_CHUNK,
     Legacy: CONTEXT_CHUNK,
     XState: CONTEXT_CHUNK,
@@ -1764,7 +1764,7 @@ ENUM!{enum FUNCTION_TABLE_TYPE {
     RF_CALLBACK = 2,
     RF_KERNEL_DYNAMIC = 3,
 }}
-STRUCT!{struct DYNAMIC_FUNCTION_TABLE {
+STRUCT! {#[debug] struct DYNAMIC_FUNCTION_TABLE {
     ListEntry: LIST_ENTRY,
     FunctionTable: PRUNTIME_FUNCTION,
     TimeStamp: LARGE_INTEGER,
@@ -1912,12 +1912,12 @@ EXTERN! {extern "system" {
         NewEnvironmentSize: SIZE_T,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct RTLP_CURDIR_REF {
+STRUCT! {#[debug] struct RTLP_CURDIR_REF {
     ReferenceCount: LONG,
     DirectoryHandle: HANDLE,
 }}
 pub type PRTLP_CURDIR_REF = *mut RTLP_CURDIR_REF;
-STRUCT! {struct RTL_RELATIVE_NAME_U {
+STRUCT! {#[debug] struct RTL_RELATIVE_NAME_U {
     RelativeName: UNICODE_STRING,
     ContainingDirectory: HANDLE,
     CurDirRef: PRTLP_CURDIR_REF,
@@ -2063,7 +2063,7 @@ EXTERN! {extern "system" {
         Length: PULONG,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct GENERATE_NAME_CONTEXT {
+STRUCT! {#[debug] struct GENERATE_NAME_CONTEXT {
     Checksum: USHORT,
     CheckSumInserted: BOOLEAN,
     NameLength: UCHAR,
@@ -2097,11 +2097,11 @@ EXTERN! {extern "system" {
     fn RtlIsThreadWithinLoaderCallout() -> BOOLEAN;
     fn RtlDllShutdownInProgress() -> BOOLEAN;
 }}
-STRUCT! {struct RTL_HEAP_ENTRY_u_s1 {
+STRUCT! {#[debug] struct RTL_HEAP_ENTRY_u_s1 {
     Settable: SIZE_T,
     Tag: ULONG,
 }}
-STRUCT! {struct RTL_HEAP_ENTRY_u_s2 {
+STRUCT! {#[debug] struct RTL_HEAP_ENTRY_u_s2 {
     CommittedSize: SIZE_T,
     FirstBlock: PVOID,
 }}
@@ -2109,7 +2109,7 @@ UNION! {union RTL_HEAP_ENTRY_u {
     s1: RTL_HEAP_ENTRY_u_s1,
     s2: RTL_HEAP_ENTRY_u_s2,
 }}
-STRUCT! {struct RTL_HEAP_ENTRY {
+STRUCT! {#[debug] struct RTL_HEAP_ENTRY {
     Size: SIZE_T,
     Flags: USHORT,
     AllocatorBackTraceIndex: USHORT,
@@ -2125,7 +2125,7 @@ pub const RTL_HEAP_SETTABLE_FLAG3: USHORT = 0x0080;
 pub const RTL_HEAP_SETTABLE_FLAGS: USHORT = 0x00e0;
 pub const RTL_HEAP_UNCOMMITTED_RANGE: USHORT = 0x0100;
 pub const RTL_HEAP_PROTECTED_ENTRY: USHORT = 0x0200;
-STRUCT! {struct RTL_HEAP_TAG {
+STRUCT! {#[debug] struct RTL_HEAP_TAG {
     NumberOfAllocations: ULONG,
     NumberOfFrees: ULONG,
     BytesAllocated: SIZE_T,
@@ -2134,7 +2134,7 @@ STRUCT! {struct RTL_HEAP_TAG {
     TagName: [WCHAR; 24],
 }}
 pub type PRTL_HEAP_TAG = *mut RTL_HEAP_TAG;
-STRUCT! {struct RTL_HEAP_INFORMATION {
+STRUCT! {#[debug] struct RTL_HEAP_INFORMATION {
     BaseAddress: PVOID,
     Flags: ULONG,
     EntryOverhead: USHORT,
@@ -2150,7 +2150,7 @@ STRUCT! {struct RTL_HEAP_INFORMATION {
     Entries: PRTL_HEAP_ENTRY,
 }}
 pub type PRTL_HEAP_INFORMATION = *mut RTL_HEAP_INFORMATION;
-STRUCT! {struct RTL_PROCESS_HEAPS {
+STRUCT! {#[debug] struct RTL_PROCESS_HEAPS {
     NumberOfHeaps: ULONG,
     Heaps: [RTL_HEAP_INFORMATION; 1],
 }}
@@ -2160,7 +2160,7 @@ FN! {stdcall PRTL_HEAP_COMMIT_ROUTINE(
     CommitAddress: *mut PVOID,
     CommitSize: PSIZE_T,
 ) -> NTSTATUS}
-STRUCT! {struct RTL_HEAP_PARAMETERS {
+STRUCT! {#[debug] struct RTL_HEAP_PARAMETERS {
     Length: ULONG,
     SegmentReserve: SIZE_T,
     SegmentCommit: SIZE_T,
@@ -2266,7 +2266,7 @@ EXTERN! {extern "system" {
         UserFlagsSet: ULONG,
     ) -> BOOLEAN;
 }}
-STRUCT! {struct RTL_HEAP_TAG_INFO {
+STRUCT! {#[debug] struct RTL_HEAP_TAG_INFO {
     NumberOfAllocations: ULONG,
     NumberOfFrees: ULONG,
     BytesAllocated: SIZE_T,
@@ -2317,7 +2317,7 @@ EXTERN! {extern "system" {
         Parameter: PVOID,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct RTL_HEAP_USAGE_ENTRY {
+STRUCT! {#[debug] struct RTL_HEAP_USAGE_ENTRY {
     Next: *mut RTL_HEAP_USAGE_ENTRY,
     Address: PVOID,
     Size: SIZE_T,
@@ -2325,7 +2325,7 @@ STRUCT! {struct RTL_HEAP_USAGE_ENTRY {
     TagIndex: USHORT,
 }}
 pub type PRTL_HEAP_USAGE_ENTRY = *mut RTL_HEAP_USAGE_ENTRY;
-STRUCT! {struct RTL_HEAP_USAGE {
+STRUCT! {#[debug] struct RTL_HEAP_USAGE {
     Length: ULONG,
     BytesAllocated: SIZE_T,
     BytesCommitted: SIZE_T,
@@ -2346,13 +2346,13 @@ EXTERN! {extern "system" {
         Usage: PRTL_HEAP_USAGE,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct RTL_HEAP_WALK_ENTRY_u_Block {
+STRUCT! {#[debug] struct RTL_HEAP_WALK_ENTRY_u_Block {
     Settable: SIZE_T,
     TagIndex: USHORT,
     AllocatorBackTraceIndex: USHORT,
     Reserved: [ULONG; 2],
 }}
-STRUCT! {struct RTL_HEAP_WALK_ENTRY_u_Segment {
+STRUCT! {#[debug] struct RTL_HEAP_WALK_ENTRY_u_Segment {
     CommittedSize: ULONG,
     UnCommittedSize: ULONG,
     FirstEntry: PVOID,
@@ -2362,7 +2362,7 @@ UNION! {union RTL_HEAP_WALK_ENTRY_u {
     Block: RTL_HEAP_WALK_ENTRY_u_Block,
     Segment: RTL_HEAP_WALK_ENTRY_u_Segment,
 }}
-STRUCT! {struct RTL_HEAP_WALK_ENTRY {
+STRUCT! {#[debug] struct RTL_HEAP_WALK_ENTRY {
     DataAddress: PVOID,
     DataSize: SIZE_T,
     OverheadBytes: UCHAR,
@@ -2384,14 +2384,14 @@ ENUM! {enum HEAP_COMPATIBILITY_MODE {
     HEAP_COMPATIBILITY_LAL = 1,
     HEAP_COMPATIBILITY_LFH = 2,
 }}
-STRUCT! {struct PROCESS_HEAP_INFORMATION {
+STRUCT! {#[debug] struct PROCESS_HEAP_INFORMATION {
     ReserveSize: ULONG_PTR,
     CommitSize: ULONG_PTR,
     NumberOfHeaps: ULONG,
     FirstHeapInformationOffset: ULONG_PTR,
 }}
 pub type PPROCESS_HEAP_INFORMATION = *mut PROCESS_HEAP_INFORMATION;
-STRUCT! {struct HEAP_INFORMATION {
+STRUCT! {#[debug] struct HEAP_INFORMATION {
     Address: ULONG_PTR,
     Mode: ULONG,
     ReserveSize: ULONG_PTR,
@@ -2404,7 +2404,7 @@ UNION! {union HEAP_EXTENDED_INFORMATION_u {
     ProcessHeapInformation: PROCESS_HEAP_INFORMATION,
     HeapInformation: HEAP_INFORMATION,
 }}
-STRUCT! {struct HEAP_EXTENDED_INFORMATION {
+STRUCT! {#[debug] struct HEAP_EXTENDED_INFORMATION {
     Process: HANDLE,
     Heap: ULONG_PTR,
     Level: ULONG,
@@ -2421,7 +2421,7 @@ FN! {stdcall PRTL_HEAP_LEAK_ENUMERATION_ROUTINE(
     StackTraceDepth: ULONG,
     StackTrace: *mut PVOID,
 ) -> NTSTATUS}
-STRUCT! {struct HEAP_DEBUGGING_INFORMATION {
+STRUCT! {#[debug] struct HEAP_DEBUGGING_INFORMATION {
     InterceptorFunction: PVOID,
     InterceptorValue: USHORT,
     ExtendedOptions: ULONG,
@@ -2461,14 +2461,14 @@ EXTERN! {extern "system" {
     fn RtlDetectHeapLeaks();
     fn RtlFlushHeaps();
 }}
-STRUCT! {struct RTL_MEMORY_ZONE_SEGMENT {
+STRUCT! {#[debug] struct RTL_MEMORY_ZONE_SEGMENT {
     NextSegment: *mut RTL_MEMORY_ZONE_SEGMENT,
     Size: SIZE_T,
     Next: PVOID,
     Limit: PVOID,
 }}
 pub type PRTL_MEMORY_ZONE_SEGMENT = *mut RTL_MEMORY_ZONE_SEGMENT;
-STRUCT! {struct RTL_MEMORY_ZONE {
+STRUCT! {#[debug] struct RTL_MEMORY_ZONE {
     Segment: RTL_MEMORY_ZONE_SEGMENT,
     Lock: RTL_SRWLOCK,
     LockCount: ULONG,
@@ -2572,7 +2572,7 @@ EXTERN! {extern "system" {
         Dest: PLUID_AND_ATTRIBUTES,
     );
 }}
-STRUCT! {struct RTL_PROCESS_VERIFIER_OPTIONS {
+STRUCT! {#[debug] struct RTL_PROCESS_VERIFIER_OPTIONS {
     SizeStruct: ULONG,
     Option: ULONG,
     OptionData: [UCHAR; 1],
@@ -2582,7 +2582,7 @@ UNION! {union RTL_DEBUG_INFORMATION_u {
     Modules: *mut RTL_PROCESS_MODULES,
     ModulesEx: *mut RTL_PROCESS_MODULE_INFORMATION_EX,
 }}
-STRUCT! {struct RTL_DEBUG_INFORMATION {
+STRUCT! {#[debug] struct RTL_DEBUG_INFORMATION {
     SectionHandleClient: HANDLE,
     ViewBaseClient: PVOID,
     ViewBaseTarget: PVOID,
@@ -2663,7 +2663,7 @@ EXTERN! {extern "system" {
         ReturnLength: PULONG,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct PARSE_MESSAGE_CONTEXT {
+STRUCT! {#[debug] struct PARSE_MESSAGE_CONTEXT {
     fFlags: ULONG,
     cwSavColumn: ULONG,
     iwSrc: SIZE_T,
@@ -2827,7 +2827,7 @@ EXTERN! {extern "system" {
         Port: PUSHORT,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct TIME_FIELDS {
+STRUCT! {#[debug] struct TIME_FIELDS {
     Year: CSHORT,
     Month: CSHORT,
     Day: CSHORT,
@@ -2882,7 +2882,7 @@ EXTERN! {extern "system" {
         Time: PLARGE_INTEGER,
     );
 }}
-STRUCT! {struct RTL_TIME_ZONE_INFORMATION {
+STRUCT! {#[debug] struct RTL_TIME_ZONE_INFORMATION {
     Bias: LONG,
     StandardName: [WCHAR; 32],
     StandardStart: TIME_FIELDS,
@@ -2900,7 +2900,7 @@ EXTERN! {extern "system" {
         TimeZoneInformation: PRTL_TIME_ZONE_INFORMATION,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct RTL_BITMAP {
+STRUCT! {#[debug] struct RTL_BITMAP {
     SizeOfBitMap: ULONG,
     Buffer: PULONG,
 }}
@@ -2966,7 +2966,7 @@ EXTERN! {extern "system" {
         Set: ULONGLONG,
     ) -> CCHAR;
 }}
-STRUCT! {struct RTL_BITMAP_RUN {
+STRUCT! {#[debug] struct RTL_BITMAP_RUN {
     StartingIndex: ULONG,
     NumberOfBits: ULONG,
 }}
@@ -3066,7 +3066,7 @@ EXTERN! {extern "system" {
         Length: ULONG,
     ) -> ULONG;
 }}
-STRUCT! {struct RTL_BITMAP_EX {
+STRUCT! {#[debug] struct RTL_BITMAP_EX {
     SizeOfBitMap: ULONG64,
     Buffer: PULONG64,
 }}
@@ -3109,7 +3109,7 @@ UNION! {union RTL_HANDLE_TABLE_ENTRY {
 }}
 pub type PRTL_HANDLE_TABLE_ENTRY = *mut RTL_HANDLE_TABLE_ENTRY;
 pub const RTL_HANDLE_ALLOCATED: USHORT = 0x0001;
-STRUCT! {struct RTL_HANDLE_TABLE {
+STRUCT! {#[debug] struct RTL_HANDLE_TABLE {
     MaximumNumberOfHandles: ULONG,
     SizeOfHandleTableEntry: ULONG,
     Reserved: [ULONG; 2],
@@ -3858,7 +3858,7 @@ FN! {stdcall PRTL_QUERY_REGISTRY_ROUTINE(
     Context: PVOID,
     EntryContext: PVOID,
 ) -> NTSTATUS}
-STRUCT! {struct RTL_QUERY_REGISTRY_TABLE {
+STRUCT! {#[debug] struct RTL_QUERY_REGISTRY_TABLE {
     QueryRoutine: PRTL_QUERY_REGISTRY_ROUTINE,
     Flags: ULONG,
     Name: PWSTR,
@@ -4008,7 +4008,7 @@ EXTERN! {extern "system" {
         Length: PULONG,
     ) -> PVOID;
 }}
-STRUCT! {struct RTL_ELEVATION_FLAGS {
+STRUCT! {#[debug] struct RTL_ELEVATION_FLAGS {
     Flags: ULONG,
 }}
 BITFIELD! {RTL_ELEVATION_FLAGS Flags: ULONG [
@@ -4033,7 +4033,7 @@ EXTERN! {extern "system" {
     ) -> NTSTATUS;
 }}
 pub const RTL_UNLOAD_EVENT_TRACE_NUMBER: u32 = 64;
-STRUCT! {struct RTL_UNLOAD_EVENT_TRACE {
+STRUCT! {#[debug] struct RTL_UNLOAD_EVENT_TRACE {
     BaseAddress: PVOID,
     SizeOfImage: SIZE_T,
     Sequence: ULONG,
@@ -4043,7 +4043,7 @@ STRUCT! {struct RTL_UNLOAD_EVENT_TRACE {
     Version: [ULONG; 2],
 }}
 pub type PRTL_UNLOAD_EVENT_TRACE = *mut RTL_UNLOAD_EVENT_TRACE;
-STRUCT! {struct RTL_UNLOAD_EVENT_TRACE32 {
+STRUCT! {#[debug] struct RTL_UNLOAD_EVENT_TRACE32 {
     BaseAddress: ULONG,
     SizeOfImage: ULONG,
     Sequence: ULONG,
@@ -4102,58 +4102,58 @@ BITFIELD! {unsafe RTL_IMAGE_MITIGATION_POLICY Bitfields2: ULONG64 [
     AuditReserved set_AuditReserved[4..64],
 ]}
 pub type PRTL_IMAGE_MITIGATION_POLICY = *mut RTL_IMAGE_MITIGATION_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_DEP_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_DEP_POLICY {
     Dep: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_DEP_POLICY = *mut RTL_IMAGE_MITIGATION_DEP_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_ASLR_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_ASLR_POLICY {
     ForceRelocateImages: RTL_IMAGE_MITIGATION_POLICY,
     BottomUpRandomization: RTL_IMAGE_MITIGATION_POLICY,
     HighEntropyRandomization: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_ASLR_POLICY = *mut RTL_IMAGE_MITIGATION_ASLR_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_DYNAMIC_CODE_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_DYNAMIC_CODE_POLICY {
     BlockDynamicCode: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_DYNAMIC_CODE_POLICY = *mut RTL_IMAGE_MITIGATION_DYNAMIC_CODE_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY {
     StrictHandleChecks: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY =
     *mut RTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY {
     BlockWin32kSystemCalls: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY =
     *mut RTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY {
     DisableExtensionPoints: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY =
     *mut RTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY {
     ControlFlowGuard: RTL_IMAGE_MITIGATION_POLICY,
     StrictControlFlowGuard: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY =
     *mut RTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY {
     BlockNonMicrosoftSignedBinaries: RTL_IMAGE_MITIGATION_POLICY,
     EnforceSigningOnModuleDependencies: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY =
     *mut RTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_FONT_DISABLE_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_FONT_DISABLE_POLICY {
     DisableNonSystemFonts: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_FONT_DISABLE_POLICY = *mut RTL_IMAGE_MITIGATION_FONT_DISABLE_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_IMAGE_LOAD_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_IMAGE_LOAD_POLICY {
     BlockRemoteImageLoads: RTL_IMAGE_MITIGATION_POLICY,
     BlockLowLabelImageLoads: RTL_IMAGE_MITIGATION_POLICY,
     PreferSystem32: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_IMAGE_LOAD_POLICY = *mut RTL_IMAGE_MITIGATION_IMAGE_LOAD_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY {
     EnableExportAddressFilter: RTL_IMAGE_MITIGATION_POLICY,
     EnableExportAddressFilterPlus: RTL_IMAGE_MITIGATION_POLICY,
     EnableImportAddressFilter: RTL_IMAGE_MITIGATION_POLICY,
@@ -4163,16 +4163,16 @@ STRUCT! {struct RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY {
 }}
 pub type PRTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY =
     *mut RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_CHILD_PROCESS_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_CHILD_PROCESS_POLICY {
     DisallowChildProcessCreation: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_CHILD_PROCESS_POLICY =
     *mut RTL_IMAGE_MITIGATION_CHILD_PROCESS_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_SEHOP_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_SEHOP_POLICY {
     Sehop: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_SEHOP_POLICY = *mut RTL_IMAGE_MITIGATION_SEHOP_POLICY;
-STRUCT! {struct RTL_IMAGE_MITIGATION_HEAP_POLICY {
+STRUCT! {#[debug] struct RTL_IMAGE_MITIGATION_HEAP_POLICY {
     TerminateOnHeapErrors: RTL_IMAGE_MITIGATION_POLICY,
 }}
 pub type PRTL_IMAGE_MITIGATION_HEAP_POLICY = *mut RTL_IMAGE_MITIGATION_HEAP_POLICY;
@@ -4319,7 +4319,7 @@ EXTERN! {extern "system" {
         IsFileOwnedByTrustedInstaller: PBOOLEAN,
     ) -> NTSTATUS;
 }}
-STRUCT! {struct PS_PKG_CLAIM {
+STRUCT! {#[debug] struct PS_PKG_CLAIM {
     Flags: ULONGLONG,
     Origin: ULONGLONG,
 }}
@@ -4366,7 +4366,7 @@ ENUM! {enum RTL_BSD_ITEM_TYPE {
     RtlBsdItemChecksum = 15,
     RtlBsdItemMax = 16,
 }}
-STRUCT! {struct RTL_BSD_ITEM {
+STRUCT! {#[debug] struct RTL_BSD_ITEM {
     Type: RTL_BSD_ITEM_TYPE,
     DataBuffer: PVOID,
     DataLength: ULONG,

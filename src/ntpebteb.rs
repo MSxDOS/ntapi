@@ -11,13 +11,13 @@ use winapi::shared::ntdef::{
 use winapi::um::winnt::{
     ACTIVATION_CONTEXT, FLS_MAXIMUM_AVAILABLE, NT_TIB, PRTL_CRITICAL_SECTION, PSLIST_HEADER,
 };
-STRUCT! {struct RTL_ACTIVATION_CONTEXT_STACK_FRAME {
+STRUCT! {#[debug] struct RTL_ACTIVATION_CONTEXT_STACK_FRAME {
     Previous: PRTL_ACTIVATION_CONTEXT_STACK_FRAME,
     ActivationContext: *mut ACTIVATION_CONTEXT,
     Flags: ULONG,
 }}
 pub type PRTL_ACTIVATION_CONTEXT_STACK_FRAME = *mut RTL_ACTIVATION_CONTEXT_STACK_FRAME;
-STRUCT! {struct ACTIVATION_CONTEXT_STACK {
+STRUCT! {#[debug] struct ACTIVATION_CONTEXT_STACK {
     ActiveFrame: *mut RTL_ACTIVATION_CONTEXT_STACK_FRAME,
     FrameListCache: LIST_ENTRY,
     Flags: ULONG,
@@ -25,7 +25,7 @@ STRUCT! {struct ACTIVATION_CONTEXT_STACK {
     StackId: ULONG,
 }}
 pub type PACTIVATION_CONTEXT_STACK = *mut ACTIVATION_CONTEXT_STACK;
-STRUCT! {struct API_SET_NAMESPACE {
+STRUCT! {#[debug] struct API_SET_NAMESPACE {
     Version: ULONG,
     Size: ULONG,
     Flags: ULONG,
@@ -35,12 +35,12 @@ STRUCT! {struct API_SET_NAMESPACE {
     HashFactor: ULONG,
 }}
 pub type PAPI_SET_NAMESPACE = *mut API_SET_NAMESPACE;
-STRUCT! {struct API_SET_HASH_ENTRY {
+STRUCT! {#[debug] struct API_SET_HASH_ENTRY {
     Hash: ULONG,
     Index: ULONG,
 }}
 pub type PAPI_SET_HASH_ENTRY = *mut API_SET_HASH_ENTRY;
-STRUCT! {struct API_SET_NAMESPACE_ENTRY {
+STRUCT! {#[debug] struct API_SET_NAMESPACE_ENTRY {
     Flags: ULONG,
     NameOffset: ULONG,
     NameLength: ULONG,
@@ -49,7 +49,7 @@ STRUCT! {struct API_SET_NAMESPACE_ENTRY {
     ValueCount: ULONG,
 }}
 pub type PAPI_SET_NAMESPACE_ENTRY = *mut API_SET_NAMESPACE_ENTRY;
-STRUCT! {struct API_SET_VALUE_ENTRY {
+STRUCT! {#[debug] struct API_SET_VALUE_ENTRY {
     Flags: ULONG,
     NameOffset: ULONG,
     NameLength: ULONG,
@@ -63,7 +63,7 @@ UNION! {union PEB_u {
 }}
 #[repr(C)]
 pub struct LEAP_SECOND_DATA([u8; 0]); //fixme
-STRUCT! {struct PEB {
+STRUCT! {#[debug] struct PEB {
     InheritedAddressSpace: BOOLEAN,
     ReadImageFileExecOptions: BOOLEAN,
     BeingDebugged: BOOLEAN,
@@ -185,24 +185,24 @@ BITFIELD! {PEB LeapSecondFlags: ULONG [
 ]}
 pub type PPEB = *mut PEB;
 pub const GDI_BATCH_BUFFER_SIZE: usize = 310;
-STRUCT! {struct GDI_TEB_BATCH {
+STRUCT! {#[debug] struct GDI_TEB_BATCH {
     Offset: ULONG,
     HDC: ULONG_PTR,
     Buffer: [ULONG; GDI_BATCH_BUFFER_SIZE],
 }}
 pub type PGDI_TEB_BATCH = *mut GDI_TEB_BATCH;
-STRUCT! {struct TEB_ACTIVE_FRAME_CONTEXT {
+STRUCT! {#[debug] struct TEB_ACTIVE_FRAME_CONTEXT {
     Flags: ULONG,
     FrameName: PSTR,
 }}
 pub type PTEB_ACTIVE_FRAME_CONTEXT = *mut TEB_ACTIVE_FRAME_CONTEXT;
-STRUCT! {struct TEB_ACTIVE_FRAME {
+STRUCT! {#[debug] struct TEB_ACTIVE_FRAME {
     Flags: ULONG,
     Previous: *mut TEB_ACTIVE_FRAME,
     Context: PTEB_ACTIVE_FRAME_CONTEXT,
 }}
 pub type PTEB_ACTIVE_FRAME = *mut TEB_ACTIVE_FRAME;
-STRUCT! {struct TEB_u_s {
+STRUCT! {#[debug] struct TEB_u_s {
     ReservedPad0: UCHAR,
     ReservedPad1: UCHAR,
     ReservedPad2: UCHAR,
@@ -214,7 +214,7 @@ UNION! {union TEB_u {
     s: TEB_u_s,
 }}
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
-STRUCT! {struct TEB {
+STRUCT! {#[debug] struct TEB {
     NtTib: NT_TIB,
     EnvironmentPointer: PVOID,
     ClientId: CLIENT_ID,
@@ -313,7 +313,7 @@ STRUCT! {struct TEB {
     EffectiveContainerId: GUID,
 }}
 #[cfg(target_arch = "x86")]
-STRUCT! {struct TEB {
+STRUCT! {#[debug] struct TEB {
     NtTib: NT_TIB,
     EnvironmentPointer: PVOID,
     ClientId: CLIENT_ID,
