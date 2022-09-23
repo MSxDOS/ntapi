@@ -28,11 +28,7 @@ install:
     )
 
 build_script:
-  - if "%channel%"=="nightly" (
-      cargo test --verbose --color always --features "func-types impl-default nightly user"
-    ) else (
-      cargo test --verbose --color always --features "func-types impl-default user"
-    )
+  - cargo test --verbose --color always --features "func-types impl-default user"
   - if defined aarch64 (
-      cargo test --verbose --color always --features "func-types impl-default nightly user" --target aarch64-pc-windows-msvc --no-run
+      cargo test --verbose --color always --features "func-types impl-default user" --target aarch64-pc-windows-msvc --no-run
     )
