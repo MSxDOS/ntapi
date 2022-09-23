@@ -2506,7 +2506,7 @@ EXTERN!{extern "system" {
 }}
 #[inline]
 pub const fn RtlIsEqualLuid(L1: &LUID, L2: &LUID) -> bool {
-    ((L1.LowPart == L2.LowPart) & (L1.HighPart == L2.HighPart)) as u8 != 0 //fixme
+    (L1.LowPart == L2.LowPart) && (L1.HighPart == L2.HighPart)
 }
 #[inline]
 pub const fn RtlIsZeroLuid(L1: &LUID) -> bool {

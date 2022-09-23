@@ -1121,14 +1121,22 @@ ENUM!{enum PS_ATTRIBUTE_NUM {
 }}
 #[inline]
 pub const fn PsAttributeValue(
-    Number: PS_ATTRIBUTE_NUM,
+    mut Number: PS_ATTRIBUTE_NUM,
     Thread: bool,
     Input: bool,
     Additive: bool,
-) -> ULONG_PTR { //fixme
-    (Number & PS_ATTRIBUTE_NUMBER_MASK | [0, PS_ATTRIBUTE_THREAD][Thread as usize]
-    | [0, PS_ATTRIBUTE_INPUT][Input as usize] | [0, PS_ATTRIBUTE_ADDITIVE][Additive as usize]
-    ) as usize
+) -> ULONG_PTR {
+    Number &= PS_ATTRIBUTE_NUMBER_MASK;
+    if Thread {
+        Number |= PS_ATTRIBUTE_THREAD;
+    }
+    if Input {
+        Number |= PS_ATTRIBUTE_INPUT;
+    }
+    if Additive {
+        Number |= PS_ATTRIBUTE_ADDITIVE;
+    }
+    Number as _
 }
 pub const PS_ATTRIBUTE_PARENT_PROCESS: ULONG_PTR = 0x00060000;
 pub const PS_ATTRIBUTE_DEBUG_PORT: ULONG_PTR = 0x00060001;
