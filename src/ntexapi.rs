@@ -1,9 +1,9 @@
-use core::mem::uninitialized;
+use core::mem::MaybeUninit;
 #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
 use core::ptr::addr_of;
 use core::ptr::read_volatile;
 #[cfg(target_arch = "x86")]
-use core::sync::atomic::spin_loop_hint;
+use core::hint::spin_loop;
 use crate::ntapi_base::{CLIENT_ID, KPRIORITY, KSYSTEM_TIME, PRTL_ATOM, RTL_ATOM};
 use crate::ntioapi::{BUS_DATA_TYPE, FILE_IO_COMPLETION_INFORMATION, INTERFACE_TYPE};
 use crate::ntkeapi::{KPROFILE_SOURCE, KTHREAD_STATE, KWAIT_REASON};
@@ -2780,7 +2780,7 @@ pub type PKUSER_SHARED_DATA = *mut KUSER_SHARED_DATA;
 pub const USER_SHARED_DATA: *const KUSER_SHARED_DATA = 0x7ffe0000 as *const _;
 #[inline]
 pub unsafe fn NtGetTickCount64() -> ULONGLONG {
-    let mut tick_count: ULARGE_INTEGER = uninitialized();
+    let mut tick_count: ULARGE_INTEGER = MaybeUninit::uninit().assume_init();
     #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
         *tick_count.QuadPart_mut() = read_volatile(addr_of!((*USER_SHARED_DATA).u.TickCountQuad));
     }
@@ -2794,7 +2794,7 @@ pub unsafe fn NtGetTickCount64() -> ULONGLONG {
             {
                 break;
             }
-            spin_loop_hint();
+            spin_loop();
         }
     }
     (UInt32x32To64(tick_count.s().LowPart, (*USER_SHARED_DATA).TickCountMultiplier) >> 24)
@@ -2810,7 +2810,7 @@ pub unsafe fn NtGetTickCount() -> ULONG {
             * (*USER_SHARED_DATA).TickCountMultiplier as u64) >> 24) as u32
     }
     #[cfg(target_arch = "x86")] {
-        let mut tick_count: ULARGE_INTEGER = uninitialized();
+        let mut tick_count: ULARGE_INTEGER = MaybeUninit::uninit().assume_init();
         loop {
             tick_count.s_mut().HighPart = read_volatile(&(*USER_SHARED_DATA).u.TickCount.High1Time)
                 as u32;
@@ -2820,7 +2820,7 @@ pub unsafe fn NtGetTickCount() -> ULONG {
             {
                 break;
             }
-            spin_loop_hint();
+            spin_loop();
         }
         ((UInt32x32To64(tick_count.s().LowPart, (*USER_SHARED_DATA).TickCountMultiplier) >> 24)
             + UInt32x32To64(
