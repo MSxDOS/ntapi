@@ -12,9 +12,9 @@ environment:
     - host: i686-pc-windows-gnu
       channel: nightly
     - host: x86_64-pc-windows-gnu
-      channel: 1.33.0
+      channel: 1.64.0
     - host: i686-pc-windows-gnu
-      channel: 1.33.0
+      channel: 1.64.0
 
 install:
   - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
