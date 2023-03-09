@@ -29,17 +29,8 @@ macro_rules! EXTERN {
 macro_rules! FIELD_OFFSET {
     ($_type:ty, $field:ident$(.$cfields:ident)*) => {
         unsafe {
-            union Transmuter<T: 'static> {
-                p: *const T,
-                r: &'static T,
-                i: usize,
-            }
-            #[allow(unaligned_references)]
-            Transmuter {
-                r: &(&Transmuter {
-                    p: $crate::_core::ptr::null::<$_type>()
-                }.r).$field$(.$cfields)*
-            }.i
+            let base = ::core::mem::MaybeUninit::<$_type>::uninit().as_ptr();
+            ::core::ptr::addr_of!((*base).$field$(.$cfields)*) as usize - base as usize
         }
     };
 }
