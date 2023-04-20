@@ -27,12 +27,11 @@ macro_rules! EXTERN {
 #[macro_export]
 #[doc(hidden)]
 macro_rules! FIELD_OFFSET {
-    ($_type:ty, $field:ident$(.$cfields:ident)*) => {
-        unsafe {
-            let base = ::core::mem::MaybeUninit::<$_type>::uninit().as_ptr();
-            ::core::ptr::addr_of!((*base).$field$(.$cfields)*) as usize - base as usize
-        }
-    };
+    ($_type:ty, $field:ident$(.$cfields:ident)*) => {{
+        let obj = core::mem::MaybeUninit::<$_type>::uninit();
+        let base = obj.as_ptr();
+        unsafe { core::ptr::addr_of!((*base).$field$(.$cfields)*) as usize - base as usize }
+    }};
 }
 macro_rules! BITFIELD {
     ($base:ident $field:ident: $fieldtype:ty [
