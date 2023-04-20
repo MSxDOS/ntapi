@@ -2780,7 +2780,7 @@ pub type PKUSER_SHARED_DATA = *mut KUSER_SHARED_DATA;
 pub const USER_SHARED_DATA: *const KUSER_SHARED_DATA = 0x7ffe0000 as *const _;
 #[inline]
 pub unsafe fn NtGetTickCount64() -> ULONGLONG {
-    let mut tick_count: ULARGE_INTEGER = MaybeUninit::uninit().assume_init();
+    let mut tick_count: ULARGE_INTEGER = MaybeUninit::zeroed().assume_init();
     #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))] {
         *tick_count.QuadPart_mut() = read_volatile(addr_of!((*USER_SHARED_DATA).u.TickCountQuad));
     }
@@ -2810,7 +2810,7 @@ pub unsafe fn NtGetTickCount() -> ULONG {
             * (*USER_SHARED_DATA).TickCountMultiplier as u64) >> 24) as u32
     }
     #[cfg(target_arch = "x86")] {
-        let mut tick_count: ULARGE_INTEGER = MaybeUninit::uninit().assume_init();
+        let mut tick_count: ULARGE_INTEGER = MaybeUninit::zeroed().assume_init();
         loop {
             tick_count.s_mut().HighPart = read_volatile(&(*USER_SHARED_DATA).u.TickCount.High1Time)
                 as u32;
