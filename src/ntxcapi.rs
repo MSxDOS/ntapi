@@ -1,29 +1,34 @@
-use winapi::shared::ntdef::{BOOLEAN, NTSTATUS, PSTR, PVOID, ULONG};
-use winapi::um::winnt::{PCONTEXT, PEXCEPTION_RECORD};
-EXTERN!{extern "system" {
+use windows_sys::Win32::{
+    Foundation::NTSTATUS,
+    System::Diagnostics::Debug::{CONTEXT, EXCEPTION_RECORD},
+};
+
+use crate::ctypes::{c_char, c_uchar, c_ulong, c_void};
+
+EXTERN! {extern "system" {
     fn RtlDispatchException(
-        ExceptionRecord: PEXCEPTION_RECORD,
-        ContextRecord: PCONTEXT,
-    ) -> BOOLEAN;
+        ExceptionRecord: *mut EXCEPTION_RECORD,
+        ContextRecord: *mut CONTEXT,
+    ) -> c_uchar;
     fn RtlRaiseStatus(
         Status: NTSTATUS,
     );
     fn RtlRaiseException(
-        ExceptionRecord: PEXCEPTION_RECORD,
+        ExceptionRecord: *mut EXCEPTION_RECORD,
     );
     fn NtContinue(
-        ContextRecord: PCONTEXT,
-        TestAlert: BOOLEAN,
+        ContextRecord: *mut CONTEXT,
+        TestAlert: c_uchar,
     ) -> NTSTATUS;
     fn NtRaiseException(
-        ExceptionRecord: PEXCEPTION_RECORD,
-        ContextRecord: PCONTEXT,
-        FirstChance: BOOLEAN,
+        ExceptionRecord: *mut EXCEPTION_RECORD,
+        ContextRecord: *mut CONTEXT,
+        FirstChance: c_uchar,
     ) -> NTSTATUS;
     fn RtlAssert(
-        VoidFailedAssertion: PVOID,
-        VoidFileName: PVOID,
-        LineNumber: ULONG,
-        MutableMessage: PSTR,
+        VoidFailedAssertion: *mut c_void,
+        VoidFileName: *mut c_void,
+        LineNumber: c_ulong,
+        MutableMessage: *mut c_char,
     );
 }}

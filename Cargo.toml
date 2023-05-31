@@ -9,20 +9,51 @@ repository = "https://github.com/MSxDOS/ntapi"
 readme = "README.md"
 categories = ["external-ffi-bindings", "no-std", "os::windows-apis"]
 keywords = ["windows", "ffi", "ntapi", "native", "win32"]
-include = ["src/**/*", "Cargo.toml", "build.rs", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
+include = [
+  "src/**/*",
+  "Cargo.toml",
+  "build.rs",
+  "README.md",
+  "LICENSE-APACHE",
+  "LICENSE-MIT",
+]
 edition = "2018"
 
 [package.metadata.docs.rs]
 default-target = "x86_64-pc-windows-msvc"
-targets = ["aarch64-pc-windows-msvc", "i686-pc-windows-msvc", "x86_64-pc-windows-msvc"]
+targets = [
+  "aarch64-pc-windows-msvc",
+  "i686-pc-windows-msvc",
+  "x86_64-pc-windows-msvc",
+]
 
-[dependencies.winapi]
-version = "0.3.9"
-features = ["cfg", "evntrace", "in6addr", "inaddr", "minwinbase", "ntsecapi", "windef", "winioctl"]
+[dependencies.windows-sys]
+version = "0.48.0"
+features = [
+  'Win32_Devices_DeviceAndDriverInstallation',
+  'Win32_Foundation',
+  'Win32_Networking_WinSock',
+  'Win32_Security_Authentication_Identity',
+  'Win32_Security',
+  'Win32_Storage_FileSystem',
+  'Win32_System_Diagnostics_Debug',
+  'Win32_System_Diagnostics_Etw',
+  'Win32_System_Ioctl',
+  'Win32_System_JobObjects',
+  'Win32_System_Kernel',
+  'Win32_System_Memory',
+  'Win32_System_Performance_HardwareCounterProfiling',
+  'Win32_System_Power',
+  'Win32_System_SystemInformation',
+  'Win32_System_SystemServices',
+  'Win32_System_Threading',
+  'Win32_System_WindowsProgramming',
+  'Win32_UI_WindowsAndMessaging',
+]
 
 [features]
 default = ["user"]
 func-types = []
-impl-default = ["winapi/impl-default"]
+impl-default = []
 user = []
 kernel = []

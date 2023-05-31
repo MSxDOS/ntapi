@@ -1,7 +1,14 @@
-use winapi::shared::cfg::PNP_VETO_TYPE;
-use winapi::shared::guiddef::GUID;
-use winapi::shared::ntdef::{HANDLE, NTSTATUS, PULONG, PUNICODE_STRING, PVOID, ULONG, WCHAR};
-ENUM!{enum PLUGPLAY_EVENT_CATEGORY {
+use windows_sys::{
+    core::GUID,
+    Win32::{
+        Devices::DeviceAndDriverInstallation::PNP_VETO_TYPE,
+        Foundation::{HANDLE, NTSTATUS, UNICODE_STRING},
+    },
+};
+
+use crate::ctypes::{c_ulong, c_void, wchar_t};
+
+ENUM! {enum PLUGPLAY_EVENT_CATEGORY {
     HardwareProfileChangeEvent = 0,
     TargetDeviceChangeEvent = 1,
     DeviceClassChangeEvent = 2,
@@ -15,38 +22,38 @@ ENUM!{enum PLUGPLAY_EVENT_CATEGORY {
     MaxPlugEventCategory = 10,
 }}
 pub type PPLUGPLAY_EVENT_CATEGORY = *mut PLUGPLAY_EVENT_CATEGORY;
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_DeviceClass {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_DeviceClass {
     ClassGuid: GUID,
-    SymbolicLinkName: [WCHAR; 1],
+    SymbolicLinkName: [wchar_t; 1],
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_TargetDevice {
-    DeviceIds: [WCHAR; 1],
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_TargetDevice {
+    DeviceIds: [wchar_t; 1],
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_InstallDevice {
-    DeviceId: [WCHAR; 1],
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_InstallDevice {
+    DeviceId: [wchar_t; 1],
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_CustomNotification {
-    NotificationStructure: PVOID,
-    DeviceIds: [WCHAR; 1],
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_CustomNotification {
+    NotificationStructure: *mut c_void,
+    DeviceIds: [wchar_t; 1],
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_ProfileNotification {
-    Notification: PVOID,
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_ProfileNotification {
+    Notification: *mut c_void,
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_PowerNotification {
-    NotificationCode: ULONG,
-    NotificationData: ULONG,
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_PowerNotification {
+    NotificationCode: c_ulong,
+    NotificationData: c_ulong,
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_VetoNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_VetoNotification {
     VetoType: PNP_VETO_TYPE,
-    DeviceIdVetoNameBuffer: [WCHAR; 1],
+    DeviceIdVetoNameBuffer: [wchar_t; 1],
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_BlockedDriverNotification {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_BlockedDriverNotification {
     BlockedDriverGuid: GUID,
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK_u_InvalidIDNotification {
-    ParentId: [WCHAR; 1],
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK_u_InvalidIDNotification {
+    ParentId: [wchar_t; 1],
 }}
-UNION!{union PLUGPLAY_EVENT_BLOCK_u {
+UNION! {union PLUGPLAY_EVENT_BLOCK_u {
     DeviceClass: PLUGPLAY_EVENT_BLOCK_u_DeviceClass,
     TargetDevice: PLUGPLAY_EVENT_BLOCK_u_TargetDevice,
     InstallDevice: PLUGPLAY_EVENT_BLOCK_u_InstallDevice,
@@ -57,17 +64,17 @@ UNION!{union PLUGPLAY_EVENT_BLOCK_u {
     BlockedDriverNotification: PLUGPLAY_EVENT_BLOCK_u_BlockedDriverNotification,
     InvalidIDNotification: PLUGPLAY_EVENT_BLOCK_u_InvalidIDNotification,
 }}
-STRUCT!{struct PLUGPLAY_EVENT_BLOCK {
+STRUCT! {struct PLUGPLAY_EVENT_BLOCK {
     EventGuid: GUID,
     EventCategory: PLUGPLAY_EVENT_CATEGORY,
-    Result: PULONG,
-    Flags: ULONG,
-    TotalSize: ULONG,
-    DeviceObject: PVOID,
+    Result: *mut c_ulong,
+    Flags: c_ulong,
+    TotalSize: c_ulong,
+    DeviceObject: *mut c_void,
     u: PLUGPLAY_EVENT_BLOCK_u,
 }}
 pub type PPLUGPLAY_EVENT_BLOCK = *mut PLUGPLAY_EVENT_BLOCK;
-ENUM!{enum PLUGPLAY_CONTROL_CLASS {
+ENUM! {enum PLUGPLAY_CONTROL_CLASS {
     PlugPlayControlEnumerateDevice = 0,
     PlugPlayControlRegisterNewDevice = 1,
     PlugPlayControlDeregisterDevice = 2,
@@ -95,24 +102,24 @@ ENUM!{enum PLUGPLAY_CONTROL_CLASS {
     MaxPlugPlayControl = 24,
 }}
 pub type PPLUGPLAY_CONTROL_CLASS = *mut PLUGPLAY_CONTROL_CLASS;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtGetPlugPlayEvent(
         EventHandle: HANDLE,
-        Context: PVOID,
+        Context: *mut c_void,
         EventBlock: PPLUGPLAY_EVENT_BLOCK,
-        EventBufferSize: ULONG,
+        EventBufferSize: c_ulong,
     ) -> NTSTATUS;
     fn NtPlugPlayControl(
         PnPControlClass: PLUGPLAY_CONTROL_CLASS,
-        PnPControlData: PVOID,
-        PnPControlDataLength: ULONG,
+        PnPControlData: *mut c_void,
+        PnPControlDataLength: c_ulong,
     ) -> NTSTATUS;
     fn NtSerializeBoot() -> NTSTATUS;
     fn NtEnableLastKnownGood() -> NTSTATUS;
     fn NtDisableLastKnownGood() -> NTSTATUS;
     fn NtReplacePartitionUnit(
-        TargetInstancePath: PUNICODE_STRING,
-        SpareInstancePath: PUNICODE_STRING,
-        Flags: ULONG,
+        TargetInstancePath: *mut UNICODE_STRING,
+        SpareInstancePath: *mut UNICODE_STRING,
+        Flags: c_ulong,
     ) -> NTSTATUS;
 }}
