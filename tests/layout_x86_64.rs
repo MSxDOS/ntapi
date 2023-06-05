@@ -468,7 +468,7 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSDBG_LIVEDUMP_CONTROL_ADDPAGES>(), 4);
     assert_eq!(size_of::<SYSDBG_LIVEDUMP_CONTROL>(), 64);
     assert_eq!(align_of::<SYSDBG_LIVEDUMP_CONTROL>(), 8);
-    assert_eq!(size_of::<KUSER_SHARED_DATA>(), 1800);
+    assert_eq!(size_of::<KUSER_SHARED_DATA>(), 1824);
     assert_eq!(align_of::<KUSER_SHARED_DATA>(), 4);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TickCountLowDeprecated), 0);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TickCountMultiplier), 4);
@@ -1018,7 +1018,7 @@ fn ntpebteb() {
     assert_eq!(align_of::<API_SET_NAMESPACE_ENTRY>(), 4);
     assert_eq!(size_of::<API_SET_VALUE_ENTRY>(), 20);
     assert_eq!(align_of::<API_SET_VALUE_ENTRY>(), 4);
-    assert_eq!(size_of::<PEB>(), 1992);
+    assert_eq!(size_of::<PEB>(), 2480);
     assert_eq!(align_of::<PEB>(), 8);
     assert_eq!(FIELD_OFFSET!(PEB, InheritedAddressSpace), 0);
     assert_eq!(FIELD_OFFSET!(PEB, ReadImageFileExecOptions), 1);
@@ -1086,27 +1086,27 @@ fn ntpebteb() {
     assert_eq!(FIELD_OFFSET!(PEB, FlsListHead), 808);
     assert_eq!(FIELD_OFFSET!(PEB, FlsBitmap), 824);
     assert_eq!(FIELD_OFFSET!(PEB, FlsBitmapBits), 832);
-    assert_eq!(FIELD_OFFSET!(PEB, FlsHighIndex), 848);
-    assert_eq!(FIELD_OFFSET!(PEB, WerRegistrationData), 856);
-    assert_eq!(FIELD_OFFSET!(PEB, WerShipAssertPtr), 864);
-    assert_eq!(FIELD_OFFSET!(PEB, pUnused), 872);
-    assert_eq!(FIELD_OFFSET!(PEB, pImageHeaderHash), 880);
-    assert_eq!(FIELD_OFFSET!(PEB, TracingFlags), 888);
-    assert_eq!(FIELD_OFFSET!(PEB, CsrServerReadOnlySharedMemoryBase), 896);
-    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpListLock), 904);
-    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpList), 912);
-    assert_eq!(FIELD_OFFSET!(PEB, WaitOnAddressHashTable), 928);
-    assert_eq!(FIELD_OFFSET!(PEB, TelemetryCoverageHeader), 1952);
-    assert_eq!(FIELD_OFFSET!(PEB, CloudFileFlags), 1960);
-    assert_eq!(FIELD_OFFSET!(PEB, CloudFileDiagFlags), 1964);
-    assert_eq!(FIELD_OFFSET!(PEB, PlaceholderCompatibilityMode), 1968);
+    assert_eq!(FIELD_OFFSET!(PEB, FlsHighIndex), 1340);
+    assert_eq!(FIELD_OFFSET!(PEB, WerRegistrationData), 1344);
+    assert_eq!(FIELD_OFFSET!(PEB, WerShipAssertPtr), 1352);
+    assert_eq!(FIELD_OFFSET!(PEB, pUnused), 1360);
+    assert_eq!(FIELD_OFFSET!(PEB, pImageHeaderHash), 1368);
+    assert_eq!(FIELD_OFFSET!(PEB, TracingFlags), 1376);
+    assert_eq!(FIELD_OFFSET!(PEB, CsrServerReadOnlySharedMemoryBase), 1384);
+    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpListLock), 1392);
+    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpList), 1400);
+    assert_eq!(FIELD_OFFSET!(PEB, WaitOnAddressHashTable), 1416);
+    assert_eq!(FIELD_OFFSET!(PEB, TelemetryCoverageHeader), 2440);
+    assert_eq!(FIELD_OFFSET!(PEB, CloudFileFlags), 2448);
+    assert_eq!(FIELD_OFFSET!(PEB, CloudFileDiagFlags), 2452);
+    assert_eq!(FIELD_OFFSET!(PEB, PlaceholderCompatibilityMode), 2456);
     assert_eq!(
         FIELD_OFFSET!(PEB, PlaceholderCompatibilityModeReserved),
-        1969
+        2457
     );
-    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondData), 1976);
-    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondFlags), 1984);
-    assert_eq!(FIELD_OFFSET!(PEB, NtGlobalFlag2), 1988);
+    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondData), 2464);
+    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondFlags), 2472);
+    assert_eq!(FIELD_OFFSET!(PEB, NtGlobalFlag2), 2476);
     assert_eq!(size_of::<GDI_TEB_BATCH>(), 1256);
     assert_eq!(align_of::<GDI_TEB_BATCH>(), 8);
     assert_eq!(size_of::<TEB_ACTIVE_FRAME_CONTEXT>(), 16);
@@ -2205,7 +2205,7 @@ fn ntwow64() {
         FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, LoaderThreads),
         672
     );
-    assert_eq!(size_of::<PEB32>(), 1136);
+    assert_eq!(size_of::<PEB32>(), 1624);
     assert_eq!(align_of::<PEB32>(), 8);
     assert_eq!(FIELD_OFFSET!(PEB32, InheritedAddressSpace), 0);
     assert_eq!(FIELD_OFFSET!(PEB32, ReadImageFileExecOptions), 1);
@@ -2279,23 +2279,26 @@ fn ntwow64() {
     assert_eq!(FIELD_OFFSET!(PEB32, FlsListHead), 528);
     assert_eq!(FIELD_OFFSET!(PEB32, FlsBitmap), 536);
     assert_eq!(FIELD_OFFSET!(PEB32, FlsBitmapBits), 540);
-    assert_eq!(FIELD_OFFSET!(PEB32, FlsHighIndex), 556);
-    assert_eq!(FIELD_OFFSET!(PEB32, WerRegistrationData), 560);
-    assert_eq!(FIELD_OFFSET!(PEB32, WerShipAssertPtr), 564);
-    assert_eq!(FIELD_OFFSET!(PEB32, pContextData), 568);
-    assert_eq!(FIELD_OFFSET!(PEB32, pImageHeaderHash), 572);
-    assert_eq!(FIELD_OFFSET!(PEB32, TracingFlags), 576);
-    assert_eq!(FIELD_OFFSET!(PEB32, CsrServerReadOnlySharedMemoryBase), 584);
-    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpListLock), 592);
-    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpList), 596);
-    assert_eq!(FIELD_OFFSET!(PEB32, WaitOnAddressHashTable), 604);
-    assert_eq!(FIELD_OFFSET!(PEB32, TelemetryCoverageHeader), 1116);
-    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileFlags), 1120);
-    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileDiagFlags), 1124);
-    assert_eq!(FIELD_OFFSET!(PEB32, PlaceholderCompatibilityMode), 1128);
+    assert_eq!(FIELD_OFFSET!(PEB32, FlsHighIndex), 1048);
+    assert_eq!(FIELD_OFFSET!(PEB32, WerRegistrationData), 1052);
+    assert_eq!(FIELD_OFFSET!(PEB32, WerShipAssertPtr), 1056);
+    assert_eq!(FIELD_OFFSET!(PEB32, pContextData), 1060);
+    assert_eq!(FIELD_OFFSET!(PEB32, pImageHeaderHash), 1064);
+    assert_eq!(FIELD_OFFSET!(PEB32, TracingFlags), 1068);
+    assert_eq!(
+        FIELD_OFFSET!(PEB32, CsrServerReadOnlySharedMemoryBase),
+        1072
+    );
+    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpListLock), 1080);
+    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpList), 1084);
+    assert_eq!(FIELD_OFFSET!(PEB32, WaitOnAddressHashTable), 1092);
+    assert_eq!(FIELD_OFFSET!(PEB32, TelemetryCoverageHeader), 1604);
+    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileFlags), 1608);
+    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileDiagFlags), 1612);
+    assert_eq!(FIELD_OFFSET!(PEB32, PlaceholderCompatibilityMode), 1616);
     assert_eq!(
         FIELD_OFFSET!(PEB32, PlaceholderCompatibilityModeReserved),
-        1129
+        1617
     );
     assert_eq!(size_of::<GDI_TEB_BATCH32>(), 1248);
     assert_eq!(align_of::<GDI_TEB_BATCH32>(), 4);
