@@ -1,58 +1,70 @@
-use crate::ntioapi::PIO_STATUS_BLOCK;
-use winapi::shared::ntdef::{HANDLE, LOGICAL, LONG, NTSTATUS, PLARGE_INTEGER, PVOID};
-use winapi::um::winnt::{
-    PRTL_CRITICAL_SECTION, PTP_CALLBACK_ENVIRON, PTP_CALLBACK_INSTANCE, PTP_CLEANUP_GROUP, PTP_IO,
-    PTP_POOL, PTP_POOL_STACK_INFORMATION, PTP_SIMPLE_CALLBACK, PTP_TIMER, PTP_TIMER_CALLBACK,
-    PTP_WAIT, PTP_WAIT_CALLBACK, PTP_WORK, PTP_WORK_CALLBACK,
+use windows_sys::Win32::{
+    Foundation::{HANDLE, NTSTATUS},
+    System::{
+        SystemServices::TP_CLEANUP_GROUP,
+        Threading::{
+            PTP_CALLBACK_INSTANCE, PTP_IO, PTP_POOL, PTP_SIMPLE_CALLBACK,
+            PTP_TIMER, PTP_TIMER_CALLBACK, PTP_WAIT, PTP_WAIT_CALLBACK,
+            PTP_WORK, PTP_WORK_CALLBACK, RTL_CRITICAL_SECTION,
+            TP_CALLBACK_ENVIRON_V3, TP_POOL_STACK_INFORMATION,
+        },
+    },
 };
+
+use crate::{
+    ctypes::{c_long, c_ulong, c_void},
+    ntioapi::PIO_STATUS_BLOCK,
+    windows_local::shared::ntdef::LARGE_INTEGER,
+};
+
 #[repr(C)]
 pub struct TP_ALPC([u8; 0]);
 pub type PTP_ALPC = *mut TP_ALPC;
-FN!{stdcall PTP_ALPC_CALLBACK(
+FN! {stdcall PTP_ALPC_CALLBACK(
     Instance: PTP_CALLBACK_INSTANCE,
-    Context: PVOID,
+    Context: *mut c_void,
     Alpc: PTP_ALPC,
 ) -> ()}
-FN!{stdcall PTP_ALPC_CALLBACK_EX(
+FN! {stdcall PTP_ALPC_CALLBACK_EX(
     Instanc: PTP_CALLBACK_INSTANCE,
-    Contex: PVOID,
+    Contex: *mut c_void,
     Alp: PTP_ALPC,
-    ApcContext: PVOID,
+    ApcContext: *mut c_void,
 ) -> ()}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn TpAllocPool(
         PoolReturn: *mut PTP_POOL,
-        Reserved: PVOID,
+        Reserved: *mut c_void,
     ) -> NTSTATUS;
     fn TpReleasePool(
         Pool: PTP_POOL,
     );
     fn TpSetPoolMaxThreads(
         Pool: PTP_POOL,
-        MaxThreads: LONG,
+        MaxThreads: c_long,
     );
     fn TpSetPoolMinThreads(
         Pool: PTP_POOL,
-        MinThreads: LONG,
+        MinThreads: c_long,
     ) -> NTSTATUS;
     fn TpQueryPoolStackInformation(
         Pool: PTP_POOL,
-        PoolStackInformation: PTP_POOL_STACK_INFORMATION,
+        PoolStackInformation: *mut TP_POOL_STACK_INFORMATION,
     ) -> NTSTATUS;
     fn TpSetPoolStackInformation(
         Pool: PTP_POOL,
-        PoolStackInformation: PTP_POOL_STACK_INFORMATION,
+        PoolStackInformation: *mut TP_POOL_STACK_INFORMATION,
     ) -> NTSTATUS;
     fn TpAllocCleanupGroup(
-        CleanupGroupReturn: *mut PTP_CLEANUP_GROUP,
+        CleanupGroupReturn: *mut *mut TP_CLEANUP_GROUP,
     ) -> NTSTATUS;
     fn TpReleaseCleanupGroup(
-        CleanupGroup: PTP_CLEANUP_GROUP,
+        CleanupGroup: *mut TP_CLEANUP_GROUP,
     );
     fn TpReleaseCleanupGroupMembers(
-        CleanupGroup: PTP_CLEANUP_GROUP,
-        CancelPendingCallbacks: LOGICAL,
-        CleanupParameter: PVOID,
+        CleanupGroup: *mut TP_CLEANUP_GROUP,
+        CancelPendingCallbacks: c_ulong,
+        CleanupParameter: *mut c_void,
     );
     fn TpCallbackSetEventOnCompletion(
         Instance: PTP_CALLBACK_INSTANCE,
@@ -61,7 +73,7 @@ EXTERN!{extern "system" {
     fn TpCallbackReleaseSemaphoreOnCompletion(
         Instance: PTP_CALLBACK_INSTANCE,
         Semaphore: HANDLE,
-        ReleaseCount: LONG,
+        ReleaseCount: c_long,
     );
     fn TpCallbackReleaseMutexOnCompletion(
         Instance: PTP_CALLBACK_INSTANCE,
@@ -69,11 +81,11 @@ EXTERN!{extern "system" {
     );
     fn TpCallbackLeaveCriticalSectionOnCompletion(
         Instance: PTP_CALLBACK_INSTANCE,
-        CriticalSection: PRTL_CRITICAL_SECTION,
+        CriticalSection: *mut RTL_CRITICAL_SECTION,
     );
     fn TpCallbackUnloadDllOnCompletion(
         Instance: PTP_CALLBACK_INSTANCE,
-        DllHandle: PVOID,
+        DllHandle: *mut c_void,
     );
     fn TpCallbackMayRunLong(
         Instance: PTP_CALLBACK_INSTANCE,
@@ -83,14 +95,14 @@ EXTERN!{extern "system" {
     );
     fn TpSimpleTryPost(
         Callback: PTP_SIMPLE_CALLBACK,
-        Context: PVOID,
-        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Context: *mut c_void,
+        CallbackEnviron: *mut TP_CALLBACK_ENVIRON_V3,
     ) -> NTSTATUS;
     fn TpAllocWork(
         WorkReturn: *mut PTP_WORK,
         Callback: PTP_WORK_CALLBACK,
-        Context: PVOID,
-        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Context: *mut c_void,
+        CallbackEnviron: *mut TP_CALLBACK_ENVIRON_V3,
     ) -> NTSTATUS;
     fn TpReleaseWork(
         Work: PTP_WORK,
@@ -100,35 +112,35 @@ EXTERN!{extern "system" {
     );
     fn TpWaitForWork(
         Work: PTP_WORK,
-        CancelPendingCallbacks: LOGICAL,
+        CancelPendingCallbacks: c_ulong,
     );
     fn TpAllocTimer(
         Timer: *mut PTP_TIMER,
         Callback: PTP_TIMER_CALLBACK,
-        Context: PVOID,
-        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Context: *mut c_void,
+        CallbackEnviron: *mut TP_CALLBACK_ENVIRON_V3,
     ) -> NTSTATUS;
     fn TpReleaseTimer(
         Timer: PTP_TIMER,
     );
     fn TpSetTimer(
         Timer: PTP_TIMER,
-        DueTime: PLARGE_INTEGER,
-        Period: LONG,
-        WindowLength: LONG,
+        DueTime: *mut LARGE_INTEGER,
+        Period: c_long,
+        WindowLength: c_long,
     );
     fn TpIsTimerSet(
         Timer: PTP_TIMER,
-    ) -> LOGICAL;
+    ) -> c_ulong;
     fn TpWaitForTimer(
         Timer: PTP_TIMER,
-        CancelPendingCallbacks: LOGICAL,
+        CancelPendingCallbacks: c_ulong,
     );
     fn TpAllocWait(
         WaitReturn: *mut PTP_WAIT,
         Callback: PTP_WAIT_CALLBACK,
-        Context: PVOID,
-        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Context: *mut c_void,
+        CallbackEnviron: *mut TP_CALLBACK_ENVIRON_V3,
     ) -> NTSTATUS;
     fn TpReleaseWait(
         Wait: PTP_WAIT,
@@ -136,27 +148,27 @@ EXTERN!{extern "system" {
     fn TpSetWait(
         Wait: PTP_WAIT,
         Handle: HANDLE,
-        Timeout: PLARGE_INTEGER,
+        Timeout: *mut LARGE_INTEGER,
     );
     fn TpWaitForWait(
         Wait: PTP_WAIT,
-        CancelPendingCallbacks: LOGICAL,
+        CancelPendingCallbacks: c_ulong,
     );
 }}
-FN!{stdcall PTP_IO_CALLBACK(
+FN! {stdcall PTP_IO_CALLBACK(
     Instance: PTP_CALLBACK_INSTANCE,
-    Context: PVOID,
-    ApcContext: PVOID,
+    Context: *mut c_void,
+    ApcContext: *mut c_void,
     IoSB: PIO_STATUS_BLOCK,
     Io: PTP_IO,
 ) -> ()}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn TpAllocIoCompletion(
         IoReturn: *mut PTP_IO,
         File: HANDLE,
         Callback: PTP_IO_CALLBACK,
-        Context: PVOID,
-        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Context: *mut c_void,
+        CallbackEnviron: *mut TP_CALLBACK_ENVIRON_V3,
     ) -> NTSTATUS;
     fn TpReleaseIoCompletion(
         Io: PTP_IO,
@@ -169,21 +181,21 @@ EXTERN!{extern "system" {
     );
     fn TpWaitForIoCompletion(
         Io: PTP_IO,
-        CancelPendingCallbacks: LOGICAL,
+        CancelPendingCallbacks: c_ulong,
     );
     fn TpAllocAlpcCompletion(
         AlpcReturn: *mut PTP_ALPC,
         AlpcPort: HANDLE,
         Callback: PTP_ALPC_CALLBACK,
-        Context: PVOID,
-        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Context: *mut c_void,
+        CallbackEnviron: *mut TP_CALLBACK_ENVIRON_V3,
     ) -> NTSTATUS;
     fn TpAllocAlpcCompletionEx(
         AlpcReturn: *mut PTP_ALPC,
         AlpcPort: HANDLE,
         Callback: PTP_ALPC_CALLBACK_EX,
-        Context: PVOID,
-        CallbackEnviron: PTP_CALLBACK_ENVIRON,
+        Context: *mut c_void,
+        CallbackEnviron: *mut TP_CALLBACK_ENVIRON_V3,
     ) -> NTSTATUS;
     fn TpReleaseAlpcCompletion(
         Alpc: PTP_ALPC,
@@ -192,12 +204,12 @@ EXTERN!{extern "system" {
         Alpc: PTP_ALPC,
     );
 }}
-ENUM!{enum TP_TRACE_TYPE {
+ENUM! {enum TP_TRACE_TYPE {
     TpTraceThreadPriority = 1,
     TpTraceThreadAffinity = 2,
     MaxTpTraceType = 3,
 }}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn TpCaptureCaller(
         Type: TP_TRACE_TYPE,
     );

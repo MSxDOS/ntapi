@@ -1,12 +1,13 @@
-use crate::ntlpcapi::PPORT_MESSAGE;
-use winapi::shared::minwindef::DWORD;
-use winapi::shared::ntdef::{HANDLE, NTSTATUS, PHANDLE, PUNICODE_STRING};
-EXTERN!{extern "system" {
+use windows_sys::Win32::Foundation::{HANDLE, NTSTATUS, UNICODE_STRING};
+
+use crate::{ctypes::c_ulong, ntlpcapi::PPORT_MESSAGE};
+
+EXTERN! {extern "system" {
     fn RtlConnectToSm(
-        ApiPortName: PUNICODE_STRING,
+        ApiPortName: *mut UNICODE_STRING,
         ApiPortHandle: HANDLE,
-        ProcessImageType: DWORD,
-        SmssConnection: PHANDLE,
+        ProcessImageType: c_ulong,
+        SmssConnection: *mut HANDLE,
     ) -> NTSTATUS;
     fn RtlSendMsgToSm(
         ApiPortHandle: HANDLE,

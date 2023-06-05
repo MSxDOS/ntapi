@@ -1,9 +1,12 @@
-use winapi::shared::ntdef::{BOOLEAN, NTSTATUS, PVOID, ULONG};
+use windows_sys::Win32::Foundation::NTSTATUS;
+
+use crate::ctypes::{c_uchar, c_ulong, c_void};
+
 pub const LOW_PRIORITY: u32 = 0;
 pub const LOW_REALTIME_PRIORITY: u32 = 16;
 pub const HIGH_PRIORITY: u32 = 31;
 pub const MAXIMUM_PRIORITY: u32 = 32;
-ENUM!{enum KTHREAD_STATE {
+ENUM! {enum KTHREAD_STATE {
     Initialized = 0,
     Ready = 1,
     Running = 2,
@@ -17,7 +20,7 @@ ENUM!{enum KTHREAD_STATE {
     MaximumThreadState = 10,
 }}
 pub type PKTHREAD_STATE = *mut KTHREAD_STATE;
-ENUM!{enum KHETERO_CPU_POLICY {
+ENUM! {enum KHETERO_CPU_POLICY {
     KHeteroCpuPolicyAll = 0,
     KHeteroCpuPolicyLarge = 1,
     KHeteroCpuPolicyLargeOrIdle = 2,
@@ -31,7 +34,7 @@ ENUM!{enum KHETERO_CPU_POLICY {
     KHeteroCpuPolicyMax = 10,
 }}
 pub type PKHETERO_CPU_POLICY = *mut KHETERO_CPU_POLICY;
-ENUM!{enum KWAIT_REASON {
+ENUM! {enum KWAIT_REASON {
     Executive = 0,
     FreePage = 1,
     PageIn = 2,
@@ -74,7 +77,7 @@ ENUM!{enum KWAIT_REASON {
     MaximumWaitReason = 39,
 }}
 pub type PKWAIT_REASON = *mut KWAIT_REASON;
-ENUM!{enum KPROFILE_SOURCE {
+ENUM! {enum KPROFILE_SOURCE {
     ProfileTime = 0,
     ProfileAlignmentFixup = 1,
     ProfileTotalIssues = 2,
@@ -101,21 +104,21 @@ ENUM!{enum KPROFILE_SOURCE {
     ProfileLoadLinkedIssues = 23,
     ProfileMaximum = 24,
 }}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtCallbackReturn(
-        OutputBuffer: PVOID,
-        OutputLength: ULONG,
+        OutputBuffer: *mut c_void,
+        OutputLength: c_ulong,
         Status: NTSTATUS,
     ) -> NTSTATUS;
     fn NtFlushProcessWriteBuffers();
     fn NtQueryDebugFilterState(
-        ComponentId: ULONG,
-        Level: ULONG,
+        ComponentId: c_ulong,
+        Level: c_ulong,
     ) -> NTSTATUS;
     fn NtSetDebugFilterState(
-        ComponentId: ULONG,
-        Level: ULONG,
-        State: BOOLEAN,
+        ComponentId: c_ulong,
+        Level: c_ulong,
+        State: c_uchar,
     ) -> NTSTATUS;
     fn NtYieldExecution() -> NTSTATUS;
 }}

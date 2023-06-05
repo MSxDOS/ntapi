@@ -1,239 +1,262 @@
-use crate::ntapi_base::{PCLIENT_ID, PRTL_ATOM, RTL_ATOM};
-use crate::ntdbg::DEBUGOBJECTINFOCLASS;
-use crate::ntexapi::{
-    ATOM_INFORMATION_CLASS, EVENT_INFORMATION_CLASS, MUTANT_INFORMATION_CLASS, PBOOT_ENTRY,
-    PBOOT_OPTIONS, PCWNF_TYPE_ID, PEFI_DRIVER_ENTRY, PFILE_PATH, PT2_CANCEL_PARAMETERS,
-    PT2_SET_PARAMETERS, PTIMER_APC_ROUTINE, PWNF_CHANGE_STAMP, PWNF_DELIVERY_DESCRIPTOR,
-    SEMAPHORE_INFORMATION_CLASS, SHUTDOWN_ACTION, SYSDBG_COMMAND, SYSTEM_INFORMATION_CLASS,
-    TIMER_INFORMATION_CLASS, TIMER_SET_INFORMATION_CLASS, WNF_CHANGE_STAMP, WNF_DATA_SCOPE,
-    WNF_STATE_NAME_INFORMATION, WNF_STATE_NAME_LIFETIME, WORKERFACTORYINFOCLASS,
+use windows_sys::{
+    core::GUID,
+    Win32::{
+        Foundation::{HANDLE, LUID, NTSTATUS, PSID, UNICODE_STRING},
+        Security::{
+            AUDIT_EVENT_TYPE, GENERIC_MAPPING, OBJECT_TYPE_LIST, PRIVILEGE_SET,
+            PSECURITY_DESCRIPTOR, SECURITY_QUALITY_OF_SERVICE,
+            SID_AND_ATTRIBUTES, TOKEN_DEFAULT_DACL, TOKEN_GROUPS,
+            TOKEN_INFORMATION_CLASS, TOKEN_MANDATORY_POLICY, TOKEN_OWNER,
+            TOKEN_PRIMARY_GROUP, TOKEN_PRIVILEGES, TOKEN_SOURCE, TOKEN_TYPE,
+            TOKEN_USER,
+        },
+        Storage::FileSystem::{FILE_SEGMENT_ELEMENT, TRANSACTION_NOTIFICATION},
+        System::{
+            Diagnostics::Debug::{CONTEXT, EXCEPTION_RECORD},
+            JobObjects::{JOBOBJECTINFOCLASS, JOB_SET_ARRAY},
+            Kernel::{EVENT_TYPE, TIMER_TYPE, WAIT_TYPE, WNF_STATE_NAME},
+            Power::{
+                DEVICE_POWER_STATE, EXECUTION_STATE, LATENCY_TIME,
+                POWER_ACTION, POWER_INFORMATION_LEVEL, SYSTEM_POWER_STATE,
+            },
+            SystemInformation::GROUP_AFFINITY,
+            SystemServices::{
+                ENLISTMENT_INFORMATION_CLASS, KTMOBJECT_CURSOR, KTMOBJECT_TYPE,
+                RESOURCEMANAGER_INFORMATION_CLASS,
+                TRANSACTIONMANAGER_INFORMATION_CLASS,
+                TRANSACTION_INFORMATION_CLASS,
+            },
+            WindowsProgramming::OBJECT_ATTRIBUTES,
+        },
+    },
 };
-use crate::ntioapi::{
-    FILE_INFORMATION_CLASS, FILE_IO_COMPLETION_INFORMATION, FS_INFORMATION_CLASS,
-    IO_COMPLETION_INFORMATION_CLASS, IO_SESSION_EVENT, IO_SESSION_STATE, PFILE_BASIC_INFORMATION,
-    PFILE_IO_COMPLETION_INFORMATION, PFILE_NETWORK_OPEN_INFORMATION, PIO_APC_ROUTINE,
-    PIO_STATUS_BLOCK,
+
+use crate::{
+    ctypes::{
+        __uint64, c_char, c_long, c_uchar, c_ulong, c_ushort, c_void, wchar_t,
+    },
+    ntapi_base::{PCLIENT_ID, PRTL_ATOM, RTL_ATOM},
+    ntdbg::DEBUGOBJECTINFOCLASS,
+    ntexapi::{
+        ATOM_INFORMATION_CLASS, EVENT_INFORMATION_CLASS,
+        MUTANT_INFORMATION_CLASS, PBOOT_ENTRY, PBOOT_OPTIONS, PCWNF_TYPE_ID,
+        PEFI_DRIVER_ENTRY, PFILE_PATH, PT2_CANCEL_PARAMETERS,
+        PT2_SET_PARAMETERS, PTIMER_APC_ROUTINE, PWNF_CHANGE_STAMP,
+        PWNF_DELIVERY_DESCRIPTOR, SEMAPHORE_INFORMATION_CLASS, SHUTDOWN_ACTION,
+        SYSDBG_COMMAND, SYSTEM_INFORMATION_CLASS, TIMER_INFORMATION_CLASS,
+        TIMER_SET_INFORMATION_CLASS, WNF_CHANGE_STAMP, WNF_DATA_SCOPE,
+        WNF_STATE_NAME_INFORMATION, WNF_STATE_NAME_LIFETIME,
+        WORKERFACTORYINFOCLASS,
+    },
+    ntioapi::{
+        FILE_INFORMATION_CLASS, FILE_IO_COMPLETION_INFORMATION,
+        FS_INFORMATION_CLASS, IO_COMPLETION_INFORMATION_CLASS,
+        IO_SESSION_EVENT, IO_SESSION_STATE, PFILE_BASIC_INFORMATION,
+        PFILE_IO_COMPLETION_INFORMATION, PFILE_NETWORK_OPEN_INFORMATION,
+        PIO_APC_ROUTINE, PIO_STATUS_BLOCK,
+    },
+    ntkeapi::KPROFILE_SOURCE,
+    ntlpcapi::{
+        ALPC_HANDLE, ALPC_MESSAGE_INFORMATION_CLASS,
+        ALPC_PORT_INFORMATION_CLASS, PALPC_CONTEXT_ATTR, PALPC_DATA_VIEW_ATTR,
+        PALPC_HANDLE, PALPC_MESSAGE_ATTRIBUTES, PALPC_PORT_ATTRIBUTES,
+        PALPC_SECURITY_ATTR, PORT_INFORMATION_CLASS, PPORT_MESSAGE, PPORT_VIEW,
+        PREMOTE_PORT_VIEW,
+    },
+    ntmisc::VDMSERVICECLASS,
+    ntmmapi::{
+        MEMORY_INFORMATION_CLASS, MEMORY_PARTITION_INFORMATION_CLASS,
+        PMEMORY_RANGE_ENTRY, SECTION_INFORMATION_CLASS, SECTION_INHERIT,
+        VIRTUAL_MEMORY_INFORMATION_CLASS,
+    },
+    ntobapi::OBJECT_INFORMATION_CLASS,
+    ntpnpapi::{PLUGPLAY_CONTROL_CLASS, PPLUGPLAY_EVENT_BLOCK},
+    ntpsapi::{
+        MEMORY_RESERVE_TYPE, PINITIAL_TEB, PPS_APC_ROUTINE, PPS_ATTRIBUTE_LIST,
+        PPS_CREATE_INFO, PROCESSINFOCLASS, THREADINFOCLASS,
+    },
+    ntregapi::{
+        KEY_INFORMATION_CLASS, KEY_SET_INFORMATION_CLASS,
+        KEY_VALUE_INFORMATION_CLASS, PKEY_VALUE_ENTRY,
+    },
+    ntseapi::PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
+    windows_local::shared::ntdef::{LARGE_INTEGER, ULARGE_INTEGER},
 };
-use crate::ntkeapi::KPROFILE_SOURCE;
-use crate::ntlpcapi::{
-    ALPC_HANDLE, ALPC_MESSAGE_INFORMATION_CLASS, ALPC_PORT_INFORMATION_CLASS, PALPC_CONTEXT_ATTR,
-    PALPC_DATA_VIEW_ATTR, PALPC_HANDLE, PALPC_MESSAGE_ATTRIBUTES, PALPC_PORT_ATTRIBUTES,
-    PALPC_SECURITY_ATTR, PORT_INFORMATION_CLASS, PPORT_MESSAGE, PPORT_VIEW, PREMOTE_PORT_VIEW,
-};
-use crate::ntmisc::VDMSERVICECLASS;
-use crate::ntmmapi::{
-    MEMORY_INFORMATION_CLASS, MEMORY_PARTITION_INFORMATION_CLASS, PMEMORY_RANGE_ENTRY,
-    SECTION_INFORMATION_CLASS, SECTION_INHERIT, VIRTUAL_MEMORY_INFORMATION_CLASS,
-};
-use crate::ntobapi::OBJECT_INFORMATION_CLASS;
-use crate::ntpnpapi::{PLUGPLAY_CONTROL_CLASS, PPLUGPLAY_EVENT_BLOCK};
-use crate::ntpsapi::{
-    MEMORY_RESERVE_TYPE, PINITIAL_TEB, PPS_APC_ROUTINE, PPS_ATTRIBUTE_LIST, PPS_CREATE_INFO,
-    PROCESSINFOCLASS, THREADINFOCLASS,
-};
-use crate::ntregapi::{
-    KEY_INFORMATION_CLASS, KEY_SET_INFORMATION_CLASS, KEY_VALUE_INFORMATION_CLASS,
-    PKEY_VALUE_ENTRY,
-};
-use crate::ntseapi::PTOKEN_SECURITY_ATTRIBUTES_INFORMATION;
-use winapi::shared::basetsd::{
-    KAFFINITY, PSIZE_T, PULONG64, PULONG_PTR, SIZE_T, ULONG64, ULONG_PTR,
-};
-use winapi::shared::guiddef::LPGUID;
-use winapi::shared::ktmtypes::{NOTIFICATION_MASK, PCRM_PROTOCOL_ID, PTRANSACTION_NOTIFICATION};
-use winapi::shared::ntdef::{
-    BOOLEAN, EVENT_TYPE, HANDLE, LANGID, LCID, LOGICAL, LONG, NTSTATUS, OBJECT_ATTRIBUTES,
-    PBOOLEAN, PCHAR, PCWNF_STATE_NAME, PGROUP_AFFINITY, PHANDLE, PLARGE_INTEGER, PLCID, PLONG,
-    PLUID, PNTSTATUS, POBJECT_ATTRIBUTES, PUCHAR, PULARGE_INTEGER, PULONG, PULONGLONG,
-    PUNICODE_STRING, PUSHORT, PVOID, PWNF_STATE_NAME, PWSTR, TIMER_TYPE, ULONG, USHORT, VOID,
-    WAIT_TYPE,
-};
-use winapi::um::winnt::{
-    ACCESS_MASK, AUDIT_EVENT_TYPE, ENLISTMENT_INFORMATION_CLASS, EXECUTION_STATE,
-    JOBOBJECTINFOCLASS, KTMOBJECT_TYPE, LATENCY_TIME, PACCESS_MASK, PCONTEXT, PDEVICE_POWER_STATE,
-    PEXCEPTION_RECORD, PFILE_SEGMENT_ELEMENT, PGENERIC_MAPPING, PJOB_SET_ARRAY, PKTMOBJECT_CURSOR,
-    POBJECT_TYPE_LIST, POWER_ACTION, POWER_INFORMATION_LEVEL, PPRIVILEGE_SET, PSECURITY_DESCRIPTOR,
-    PSECURITY_QUALITY_OF_SERVICE, PSE_SIGNING_LEVEL, PSID, PSID_AND_ATTRIBUTES,
-    PTOKEN_DEFAULT_DACL, PTOKEN_GROUPS, PTOKEN_MANDATORY_POLICY, PTOKEN_OWNER,
-    PTOKEN_PRIMARY_GROUP, PTOKEN_PRIVILEGES, PTOKEN_SOURCE, PTOKEN_USER,
-    RESOURCEMANAGER_INFORMATION_CLASS, SECURITY_INFORMATION, SE_SIGNING_LEVEL, SYSTEM_POWER_STATE,
-    TOKEN_INFORMATION_CLASS, TOKEN_TYPE, TRANSACTIONMANAGER_INFORMATION_CLASS,
-    TRANSACTION_INFORMATION_CLASS,
-};
-EXTERN!{extern "system" {
+
+EXTERN! {extern "system" {
     fn ZwAcceptConnectPort(
-        PortHandle: PHANDLE,
-        PortContext: PVOID,
+        PortHandle: *mut HANDLE,
+        PortContext: *mut c_void,
         ConnectionRequest: PPORT_MESSAGE,
-        AcceptConnection: BOOLEAN,
+        AcceptConnection: c_uchar,
         ServerView: PPORT_VIEW,
         ClientView: PREMOTE_PORT_VIEW,
     ) -> NTSTATUS;
     fn ZwAccessCheck(
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         ClientToken: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        GenericMapping: PGENERIC_MAPPING,
-        PrivilegeSet: PPRIVILEGE_SET,
-        PrivilegeSetLength: PULONG,
-        GrantedAccess: PACCESS_MASK,
-        AccessStatus: PNTSTATUS,
+        DesiredAccess: c_ulong,
+        GenericMapping: *mut GENERIC_MAPPING,
+        PrivilegeSet: *mut PRIVILEGE_SET,
+        PrivilegeSetLength: *mut c_ulong,
+        GrantedAccess: *mut c_ulong,
+        AccessStatus: *mut NTSTATUS,
     ) -> NTSTATUS;
     fn ZwAccessCheckAndAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
-        ObjectTypeName: PUNICODE_STRING,
-        ObjectName: PUNICODE_STRING,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
+        ObjectTypeName: *mut UNICODE_STRING,
+        ObjectName: *mut UNICODE_STRING,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
-        DesiredAccess: ACCESS_MASK,
-        GenericMapping: PGENERIC_MAPPING,
-        ObjectCreation: BOOLEAN,
-        GrantedAccess: PACCESS_MASK,
-        AccessStatus: PNTSTATUS,
-        GenerateOnClose: PBOOLEAN,
+        DesiredAccess: c_ulong,
+        GenericMapping: *mut GENERIC_MAPPING,
+        ObjectCreation: c_uchar,
+        GrantedAccess: *mut c_ulong,
+        AccessStatus: *mut NTSTATUS,
+        GenerateOnClose: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwAccessCheckByType(
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         PrincipalSelfSid: PSID,
         ClientToken: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectTypeList: POBJECT_TYPE_LIST,
-        ObjectTypeListLength: ULONG,
-        GenericMapping: PGENERIC_MAPPING,
-        PrivilegeSet: PPRIVILEGE_SET,
-        PrivilegeSetLength: PULONG,
-        GrantedAccess: PACCESS_MASK,
-        AccessStatus: PNTSTATUS,
+        DesiredAccess: c_ulong,
+        ObjectTypeList: *mut OBJECT_TYPE_LIST,
+        ObjectTypeListLength: c_ulong,
+        GenericMapping: *mut GENERIC_MAPPING,
+        PrivilegeSet: *mut PRIVILEGE_SET,
+        PrivilegeSetLength: *mut c_ulong,
+        GrantedAccess: *mut c_ulong,
+        AccessStatus: *mut NTSTATUS,
     ) -> NTSTATUS;
     fn ZwAccessCheckByTypeAndAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
-        ObjectTypeName: PUNICODE_STRING,
-        ObjectName: PUNICODE_STRING,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
+        ObjectTypeName: *mut UNICODE_STRING,
+        ObjectName: *mut UNICODE_STRING,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         PrincipalSelfSid: PSID,
-        DesiredAccess: ACCESS_MASK,
+        DesiredAccess: c_ulong,
         AuditType: AUDIT_EVENT_TYPE,
-        Flags: ULONG,
-        ObjectTypeList: POBJECT_TYPE_LIST,
-        ObjectTypeListLength: ULONG,
-        GenericMapping: PGENERIC_MAPPING,
-        ObjectCreation: BOOLEAN,
-        GrantedAccess: PACCESS_MASK,
-        AccessStatus: PNTSTATUS,
-        GenerateOnClose: PBOOLEAN,
+        Flags: c_ulong,
+        ObjectTypeList: *mut OBJECT_TYPE_LIST,
+        ObjectTypeListLength: c_ulong,
+        GenericMapping: *mut GENERIC_MAPPING,
+        ObjectCreation: c_uchar,
+        GrantedAccess: *mut c_ulong,
+        AccessStatus: *mut NTSTATUS,
+        GenerateOnClose: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwAccessCheckByTypeResultList(
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         PrincipalSelfSid: PSID,
         ClientToken: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectTypeList: POBJECT_TYPE_LIST,
-        ObjectTypeListLength: ULONG,
-        GenericMapping: PGENERIC_MAPPING,
-        PrivilegeSet: PPRIVILEGE_SET,
-        PrivilegeSetLength: PULONG,
-        GrantedAccess: PACCESS_MASK,
-        AccessStatus: PNTSTATUS,
+        DesiredAccess: c_ulong,
+        ObjectTypeList: *mut OBJECT_TYPE_LIST,
+        ObjectTypeListLength: c_ulong,
+        GenericMapping: *mut GENERIC_MAPPING,
+        PrivilegeSet: *mut PRIVILEGE_SET,
+        PrivilegeSetLength: *mut c_ulong,
+        GrantedAccess: *mut c_ulong,
+        AccessStatus: *mut NTSTATUS,
     ) -> NTSTATUS;
     fn ZwAccessCheckByTypeResultListAndAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
-        ObjectTypeName: PUNICODE_STRING,
-        ObjectName: PUNICODE_STRING,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
+        ObjectTypeName: *mut UNICODE_STRING,
+        ObjectName: *mut UNICODE_STRING,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         PrincipalSelfSid: PSID,
-        DesiredAccess: ACCESS_MASK,
+        DesiredAccess: c_ulong,
         AuditType: AUDIT_EVENT_TYPE,
-        Flags: ULONG,
-        ObjectTypeList: POBJECT_TYPE_LIST,
-        ObjectTypeListLength: ULONG,
-        GenericMapping: PGENERIC_MAPPING,
-        ObjectCreation: BOOLEAN,
-        GrantedAccess: PACCESS_MASK,
-        AccessStatus: PNTSTATUS,
-        GenerateOnClose: PBOOLEAN,
+        Flags: c_ulong,
+        ObjectTypeList: *mut OBJECT_TYPE_LIST,
+        ObjectTypeListLength: c_ulong,
+        GenericMapping: *mut GENERIC_MAPPING,
+        ObjectCreation: c_uchar,
+        GrantedAccess: *mut c_ulong,
+        AccessStatus: *mut NTSTATUS,
+        GenerateOnClose: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwAccessCheckByTypeResultListAndAuditAlarmByHandle(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
         ClientToken: HANDLE,
-        ObjectTypeName: PUNICODE_STRING,
-        ObjectName: PUNICODE_STRING,
+        ObjectTypeName: *mut UNICODE_STRING,
+        ObjectName: *mut UNICODE_STRING,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         PrincipalSelfSid: PSID,
-        DesiredAccess: ACCESS_MASK,
+        DesiredAccess: c_ulong,
         AuditType: AUDIT_EVENT_TYPE,
-        Flags: ULONG,
-        ObjectTypeList: POBJECT_TYPE_LIST,
-        ObjectTypeListLength: ULONG,
-        GenericMapping: PGENERIC_MAPPING,
-        ObjectCreation: BOOLEAN,
-        GrantedAccess: PACCESS_MASK,
-        AccessStatus: PNTSTATUS,
-        GenerateOnClose: PBOOLEAN,
+        Flags: c_ulong,
+        ObjectTypeList: *mut OBJECT_TYPE_LIST,
+        ObjectTypeListLength: c_ulong,
+        GenericMapping: *mut GENERIC_MAPPING,
+        ObjectCreation: c_uchar,
+        GrantedAccess: *mut c_ulong,
+        AccessStatus: *mut NTSTATUS,
+        GenerateOnClose: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwAcquireCMFViewOwnership(
-        TimeStamp: PULONGLONG,
-        tokenTaken: PBOOLEAN,
-        replaceExisting: BOOLEAN,
+        TimeStamp: *mut __uint64,
+        tokenTaken: *mut c_uchar,
+        replaceExisting: c_uchar,
     ) -> NTSTATUS;
     fn ZwAddAtom(
-        AtomName: PWSTR,
-        Length: ULONG,
+        AtomName: *mut wchar_t,
+        Length: c_ulong,
         Atom: PRTL_ATOM,
     ) -> NTSTATUS;
     fn ZwAddAtomEx(
-        AtomName: PWSTR,
-        Length: ULONG,
+        AtomName: *mut wchar_t,
+        Length: c_ulong,
         Atom: PRTL_ATOM,
-        Flags: ULONG,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwAddBootEntry(
         BootEntry: PBOOT_ENTRY,
-        Id: PULONG,
+        Id: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAddDriverEntry(
         DriverEntry: PEFI_DRIVER_ENTRY,
-        Id: PULONG,
+        Id: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAdjustGroupsToken(
         TokenHandle: HANDLE,
-        ResetToDefault: BOOLEAN,
-        NewState: PTOKEN_GROUPS,
-        BufferLength: ULONG,
-        PreviousState: PTOKEN_GROUPS,
-        ReturnLength: PULONG,
+        ResetToDefault: c_uchar,
+        NewState: *mut TOKEN_GROUPS,
+        BufferLength: c_ulong,
+        PreviousState: *mut TOKEN_GROUPS,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAdjustPrivilegesToken(
         TokenHandle: HANDLE,
-        DisableAllPrivileges: BOOLEAN,
-        NewState: PTOKEN_PRIVILEGES,
-        BufferLength: ULONG,
-        PreviousState: PTOKEN_PRIVILEGES,
-        ReturnLength: PULONG,
+        DisableAllPrivileges: c_uchar,
+        NewState: *mut TOKEN_PRIVILEGES,
+        BufferLength: c_ulong,
+        PreviousState: *mut TOKEN_PRIVILEGES,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAdjustTokenClaimsAndDeviceGroups(
         TokenHandle: HANDLE,
-        UserResetToDefault: BOOLEAN,
-        DeviceResetToDefault: BOOLEAN,
-        DeviceGroupsResetToDefault: BOOLEAN,
+        UserResetToDefault: c_uchar,
+        DeviceResetToDefault: c_uchar,
+        DeviceGroupsResetToDefault: c_uchar,
         NewUserState: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
         NewDeviceState: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
-        NewDeviceGroupsState: PTOKEN_GROUPS,
-        UserBufferLength: ULONG,
+        NewDeviceGroupsState: *mut TOKEN_GROUPS,
+        UserBufferLength: c_ulong,
         PreviousUserState: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
-        DeviceBufferLength: ULONG,
+        DeviceBufferLength: c_ulong,
         PreviousDeviceState: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
-        DeviceGroupsBufferLength: ULONG,
-        PreviousDeviceGroups: PTOKEN_GROUPS,
-        UserReturnLength: PULONG,
-        DeviceReturnLength: PULONG,
-        DeviceGroupsReturnBufferLength: PULONG,
+        DeviceGroupsBufferLength: c_ulong,
+        PreviousDeviceGroups: *mut TOKEN_GROUPS,
+        UserReturnLength: *mut c_ulong,
+        DeviceReturnLength: *mut c_ulong,
+        DeviceGroupsReturnBufferLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAlertResumeThread(
         ThreadHandle: HANDLE,
-        PreviousSuspendCount: PULONG,
+        PreviousSuspendCount: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAlertThread(
         ThreadHandle: HANDLE,
@@ -242,192 +265,192 @@ EXTERN!{extern "system" {
         ThreadId: HANDLE,
     ) -> NTSTATUS;
     fn ZwAllocateLocallyUniqueId(
-        Luid: PLUID,
+        Luid: *mut LUID,
     ) -> NTSTATUS;
     fn ZwAllocateReserveObject(
-        MemoryReserveHandle: PHANDLE,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        MemoryReserveHandle: *mut HANDLE,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         Type: MEMORY_RESERVE_TYPE,
     ) -> NTSTATUS;
     fn ZwAllocateUserPhysicalPages(
         ProcessHandle: HANDLE,
-        NumberOfPages: PULONG_PTR,
-        UserPfnArray: PULONG_PTR,
+        NumberOfPages: *mut usize,
+        UserPfnArray: *mut usize,
     ) -> NTSTATUS;
     fn ZwAllocateUuids(
-        Time: PULARGE_INTEGER,
-        Range: PULONG,
-        Sequence: PULONG,
-        Seed: PCHAR,
+        Time: *mut ULARGE_INTEGER,
+        Range: *mut c_ulong,
+        Sequence: *mut c_ulong,
+        Seed: *mut c_char,
     ) -> NTSTATUS;
     fn ZwAllocateVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: *mut PVOID,
-        ZeroBits: ULONG_PTR,
-        RegionSize: PSIZE_T,
-        AllocationType: ULONG,
-        Protect: ULONG,
+        BaseAddress: *mut *mut c_void,
+        ZeroBits: usize,
+        RegionSize: *mut usize,
+        AllocationType: c_ulong,
+        Protect: c_ulong,
     ) -> NTSTATUS;
     fn ZwAlpcAcceptConnectPort(
-        PortHandle: PHANDLE,
+        PortHandle: *mut HANDLE,
         ConnectionPortHandle: HANDLE,
-        Flags: ULONG,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        Flags: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         PortAttributes: PALPC_PORT_ATTRIBUTES,
-        PortContext: PVOID,
+        PortContext: *mut c_void,
         ConnectionRequest: PPORT_MESSAGE,
         ConnectionMessageAttributes: PALPC_MESSAGE_ATTRIBUTES,
-        AcceptConnection: BOOLEAN,
+        AcceptConnection: c_uchar,
     ) -> NTSTATUS;
     fn ZwAlpcCancelMessage(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         MessageContext: PALPC_CONTEXT_ATTR,
     ) -> NTSTATUS;
     fn ZwAlpcConnectPort(
-        PortHandle: PHANDLE,
-        PortName: PUNICODE_STRING,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        PortHandle: *mut HANDLE,
+        PortName: *mut UNICODE_STRING,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         PortAttributes: PALPC_PORT_ATTRIBUTES,
-        Flags: ULONG,
+        Flags: c_ulong,
         RequiredServerSid: PSID,
         ConnectionMessage: PPORT_MESSAGE,
-        BufferLength: PULONG,
+        BufferLength: *mut c_ulong,
         OutMessageAttributes: PALPC_MESSAGE_ATTRIBUTES,
         InMessageAttributes: PALPC_MESSAGE_ATTRIBUTES,
-        Timeout: PLARGE_INTEGER,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwAlpcConnectPortEx(
-        PortHandle: PHANDLE,
-        ConnectionPortObjectAttributes: POBJECT_ATTRIBUTES,
-        ClientPortObjectAttributes: POBJECT_ATTRIBUTES,
+        PortHandle: *mut HANDLE,
+        ConnectionPortObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        ClientPortObjectAttributes: *mut OBJECT_ATTRIBUTES,
         PortAttributes: PALPC_PORT_ATTRIBUTES,
-        Flags: ULONG,
+        Flags: c_ulong,
         ServerSecurityRequirements: PSECURITY_DESCRIPTOR,
         ConnectionMessage: PPORT_MESSAGE,
-        BufferLength: PSIZE_T,
+        BufferLength: *mut usize,
         OutMessageAttributes: PALPC_MESSAGE_ATTRIBUTES,
         InMessageAttributes: PALPC_MESSAGE_ATTRIBUTES,
-        Timeout: PLARGE_INTEGER,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwAlpcCreatePort(
-        PortHandle: PHANDLE,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        PortHandle: *mut HANDLE,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         PortAttributes: PALPC_PORT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwAlpcCreatePortSection(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         SectionHandle: HANDLE,
-        SectionSize: SIZE_T,
+        SectionSize: usize,
         AlpcSectionHandle: PALPC_HANDLE,
-        ActualSectionSize: PSIZE_T,
+        ActualSectionSize: *mut usize,
     ) -> NTSTATUS;
     fn ZwAlpcCreateResourceReserve(
         PortHandle: HANDLE,
-        Flags: ULONG,
-        MessageSize: SIZE_T,
+        Flags: c_ulong,
+        MessageSize: usize,
         ResourceId: PALPC_HANDLE,
     ) -> NTSTATUS;
     fn ZwAlpcCreateSectionView(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         ViewAttributes: PALPC_DATA_VIEW_ATTR,
     ) -> NTSTATUS;
     fn ZwAlpcCreateSecurityContext(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         SecurityAttribute: PALPC_SECURITY_ATTR,
     ) -> NTSTATUS;
     fn ZwAlpcDeletePortSection(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         SectionHandle: ALPC_HANDLE,
     ) -> NTSTATUS;
     fn ZwAlpcDeleteResourceReserve(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         ResourceId: ALPC_HANDLE,
     ) -> NTSTATUS;
     fn ZwAlpcDeleteSectionView(
         PortHandle: HANDLE,
-        Flags: ULONG,
-        ViewBase: PVOID,
+        Flags: c_ulong,
+        ViewBase: *mut c_void,
     ) -> NTSTATUS;
     fn ZwAlpcDeleteSecurityContext(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         ContextHandle: ALPC_HANDLE,
     ) -> NTSTATUS;
     fn ZwAlpcDisconnectPort(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwAlpcImpersonateClientContainerOfPort(
         PortHandle: HANDLE,
         Message: PPORT_MESSAGE,
-        Flags: ULONG,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwAlpcImpersonateClientOfPort(
         PortHandle: HANDLE,
         Message: PPORT_MESSAGE,
-        Flags: PVOID,
+        Flags: *mut c_void,
     ) -> NTSTATUS;
     fn ZwAlpcOpenSenderProcess(
-        ProcessHandle: PHANDLE,
+        ProcessHandle: *mut HANDLE,
         PortHandle: HANDLE,
         PortMessage: PPORT_MESSAGE,
-        Flags: ULONG,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        Flags: c_ulong,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwAlpcOpenSenderThread(
-        ThreadHandle: PHANDLE,
+        ThreadHandle: *mut HANDLE,
         PortHandle: HANDLE,
         PortMessage: PPORT_MESSAGE,
-        Flags: ULONG,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        Flags: c_ulong,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwAlpcQueryInformation(
         PortHandle: HANDLE,
         PortInformationClass: ALPC_PORT_INFORMATION_CLASS,
-        PortInformation: PVOID,
-        Length: ULONG,
-        ReturnLength: PULONG,
+        PortInformation: *mut c_void,
+        Length: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAlpcQueryInformationMessage(
         PortHandle: HANDLE,
         PortMessage: PPORT_MESSAGE,
         MessageInformationClass: ALPC_MESSAGE_INFORMATION_CLASS,
-        MessageInformation: PVOID,
-        Length: ULONG,
-        ReturnLength: PULONG,
+        MessageInformation: *mut c_void,
+        Length: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwAlpcRevokeSecurityContext(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         ContextHandle: ALPC_HANDLE,
     ) -> NTSTATUS;
     fn ZwAlpcSendWaitReceivePort(
         PortHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         SendMessageA: PPORT_MESSAGE,
         SendMessageAttributes: PALPC_MESSAGE_ATTRIBUTES,
         ReceiveMessage: PPORT_MESSAGE,
-        BufferLength: PSIZE_T,
+        BufferLength: *mut usize,
         ReceiveMessageAttributes: PALPC_MESSAGE_ATTRIBUTES,
-        Timeout: PLARGE_INTEGER,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwAlpcSetInformation(
         PortHandle: HANDLE,
         PortInformationClass: ALPC_PORT_INFORMATION_CLASS,
-        PortInformation: PVOID,
-        Length: ULONG,
+        PortInformation: *mut c_void,
+        Length: c_ulong,
     ) -> NTSTATUS;
     fn ZwAreMappedFilesTheSame(
-        File1MappedAsAnImage: PVOID,
-        File2MappedAsFile: PVOID,
+        File1MappedAsAnImage: *mut c_void,
+        File2MappedAsFile: *mut c_void,
     ) -> NTSTATUS;
     fn ZwAssignProcessToJobObject(
         JobHandle: HANDLE,
@@ -437,15 +460,15 @@ EXTERN!{extern "system" {
         WaitCompletionPacketHandle: HANDLE,
         IoCompletionHandle: HANDLE,
         TargetObjectHandle: HANDLE,
-        KeyContext: PVOID,
-        ApcContext: PVOID,
+        KeyContext: *mut c_void,
+        ApcContext: *mut c_void,
         IoStatus: NTSTATUS,
-        IoStatusInformation: ULONG_PTR,
-        AlreadySignaled: PBOOLEAN,
+        IoStatusInformation: usize,
+        AlreadySignaled: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwCallbackReturn(
-        OutputBuffer: PVOID,
-        OutputLength: ULONG,
+        OutputBuffer: *mut c_void,
+        OutputLength: c_ulong,
         Status: NTSTATUS,
     ) -> NTSTATUS;
     fn ZwCancelIoFile(
@@ -464,7 +487,7 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwCancelTimer(
         TimerHandle: HANDLE,
-        CurrentState: PBOOLEAN,
+        CurrentState: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwCancelTimer2(
         TimerHandle: HANDLE,
@@ -472,7 +495,7 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwCancelWaitCompletionPacket(
         WaitCompletionPacketHandle: HANDLE,
-        RemoveSignaledPacket: BOOLEAN,
+        RemoveSignaledPacket: c_uchar,
     ) -> NTSTATUS;
     fn ZwClearEvent(
         EventHandle: HANDLE,
@@ -481,24 +504,24 @@ EXTERN!{extern "system" {
         Handle: HANDLE,
     ) -> NTSTATUS;
     fn ZwCloseObjectAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
-        GenerateOnClose: BOOLEAN,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
+        GenerateOnClose: c_uchar,
     ) -> NTSTATUS;
     fn ZwCommitComplete(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwCommitEnlistment(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwCommitTransaction(
         TransactionHandle: HANDLE,
-        Wait: BOOLEAN,
+        Wait: c_uchar,
     ) -> NTSTATUS;
     fn ZwCompactKeys(
-        Count: ULONG,
+        Count: c_ulong,
         KeyArray: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwCompareObjects(
@@ -508,7 +531,7 @@ EXTERN!{extern "system" {
     fn ZwCompareTokens(
         FirstTokenHandle: HANDLE,
         SecondTokenHandle: HANDLE,
-        Equal: PBOOLEAN,
+        Equal: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwCompleteConnectPort(
         PortHandle: HANDLE,
@@ -517,395 +540,395 @@ EXTERN!{extern "system" {
         Key: HANDLE,
     ) -> NTSTATUS;
     fn ZwConnectPort(
-        PortHandle: PHANDLE,
-        PortName: PUNICODE_STRING,
-        SecurityQos: PSECURITY_QUALITY_OF_SERVICE,
+        PortHandle: *mut HANDLE,
+        PortName: *mut UNICODE_STRING,
+        SecurityQos: *mut SECURITY_QUALITY_OF_SERVICE,
         ClientView: PPORT_VIEW,
         ServerView: PREMOTE_PORT_VIEW,
-        MaxMessageLength: PULONG,
-        ConnectionInformation: PVOID,
-        ConnectionInformationLength: PULONG,
+        MaxMessageLength: *mut c_ulong,
+        ConnectionInformation: *mut c_void,
+        ConnectionInformationLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwContinue(
-        ContextRecord: PCONTEXT,
-        TestAlert: BOOLEAN,
+        ContextRecord: *mut CONTEXT,
+        TestAlert: c_uchar,
     ) -> NTSTATUS;
     fn ZwCreateDebugObject(
-        DebugObjectHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        DebugObjectHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateDirectoryObject(
-        DirectoryHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        DirectoryHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwCreateDirectoryObjectEx(
-        DirectoryHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        DirectoryHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         ShadowDirectoryHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateEnlistment(
-        EnlistmentHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
+        EnlistmentHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
         ResourceManagerHandle: HANDLE,
         TransactionHandle: HANDLE,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        CreateOptions: ULONG,
-        NotificationMask: NOTIFICATION_MASK,
-        EnlistmentKey: PVOID,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        CreateOptions: c_ulong,
+        NotificationMask: c_ulong,
+        EnlistmentKey: *mut c_void,
     ) -> NTSTATUS;
     fn ZwCreateEvent(
-        EventHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        EventHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         EventType: EVENT_TYPE,
-        InitialState: BOOLEAN,
+        InitialState: c_uchar,
     ) -> NTSTATUS;
     fn ZwCreateEventPair(
-        EventPairHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        EventPairHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwCreateFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        AllocationSize: PLARGE_INTEGER,
-        FileAttributes: ULONG,
-        ShareAccess: ULONG,
-        CreateDisposition: ULONG,
-        CreateOptions: ULONG,
-        EaBuffer: PVOID,
-        EaLength: ULONG,
+        AllocationSize: *mut LARGE_INTEGER,
+        FileAttributes: c_ulong,
+        ShareAccess: c_ulong,
+        CreateDisposition: c_ulong,
+        CreateOptions: c_ulong,
+        EaBuffer: *mut c_void,
+        EaLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateIRTimer(
-        TimerHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
+        TimerHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateIoCompletion(
-        IoCompletionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        Count: ULONG,
+        IoCompletionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        Count: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateJobObject(
-        JobHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        JobHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwCreateJobSet(
-        NumJob: ULONG,
-        UserJobSet: PJOB_SET_ARRAY,
-        Flags: ULONG,
+        NumJob: c_ulong,
+        UserJobSet: *mut JOB_SET_ARRAY,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateKey(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        TitleIndex: ULONG,
-        Class: PUNICODE_STRING,
-        CreateOptions: ULONG,
-        Disposition: PULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        TitleIndex: c_ulong,
+        Class: *mut UNICODE_STRING,
+        CreateOptions: c_ulong,
+        Disposition: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateKeyTransacted(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        TitleIndex: ULONG,
-        Class: PUNICODE_STRING,
-        CreateOptions: ULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        TitleIndex: c_ulong,
+        Class: *mut UNICODE_STRING,
+        CreateOptions: c_ulong,
         TransactionHandle: HANDLE,
-        Disposition: PULONG,
+        Disposition: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateKeyedEvent(
-        KeyedEventHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        KeyedEventHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateLowBoxToken(
-        TokenHandle: PHANDLE,
+        TokenHandle: *mut HANDLE,
         ExistingTokenHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         PackageSid: PSID,
-        CapabilityCount: ULONG,
-        Capabilities: PSID_AND_ATTRIBUTES,
-        HandleCount: ULONG,
+        CapabilityCount: c_ulong,
+        Capabilities: *mut SID_AND_ATTRIBUTES,
+        HandleCount: c_ulong,
         Handles: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwCreateMailslotFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ULONG,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        CreateOptions: ULONG,
-        MailslotQuota: ULONG,
-        MaximumMessageSize: ULONG,
-        ReadTimeout: PLARGE_INTEGER,
+        CreateOptions: c_ulong,
+        MailslotQuota: c_ulong,
+        MaximumMessageSize: c_ulong,
+        ReadTimeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwCreateMutant(
-        MutantHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        InitialOwner: BOOLEAN,
+        MutantHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        InitialOwner: c_uchar,
     ) -> NTSTATUS;
     fn ZwCreateNamedPipeFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ULONG,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ShareAccess: ULONG,
-        CreateDisposition: ULONG,
-        CreateOptions: ULONG,
-        NamedPipeType: ULONG,
-        ReadMode: ULONG,
-        CompletionMode: ULONG,
-        MaximumInstances: ULONG,
-        InboundQuota: ULONG,
-        OutboundQuota: ULONG,
-        DefaultTimeout: PLARGE_INTEGER,
+        ShareAccess: c_ulong,
+        CreateDisposition: c_ulong,
+        CreateOptions: c_ulong,
+        NamedPipeType: c_ulong,
+        ReadMode: c_ulong,
+        CompletionMode: c_ulong,
+        MaximumInstances: c_ulong,
+        InboundQuota: c_ulong,
+        OutboundQuota: c_ulong,
+        DefaultTimeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwCreatePagingFile(
-        PageFileName: PUNICODE_STRING,
-        MinimumSize: PLARGE_INTEGER,
-        MaximumSize: PLARGE_INTEGER,
-        Priority: ULONG,
+        PageFileName: *mut UNICODE_STRING,
+        MinimumSize: *mut LARGE_INTEGER,
+        MaximumSize: *mut LARGE_INTEGER,
+        Priority: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreatePartition(
-        PartitionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        PreferredNode: ULONG,
+        PartitionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        PreferredNode: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreatePort(
-        PortHandle: PHANDLE,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        MaxConnectionInfoLength: ULONG,
-        MaxMessageLength: ULONG,
-        MaxPoolUsage: ULONG,
+        PortHandle: *mut HANDLE,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        MaxConnectionInfoLength: c_ulong,
+        MaxMessageLength: c_ulong,
+        MaxPoolUsage: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreatePrivateNamespace(
-        NamespaceHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        BoundaryDescriptor: PVOID,
+        NamespaceHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        BoundaryDescriptor: *mut c_void,
     ) -> NTSTATUS;
     fn ZwCreateProcess(
-        ProcessHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ProcessHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         ParentProcess: HANDLE,
-        InheritObjectTable: BOOLEAN,
+        InheritObjectTable: c_uchar,
         SectionHandle: HANDLE,
         DebugPort: HANDLE,
         ExceptionPort: HANDLE,
     ) -> NTSTATUS;
     fn ZwCreateProcessEx(
-        ProcessHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ProcessHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         ParentProcess: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
         SectionHandle: HANDLE,
         DebugPort: HANDLE,
         ExceptionPort: HANDLE,
-        JobMemberLevel: ULONG,
+        JobMemberLevel: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateProfile(
-        ProfileHandle: PHANDLE,
+        ProfileHandle: *mut HANDLE,
         Process: HANDLE,
-        ProfileBase: PVOID,
-        ProfileSize: SIZE_T,
-        BucketSize: ULONG,
-        Buffer: PULONG,
-        BufferSize: ULONG,
+        ProfileBase: *mut c_void,
+        ProfileSize: usize,
+        BucketSize: c_ulong,
+        Buffer: *mut c_ulong,
+        BufferSize: c_ulong,
         ProfileSource: KPROFILE_SOURCE,
-        Affinity: KAFFINITY,
+        Affinity: usize,
     ) -> NTSTATUS;
     fn ZwCreateProfileEx(
-        ProfileHandle: PHANDLE,
+        ProfileHandle: *mut HANDLE,
         Process: HANDLE,
-        ProfileBase: PVOID,
-        ProfileSize: SIZE_T,
-        BucketSize: ULONG,
-        Buffer: PULONG,
-        BufferSize: ULONG,
+        ProfileBase: *mut c_void,
+        ProfileSize: usize,
+        BucketSize: c_ulong,
+        Buffer: *mut c_ulong,
+        BufferSize: c_ulong,
         ProfileSource: KPROFILE_SOURCE,
-        GroupCount: USHORT,
-        GroupAffinity: PGROUP_AFFINITY,
+        GroupCount: c_ushort,
+        GroupAffinity: *mut GROUP_AFFINITY,
     ) -> NTSTATUS;
     fn ZwCreateResourceManager(
-        ResourceManagerHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
+        ResourceManagerHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
         TmHandle: HANDLE,
-        ResourceManagerGuid: LPGUID,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        CreateOptions: ULONG,
-        Description: PUNICODE_STRING,
+        ResourceManagerGuid: *mut GUID,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        CreateOptions: c_ulong,
+        Description: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwCreateSection(
-        SectionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        MaximumSize: PLARGE_INTEGER,
-        SectionPageProtection: ULONG,
-        AllocationAttributes: ULONG,
+        SectionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        MaximumSize: *mut LARGE_INTEGER,
+        SectionPageProtection: c_ulong,
+        AllocationAttributes: c_ulong,
         FileHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwCreateSemaphore(
-        SemaphoreHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        InitialCount: LONG,
-        MaximumCount: LONG,
+        SemaphoreHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        InitialCount: c_long,
+        MaximumCount: c_long,
     ) -> NTSTATUS;
     fn ZwCreateSymbolicLinkObject(
-        LinkHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        LinkTarget: PUNICODE_STRING,
+        LinkHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        LinkTarget: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwCreateThread(
-        ThreadHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ThreadHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         ProcessHandle: HANDLE,
         ClientId: PCLIENT_ID,
-        ThreadContext: PCONTEXT,
+        ThreadContext: *mut CONTEXT,
         InitialTeb: PINITIAL_TEB,
-        CreateSuspended: BOOLEAN,
+        CreateSuspended: c_uchar,
     ) -> NTSTATUS;
     fn ZwCreateThreadEx(
-        ThreadHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ThreadHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         ProcessHandle: HANDLE,
-        StartRoutine: PVOID,
-        Argument: PVOID,
-        CreateFlags: ULONG,
-        ZeroBits: SIZE_T,
-        StackSize: SIZE_T,
-        MaximumStackSize: SIZE_T,
+        StartRoutine: *mut c_void,
+        Argument: *mut c_void,
+        CreateFlags: c_ulong,
+        ZeroBits: usize,
+        StackSize: usize,
+        MaximumStackSize: usize,
         AttributeList: PPS_ATTRIBUTE_LIST,
     ) -> NTSTATUS;
     fn ZwCreateTimer(
-        TimerHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        TimerHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         TimerType: TIMER_TYPE,
     ) -> NTSTATUS;
     fn ZwCreateTimer2(
-        TimerHandle: PHANDLE,
-        Reserved1: PVOID,
-        Reserved2: PVOID,
-        Attributes: ULONG,
-        DesiredAccess: ACCESS_MASK,
+        TimerHandle: *mut HANDLE,
+        Reserved1: *mut c_void,
+        Reserved2: *mut c_void,
+        Attributes: c_ulong,
+        DesiredAccess: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateToken(
-        TokenHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        TokenHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         TokenType: TOKEN_TYPE,
-        AuthenticationId: PLUID,
-        ExpirationTime: PLARGE_INTEGER,
-        User: PTOKEN_USER,
-        Groups: PTOKEN_GROUPS,
-        Privileges: PTOKEN_PRIVILEGES,
-        Owner: PTOKEN_OWNER,
-        PrimaryGroup: PTOKEN_PRIMARY_GROUP,
-        DefaultDacl: PTOKEN_DEFAULT_DACL,
-        TokenSource: PTOKEN_SOURCE,
+        AuthenticationId: *mut LUID,
+        ExpirationTime: *mut LARGE_INTEGER,
+        User: *mut TOKEN_USER,
+        Groups: *mut TOKEN_GROUPS,
+        Privileges: *mut TOKEN_PRIVILEGES,
+        Owner: *mut TOKEN_OWNER,
+        PrimaryGroup: *mut TOKEN_PRIMARY_GROUP,
+        DefaultDacl: *mut TOKEN_DEFAULT_DACL,
+        TokenSource: *mut TOKEN_SOURCE,
     ) -> NTSTATUS;
     fn ZwCreateTokenEx(
-        TokenHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        TokenHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         TokenType: TOKEN_TYPE,
-        AuthenticationId: PLUID,
-        ExpirationTime: PLARGE_INTEGER,
-        User: PTOKEN_USER,
-        Groups: PTOKEN_GROUPS,
-        Privileges: PTOKEN_PRIVILEGES,
+        AuthenticationId: *mut LUID,
+        ExpirationTime: *mut LARGE_INTEGER,
+        User: *mut TOKEN_USER,
+        Groups: *mut TOKEN_GROUPS,
+        Privileges: *mut TOKEN_PRIVILEGES,
         UserAttributes: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
         DeviceAttributes: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
-        DeviceGroups: PTOKEN_GROUPS,
-        TokenMandatoryPolicy: PTOKEN_MANDATORY_POLICY,
-        Owner: PTOKEN_OWNER,
-        PrimaryGroup: PTOKEN_PRIMARY_GROUP,
-        DefaultDacl: PTOKEN_DEFAULT_DACL,
-        TokenSource: PTOKEN_SOURCE,
+        DeviceGroups: *mut TOKEN_GROUPS,
+        TokenMandatoryPolicy: *mut TOKEN_MANDATORY_POLICY,
+        Owner: *mut TOKEN_OWNER,
+        PrimaryGroup: *mut TOKEN_PRIMARY_GROUP,
+        DefaultDacl: *mut TOKEN_DEFAULT_DACL,
+        TokenSource: *mut TOKEN_SOURCE,
     ) -> NTSTATUS;
     fn ZwCreateTransaction(
-        TransactionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        Uow: LPGUID,
+        TransactionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        Uow: *mut GUID,
         TmHandle: HANDLE,
-        CreateOptions: ULONG,
-        IsolationLevel: ULONG,
-        IsolationFlags: ULONG,
-        Timeout: PLARGE_INTEGER,
-        Description: PUNICODE_STRING,
+        CreateOptions: c_ulong,
+        IsolationLevel: c_ulong,
+        IsolationFlags: c_ulong,
+        Timeout: *mut LARGE_INTEGER,
+        Description: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwCreateTransactionManager(
-        TmHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        LogFileName: PUNICODE_STRING,
-        CreateOptions: ULONG,
-        CommitStrength: ULONG,
+        TmHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        LogFileName: *mut UNICODE_STRING,
+        CreateOptions: c_ulong,
+        CommitStrength: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateUserProcess(
-        ProcessHandle: PHANDLE,
-        ThreadHandle: PHANDLE,
-        ProcessDesiredAccess: ACCESS_MASK,
-        ThreadDesiredAccess: ACCESS_MASK,
-        ProcessObjectAttributes: POBJECT_ATTRIBUTES,
-        ThreadObjectAttributes: POBJECT_ATTRIBUTES,
-        ProcessFlags: ULONG,
-        ThreadFlags: ULONG,
-        ProcessParameters: PVOID,
+        ProcessHandle: *mut HANDLE,
+        ThreadHandle: *mut HANDLE,
+        ProcessDesiredAccess: c_ulong,
+        ThreadDesiredAccess: c_ulong,
+        ProcessObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        ThreadObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        ProcessFlags: c_ulong,
+        ThreadFlags: c_ulong,
+        ProcessParameters: *mut c_void,
         CreateInfo: PPS_CREATE_INFO,
         AttributeList: PPS_ATTRIBUTE_LIST,
     ) -> NTSTATUS;
     fn ZwCreateWaitCompletionPacket(
-        WaitCompletionPacketHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        WaitCompletionPacketHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwCreateWaitablePort(
-        PortHandle: PHANDLE,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        MaxConnectionInfoLength: ULONG,
-        MaxMessageLength: ULONG,
-        MaxPoolUsage: ULONG,
+        PortHandle: *mut HANDLE,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        MaxConnectionInfoLength: c_ulong,
+        MaxMessageLength: c_ulong,
+        MaxPoolUsage: c_ulong,
     ) -> NTSTATUS;
     fn ZwCreateWnfStateName(
-        StateName: PWNF_STATE_NAME,
+        StateName: *mut WNF_STATE_NAME,
         NameLifetime: WNF_STATE_NAME_LIFETIME,
         DataScope: WNF_DATA_SCOPE,
-        PersistData: BOOLEAN,
+        PersistData: c_uchar,
         TypeId: PCWNF_TYPE_ID,
-        MaximumStateSize: ULONG,
+        MaximumStateSize: c_ulong,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
     ) -> NTSTATUS;
     fn ZwCreateWorkerFactory(
-        WorkerFactoryHandleReturn: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        WorkerFactoryHandleReturn: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         CompletionPortHandle: HANDLE,
         WorkerProcessHandle: HANDLE,
-        StartRoutine: PVOID,
-        StartParameter: PVOID,
-        MaxThreadCount: ULONG,
-        StackReserve: SIZE_T,
-        StackCommit: SIZE_T,
+        StartRoutine: *mut c_void,
+        StartParameter: *mut c_void,
+        MaxThreadCount: c_ulong,
+        StackReserve: usize,
+        StackCommit: usize,
     ) -> NTSTATUS;
     fn ZwDebugActiveProcess(
         ProcessHandle: HANDLE,
@@ -917,147 +940,147 @@ EXTERN!{extern "system" {
         ContinueStatus: NTSTATUS,
     ) -> NTSTATUS;
     fn ZwDelayExecution(
-        Alertable: BOOLEAN,
-        DelayInterval: PLARGE_INTEGER,
+        Alertable: c_uchar,
+        DelayInterval: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwDeleteAtom(
         Atom: RTL_ATOM,
     ) -> NTSTATUS;
     fn ZwDeleteBootEntry(
-        Id: ULONG,
+        Id: c_ulong,
     ) -> NTSTATUS;
     fn ZwDeleteDriverEntry(
-        Id: ULONG,
+        Id: c_ulong,
     ) -> NTSTATUS;
     fn ZwDeleteFile(
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwDeleteKey(
         KeyHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwDeleteObjectAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
-        GenerateOnClose: BOOLEAN,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
+        GenerateOnClose: c_uchar,
     ) -> NTSTATUS;
     fn ZwDeletePrivateNamespace(
         NamespaceHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwDeleteValueKey(
         KeyHandle: HANDLE,
-        ValueName: PUNICODE_STRING,
+        ValueName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwDeleteWnfStateData(
-        StateName: PCWNF_STATE_NAME,
-        ExplicitScope: *const VOID,
+        StateName: *const WNF_STATE_NAME,
+        ExplicitScope: *const c_void,
     ) -> NTSTATUS;
     fn ZwDeleteWnfStateName(
-        StateName: PCWNF_STATE_NAME,
+        StateName: *const WNF_STATE_NAME,
     ) -> NTSTATUS;
     fn ZwDeviceIoControlFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        IoControlCode: ULONG,
-        InputBuffer: PVOID,
-        InputBufferLength: ULONG,
-        OutputBuffer: PVOID,
-        OutputBufferLength: ULONG,
+        IoControlCode: c_ulong,
+        InputBuffer: *mut c_void,
+        InputBufferLength: c_ulong,
+        OutputBuffer: *mut c_void,
+        OutputBufferLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwDisableLastKnownGood() -> NTSTATUS;
     fn ZwDisplayString(
-        String: PUNICODE_STRING,
+        String: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwDrawText(
-        String: PUNICODE_STRING,
+        String: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwDuplicateObject(
         SourceProcessHandle: HANDLE,
         SourceHandle: HANDLE,
         TargetProcessHandle: HANDLE,
-        TargetHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        HandleAttributes: ULONG,
-        Options: ULONG,
+        TargetHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        HandleAttributes: c_ulong,
+        Options: c_ulong,
     ) -> NTSTATUS;
     fn ZwDuplicateToken(
         ExistingTokenHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        EffectiveOnly: BOOLEAN,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        EffectiveOnly: c_uchar,
         TokenType: TOKEN_TYPE,
-        NewTokenHandle: PHANDLE,
+        NewTokenHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwEnableLastKnownGood() -> NTSTATUS;
     fn ZwEnumerateBootEntries(
-        Buffer: PVOID,
-        BufferLength: PULONG,
+        Buffer: *mut c_void,
+        BufferLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwEnumerateDriverEntries(
-        Buffer: PVOID,
-        BufferLength: PULONG,
+        Buffer: *mut c_void,
+        BufferLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwEnumerateKey(
         KeyHandle: HANDLE,
-        Index: ULONG,
+        Index: c_ulong,
         KeyInformationClass: KEY_INFORMATION_CLASS,
-        KeyInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwEnumerateSystemEnvironmentValuesEx(
-        InformationClass: ULONG,
-        Buffer: PVOID,
-        BufferLength: PULONG,
+        InformationClass: c_ulong,
+        Buffer: *mut c_void,
+        BufferLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwEnumerateTransactionObject(
         RootObjectHandle: HANDLE,
         QueryType: KTMOBJECT_TYPE,
-        ObjectCursor: PKTMOBJECT_CURSOR,
-        ObjectCursorLength: ULONG,
-        ReturnLength: PULONG,
+        ObjectCursor: *mut KTMOBJECT_CURSOR,
+        ObjectCursorLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwEnumerateValueKey(
         KeyHandle: HANDLE,
-        Index: ULONG,
+        Index: c_ulong,
         KeyValueInformationClass: KEY_VALUE_INFORMATION_CLASS,
-        KeyValueInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyValueInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwExtendSection(
         SectionHandle: HANDLE,
-        NewSectionSize: PLARGE_INTEGER,
+        NewSectionSize: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwFilterToken(
         ExistingTokenHandle: HANDLE,
-        Flags: ULONG,
-        SidsToDisable: PTOKEN_GROUPS,
-        PrivilegesToDelete: PTOKEN_PRIVILEGES,
-        RestrictedSids: PTOKEN_GROUPS,
-        NewTokenHandle: PHANDLE,
+        Flags: c_ulong,
+        SidsToDisable: *mut TOKEN_GROUPS,
+        PrivilegesToDelete: *mut TOKEN_PRIVILEGES,
+        RestrictedSids: *mut TOKEN_GROUPS,
+        NewTokenHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwFilterTokenEx(
         ExistingTokenHandle: HANDLE,
-        Flags: ULONG,
-        SidsToDisable: PTOKEN_GROUPS,
-        PrivilegesToDelete: PTOKEN_PRIVILEGES,
-        RestrictedSids: PTOKEN_GROUPS,
-        DisableUserClaimsCount: ULONG,
-        UserClaimsToDisable: PUNICODE_STRING,
-        DisableDeviceClaimsCount: ULONG,
-        DeviceClaimsToDisable: PUNICODE_STRING,
-        DeviceGroupsToDisable: PTOKEN_GROUPS,
+        Flags: c_ulong,
+        SidsToDisable: *mut TOKEN_GROUPS,
+        PrivilegesToDelete: *mut TOKEN_PRIVILEGES,
+        RestrictedSids: *mut TOKEN_GROUPS,
+        DisableUserClaimsCount: c_ulong,
+        UserClaimsToDisable: *mut UNICODE_STRING,
+        DisableDeviceClaimsCount: c_ulong,
+        DeviceClaimsToDisable: *mut UNICODE_STRING,
+        DeviceGroupsToDisable: *mut TOKEN_GROUPS,
         RestrictedUserAttributes: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
         RestrictedDeviceAttributes: PTOKEN_SECURITY_ATTRIBUTES_INFORMATION,
-        RestrictedDeviceGroups: PTOKEN_GROUPS,
-        NewTokenHandle: PHANDLE,
+        RestrictedDeviceGroups: *mut TOKEN_GROUPS,
+        NewTokenHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwFindAtom(
-        AtomName: PWSTR,
-        Length: ULONG,
+        AtomName: *mut wchar_t,
+        Length: c_ulong,
         Atom: PRTL_ATOM,
     ) -> NTSTATUS;
     fn ZwFlushBuffersFile(
@@ -1066,19 +1089,19 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwFlushBuffersFileEx(
         FileHandle: HANDLE,
-        Flags: ULONG,
-        Parameters: PVOID,
-        ParametersSize: ULONG,
+        Flags: c_ulong,
+        Parameters: *mut c_void,
+        ParametersSize: c_ulong,
         IoStatusBlock: PIO_STATUS_BLOCK,
     ) -> NTSTATUS;
     fn ZwFlushInstallUILanguage(
-        InstallUILanguage: LANGID,
-        SetComittedFlag: ULONG,
+        InstallUILanguage: c_ushort,
+        SetComittedFlag: c_ulong,
     ) -> NTSTATUS;
     fn ZwFlushInstructionCache(
         ProcessHandle: HANDLE,
-        BaseAddress: PVOID,
-        Length: SIZE_T,
+        BaseAddress: *mut c_void,
+        Length: usize,
     ) -> NTSTATUS;
     fn ZwFlushKey(
         KeyHandle: HANDLE,
@@ -1087,109 +1110,109 @@ EXTERN!{extern "system" {
     fn ZwFlushWriteBuffer() -> NTSTATUS;
     fn ZwFreeUserPhysicalPages(
         ProcessHandle: HANDLE,
-        NumberOfPages: PULONG_PTR,
-        UserPfnArray: PULONG_PTR,
+        NumberOfPages: *mut usize,
+        UserPfnArray: *mut usize,
     ) -> NTSTATUS;
     fn ZwFreeVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: *mut PVOID,
-        RegionSize: PSIZE_T,
-        FreeType: ULONG,
+        BaseAddress: *mut *mut c_void,
+        RegionSize: *mut usize,
+        FreeType: c_ulong,
     ) -> NTSTATUS;
     fn ZwFreezeRegistry(
-        TimeOutInSeconds: ULONG,
+        TimeOutInSeconds: c_ulong,
     ) -> NTSTATUS;
     fn ZwFreezeTransactions(
-        FreezeTimeout: PLARGE_INTEGER,
-        ThawTimeout: PLARGE_INTEGER,
+        FreezeTimeout: *mut LARGE_INTEGER,
+        ThawTimeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwFsControlFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FsControlCode: ULONG,
-        InputBuffer: PVOID,
-        InputBufferLength: ULONG,
-        OutputBuffer: PVOID,
-        OutputBufferLength: ULONG,
+        FsControlCode: c_ulong,
+        InputBuffer: *mut c_void,
+        InputBufferLength: c_ulong,
+        OutputBuffer: *mut c_void,
+        OutputBufferLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwGetCachedSigningLevel(
         File: HANDLE,
-        Flags: PULONG,
-        SigningLevel: PSE_SIGNING_LEVEL,
-        Thumbprint: PUCHAR,
-        ThumbprintSize: PULONG,
-        ThumbprintAlgorithm: PULONG,
+        Flags: *mut c_ulong,
+        SigningLevel: *mut c_uchar,
+        Thumbprint: *mut c_uchar,
+        ThumbprintSize: *mut c_ulong,
+        ThumbprintAlgorithm: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwGetCompleteWnfStateSubscription(
-        OldDescriptorStateName: PWNF_STATE_NAME,
-        OldSubscriptionId: *mut ULONG64,
-        OldDescriptorEventMask: ULONG,
-        OldDescriptorStatus: ULONG,
+        OldDescriptorStateName: *mut WNF_STATE_NAME,
+        OldSubscriptionId: *mut __uint64,
+        OldDescriptorEventMask: c_ulong,
+        OldDescriptorStatus: c_ulong,
         NewDeliveryDescriptor: PWNF_DELIVERY_DESCRIPTOR,
-        DescriptorSize: ULONG,
+        DescriptorSize: c_ulong,
     ) -> NTSTATUS;
     fn ZwGetContextThread(
         ThreadHandle: HANDLE,
-        ThreadContext: PCONTEXT,
+        ThreadContext: *mut CONTEXT,
     ) -> NTSTATUS;
-    fn ZwGetCurrentProcessorNumber() -> ULONG;
+    fn ZwGetCurrentProcessorNumber() -> c_ulong;
     fn ZwGetDevicePowerState(
         Device: HANDLE,
-        State: PDEVICE_POWER_STATE,
+        State: *mut DEVICE_POWER_STATE,
     ) -> NTSTATUS;
     fn ZwGetMUIRegistryInfo(
-        Flags: ULONG,
-        DataSize: PULONG,
-        Data: PVOID,
+        Flags: c_ulong,
+        DataSize: *mut c_ulong,
+        Data: *mut c_void,
     ) -> NTSTATUS;
     fn ZwGetNextProcess(
         ProcessHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        HandleAttributes: ULONG,
-        Flags: ULONG,
-        NewProcessHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        HandleAttributes: c_ulong,
+        Flags: c_ulong,
+        NewProcessHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwGetNextThread(
         ProcessHandle: HANDLE,
         ThreadHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        HandleAttributes: ULONG,
-        Flags: ULONG,
-        NewThreadHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        HandleAttributes: c_ulong,
+        Flags: c_ulong,
+        NewThreadHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwGetNlsSectionPtr(
-        SectionType: ULONG,
-        SectionData: ULONG,
-        ContextData: PVOID,
-        SectionPointer: *mut PVOID,
-        SectionSize: PULONG,
+        SectionType: c_ulong,
+        SectionData: c_ulong,
+        ContextData: *mut c_void,
+        SectionPointer: *mut *mut c_void,
+        SectionSize: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwGetNotificationResourceManager(
         ResourceManagerHandle: HANDLE,
-        TransactionNotification: PTRANSACTION_NOTIFICATION,
-        NotificationLength: ULONG,
-        Timeout: PLARGE_INTEGER,
-        ReturnLength: PULONG,
-        Asynchronous: ULONG,
-        AsynchronousContext: ULONG_PTR,
+        TransactionNotification: *mut TRANSACTION_NOTIFICATION,
+        NotificationLength: c_ulong,
+        Timeout: *mut LARGE_INTEGER,
+        ReturnLength: *mut c_ulong,
+        Asynchronous: c_ulong,
+        AsynchronousContext: usize,
     ) -> NTSTATUS;
     fn ZwGetPlugPlayEvent(
         EventHandle: HANDLE,
-        Context: PVOID,
+        Context: *mut c_void,
         EventBlock: PPLUGPLAY_EVENT_BLOCK,
-        EventBufferSize: ULONG,
+        EventBufferSize: c_ulong,
     ) -> NTSTATUS;
     fn ZwGetWriteWatch(
         ProcessHandle: HANDLE,
-        Flags: ULONG,
-        BaseAddress: PVOID,
-        RegionSize: SIZE_T,
-        UserAddressArray: *mut PVOID,
-        EntriesInUserAddressArray: PULONG_PTR,
-        Granularity: PULONG,
+        Flags: c_ulong,
+        BaseAddress: *mut c_void,
+        RegionSize: usize,
+        UserAddressArray: *mut *mut c_void,
+        EntriesInUserAddressArray: *mut usize,
+        Granularity: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwImpersonateAnonymousToken(
         ThreadHandle: HANDLE,
@@ -1201,78 +1224,78 @@ EXTERN!{extern "system" {
     fn ZwImpersonateThread(
         ServerThreadHandle: HANDLE,
         ClientThreadHandle: HANDLE,
-        SecurityQos: PSECURITY_QUALITY_OF_SERVICE,
+        SecurityQos: *mut SECURITY_QUALITY_OF_SERVICE,
     ) -> NTSTATUS;
     fn ZwInitializeNlsFiles(
-        BaseAddress: *mut PVOID,
-        DefaultLocaleId: PLCID,
-        DefaultCasingTableSize: PLARGE_INTEGER,
+        BaseAddress: *mut *mut c_void,
+        DefaultLocaleId: *mut c_ulong,
+        DefaultCasingTableSize: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwInitializeRegistry(
-        BootCondition: USHORT,
+        BootCondition: c_ushort,
     ) -> NTSTATUS;
     fn ZwInitiatePowerAction(
         SystemAction: POWER_ACTION,
         LightestSystemState: SYSTEM_POWER_STATE,
-        Flags: ULONG,
-        Asynchronous: BOOLEAN,
+        Flags: c_ulong,
+        Asynchronous: c_uchar,
     ) -> NTSTATUS;
     fn ZwIsProcessInJob(
         ProcessHandle: HANDLE,
         JobHandle: HANDLE,
     ) -> NTSTATUS;
-    fn ZwIsSystemResumeAutomatic() -> BOOLEAN;
+    fn ZwIsSystemResumeAutomatic() -> c_uchar;
     fn ZwIsUILanguageComitted() -> NTSTATUS;
     fn ZwListenPort(
         PortHandle: HANDLE,
         ConnectionRequest: PPORT_MESSAGE,
     ) -> NTSTATUS;
     fn ZwLoadDriver(
-        DriverServiceName: PUNICODE_STRING,
+        DriverServiceName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwLoadKey(
-        TargetKey: POBJECT_ATTRIBUTES,
-        SourceFile: POBJECT_ATTRIBUTES,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        SourceFile: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwLoadKey2(
-        TargetKey: POBJECT_ATTRIBUTES,
-        SourceFile: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        SourceFile: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwLoadKeyEx(
-        TargetKey: POBJECT_ATTRIBUTES,
-        SourceFile: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        SourceFile: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
         TrustClassKey: HANDLE,
         Event: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        RootHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        RootHandle: *mut HANDLE,
         IoStatus: PIO_STATUS_BLOCK,
     ) -> NTSTATUS;
     fn ZwLockFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ByteOffset: PLARGE_INTEGER,
-        Length: PLARGE_INTEGER,
-        Key: ULONG,
-        FailImmediately: BOOLEAN,
-        ExclusiveLock: BOOLEAN,
+        ByteOffset: *mut LARGE_INTEGER,
+        Length: *mut LARGE_INTEGER,
+        Key: c_ulong,
+        FailImmediately: c_uchar,
+        ExclusiveLock: c_uchar,
     ) -> NTSTATUS;
     fn ZwLockProductActivationKeys(
-        pPrivateVer: *mut ULONG,
-        pSafeMode: *mut ULONG,
+        pPrivateVer: *mut c_ulong,
+        pSafeMode: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwLockRegistryKey(
         KeyHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwLockVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: *mut PVOID,
-        RegionSize: PSIZE_T,
-        MapType: ULONG,
+        BaseAddress: *mut *mut c_void,
+        RegionSize: *mut usize,
+        MapType: c_ulong,
     ) -> NTSTATUS;
     fn ZwMakePermanentObject(
         Handle: HANDLE,
@@ -1282,38 +1305,38 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwManagePartition(
         PartitionInformationClass: MEMORY_PARTITION_INFORMATION_CLASS,
-        PartitionInformation: PVOID,
-        PartitionInformationLength: ULONG,
+        PartitionInformation: *mut c_void,
+        PartitionInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwMapCMFModule(
-        What: ULONG,
-        Index: ULONG,
-        CacheIndexOut: PULONG,
-        CacheFlagsOut: PULONG,
-        ViewSizeOut: PULONG,
-        BaseAddress: *mut PVOID,
+        What: c_ulong,
+        Index: c_ulong,
+        CacheIndexOut: *mut c_ulong,
+        CacheFlagsOut: *mut c_ulong,
+        ViewSizeOut: *mut c_ulong,
+        BaseAddress: *mut *mut c_void,
     ) -> NTSTATUS;
     fn ZwMapUserPhysicalPages(
-        VirtualAddress: PVOID,
-        NumberOfPages: ULONG_PTR,
-        UserPfnArray: PULONG_PTR,
+        VirtualAddress: *mut c_void,
+        NumberOfPages: usize,
+        UserPfnArray: *mut usize,
     ) -> NTSTATUS;
     fn ZwMapUserPhysicalPagesScatter(
-        VirtualAddresses: *mut PVOID,
-        NumberOfPages: ULONG_PTR,
-        UserPfnArray: PULONG_PTR,
+        VirtualAddresses: *mut *mut c_void,
+        NumberOfPages: usize,
+        UserPfnArray: *mut usize,
     ) -> NTSTATUS;
     fn ZwMapViewOfSection(
         SectionHandle: HANDLE,
         ProcessHandle: HANDLE,
-        BaseAddress: *mut PVOID,
-        ZeroBits: ULONG_PTR,
-        CommitSize: SIZE_T,
-        SectionOffset: PLARGE_INTEGER,
-        ViewSize: PSIZE_T,
+        BaseAddress: *mut *mut c_void,
+        ZeroBits: usize,
+        CommitSize: usize,
+        SectionOffset: *mut LARGE_INTEGER,
+        ViewSize: *mut usize,
         InheritDisposition: SECTION_INHERIT,
-        AllocationType: ULONG,
-        Win32Protect: ULONG,
+        AllocationType: c_ulong,
+        Win32Protect: c_ulong,
     ) -> NTSTATUS;
     fn ZwModifyBootEntry(
         BootEntry: PBOOT_ENTRY,
@@ -1325,718 +1348,718 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        CompletionFilter: ULONG,
-        WatchTree: BOOLEAN,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        CompletionFilter: c_ulong,
+        WatchTree: c_uchar,
     ) -> NTSTATUS;
     fn ZwNotifyChangeKey(
         KeyHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        CompletionFilter: ULONG,
-        WatchTree: BOOLEAN,
-        Buffer: PVOID,
-        BufferSize: ULONG,
-        Asynchronous: BOOLEAN,
+        CompletionFilter: c_ulong,
+        WatchTree: c_uchar,
+        Buffer: *mut c_void,
+        BufferSize: c_ulong,
+        Asynchronous: c_uchar,
     ) -> NTSTATUS;
     fn ZwNotifyChangeMultipleKeys(
         MasterKeyHandle: HANDLE,
-        Count: ULONG,
+        Count: c_ulong,
         SubordinateObjects: *mut OBJECT_ATTRIBUTES,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        CompletionFilter: ULONG,
-        WatchTree: BOOLEAN,
-        Buffer: PVOID,
-        BufferSize: ULONG,
-        Asynchronous: BOOLEAN,
+        CompletionFilter: c_ulong,
+        WatchTree: c_uchar,
+        Buffer: *mut c_void,
+        BufferSize: c_ulong,
+        Asynchronous: c_uchar,
     ) -> NTSTATUS;
     fn ZwNotifyChangeSession(
         SessionHandle: HANDLE,
-        ChangeSequenceNumber: ULONG,
-        ChangeTimeStamp: PLARGE_INTEGER,
+        ChangeSequenceNumber: c_ulong,
+        ChangeTimeStamp: *mut LARGE_INTEGER,
         Event: IO_SESSION_EVENT,
         NewState: IO_SESSION_STATE,
         PreviousState: IO_SESSION_STATE,
-        Payload: PVOID,
-        PayloadSize: ULONG,
+        Payload: *mut c_void,
+        PayloadSize: c_ulong,
     ) -> NTSTATUS;
     fn ZwOpenDirectoryObject(
-        DirectoryHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        DirectoryHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenEnlistment(
-        EnlistmentHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
+        EnlistmentHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
         RmHandle: HANDLE,
-        EnlistmentGuid: LPGUID,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        EnlistmentGuid: *mut GUID,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenEvent(
-        EventHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        EventHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenEventPair(
-        EventPairHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        EventPairHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ShareAccess: ULONG,
-        OpenOptions: ULONG,
+        ShareAccess: c_ulong,
+        OpenOptions: c_ulong,
     ) -> NTSTATUS;
     fn ZwOpenIoCompletion(
-        IoCompletionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        IoCompletionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenJobObject(
-        JobHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        JobHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenKey(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenKeyEx(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        OpenOptions: ULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        OpenOptions: c_ulong,
     ) -> NTSTATUS;
     fn ZwOpenKeyTransacted(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         TransactionHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwOpenKeyTransactedEx(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        OpenOptions: ULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        OpenOptions: c_ulong,
         TransactionHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwOpenKeyedEvent(
-        KeyedEventHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        KeyedEventHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenMutant(
-        MutantHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        MutantHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenObjectAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
-        ObjectTypeName: PUNICODE_STRING,
-        ObjectName: PUNICODE_STRING,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
+        ObjectTypeName: *mut UNICODE_STRING,
+        ObjectName: *mut UNICODE_STRING,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
         ClientToken: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        GrantedAccess: ACCESS_MASK,
-        Privileges: PPRIVILEGE_SET,
-        ObjectCreation: BOOLEAN,
-        AccessGranted: BOOLEAN,
-        GenerateOnClose: PBOOLEAN,
+        DesiredAccess: c_ulong,
+        GrantedAccess: c_ulong,
+        Privileges: *mut PRIVILEGE_SET,
+        ObjectCreation: c_uchar,
+        AccessGranted: c_uchar,
+        GenerateOnClose: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwOpenPartition(
-        PartitionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        PartitionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenPrivateNamespace(
-        NamespaceHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        BoundaryDescriptor: PVOID,
+        NamespaceHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        BoundaryDescriptor: *mut c_void,
     ) -> NTSTATUS;
     fn ZwOpenProcess(
-        ProcessHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ProcessHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         ClientId: PCLIENT_ID,
     ) -> NTSTATUS;
     fn ZwOpenProcessToken(
         ProcessHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        TokenHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        TokenHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwOpenProcessTokenEx(
         ProcessHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        HandleAttributes: ULONG,
-        TokenHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        HandleAttributes: c_ulong,
+        TokenHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwOpenResourceManager(
-        ResourceManagerHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
+        ResourceManagerHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
         TmHandle: HANDLE,
-        ResourceManagerGuid: LPGUID,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ResourceManagerGuid: *mut GUID,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenSection(
-        SectionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        SectionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenSemaphore(
-        SemaphoreHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        SemaphoreHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenSession(
-        SessionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        SessionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenSymbolicLinkObject(
-        LinkHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        LinkHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenThread(
-        ThreadHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ThreadHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         ClientId: PCLIENT_ID,
     ) -> NTSTATUS;
     fn ZwOpenThreadToken(
         ThreadHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        OpenAsSelf: BOOLEAN,
-        TokenHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        OpenAsSelf: c_uchar,
+        TokenHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwOpenThreadTokenEx(
         ThreadHandle: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        OpenAsSelf: BOOLEAN,
-        HandleAttributes: ULONG,
-        TokenHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        OpenAsSelf: c_uchar,
+        HandleAttributes: c_ulong,
+        TokenHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn ZwOpenTimer(
-        TimerHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        TimerHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwOpenTransaction(
-        TransactionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        Uow: LPGUID,
+        TransactionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        Uow: *mut GUID,
         TmHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwOpenTransactionManager(
-        TmHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        LogFileName: PUNICODE_STRING,
-        TmIdentity: LPGUID,
-        OpenOptions: ULONG,
+        TmHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        LogFileName: *mut UNICODE_STRING,
+        TmIdentity: *mut GUID,
+        OpenOptions: c_ulong,
     ) -> NTSTATUS;
     fn ZwPlugPlayControl(
         PnPControlClass: PLUGPLAY_CONTROL_CLASS,
-        PnPControlData: PVOID,
-        PnPControlDataLength: ULONG,
+        PnPControlData: *mut c_void,
+        PnPControlDataLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwPowerInformation(
         InformationLevel: POWER_INFORMATION_LEVEL,
-        InputBuffer: PVOID,
-        InputBufferLength: ULONG,
-        OutputBuffer: PVOID,
-        OutputBufferLength: ULONG,
+        InputBuffer: *mut c_void,
+        InputBufferLength: c_ulong,
+        OutputBuffer: *mut c_void,
+        OutputBufferLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwPrePrepareComplete(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwPrePrepareEnlistment(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwPrepareComplete(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwPrepareEnlistment(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwPrivilegeCheck(
         ClientToken: HANDLE,
-        RequiredPrivileges: PPRIVILEGE_SET,
-        Result: PBOOLEAN,
+        RequiredPrivileges: *mut PRIVILEGE_SET,
+        Result: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwPrivilegeObjectAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        HandleId: PVOID,
+        SubsystemName: *mut UNICODE_STRING,
+        HandleId: *mut c_void,
         ClientToken: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        Privileges: PPRIVILEGE_SET,
-        AccessGranted: BOOLEAN,
+        DesiredAccess: c_ulong,
+        Privileges: *mut PRIVILEGE_SET,
+        AccessGranted: c_uchar,
     ) -> NTSTATUS;
     fn ZwPrivilegedServiceAuditAlarm(
-        SubsystemName: PUNICODE_STRING,
-        ServiceName: PUNICODE_STRING,
+        SubsystemName: *mut UNICODE_STRING,
+        ServiceName: *mut UNICODE_STRING,
         ClientToken: HANDLE,
-        Privileges: PPRIVILEGE_SET,
-        AccessGranted: BOOLEAN,
+        Privileges: *mut PRIVILEGE_SET,
+        AccessGranted: c_uchar,
     ) -> NTSTATUS;
     fn ZwPropagationComplete(
         ResourceManagerHandle: HANDLE,
-        RequestCookie: ULONG,
-        BufferLength: ULONG,
-        Buffer: PVOID,
+        RequestCookie: c_ulong,
+        BufferLength: c_ulong,
+        Buffer: *mut c_void,
     ) -> NTSTATUS;
     fn ZwPropagationFailed(
         ResourceManagerHandle: HANDLE,
-        RequestCookie: ULONG,
+        RequestCookie: c_ulong,
         PropStatus: NTSTATUS,
     ) -> NTSTATUS;
     fn ZwProtectVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: *mut PVOID,
-        RegionSize: PSIZE_T,
-        NewProtect: ULONG,
-        OldProtect: PULONG,
+        BaseAddress: *mut *mut c_void,
+        RegionSize: *mut usize,
+        NewProtect: c_ulong,
+        OldProtect: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwPulseEvent(
         EventHandle: HANDLE,
-        PreviousState: PLONG,
+        PreviousState: *mut c_long,
     ) -> NTSTATUS;
     fn ZwQueryAttributesFile(
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         FileInformation: PFILE_BASIC_INFORMATION,
     ) -> NTSTATUS;
     fn ZwQueryBootEntryOrder(
-        Ids: PULONG,
-        Count: PULONG,
+        Ids: *mut c_ulong,
+        Count: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryBootOptions(
         BootOptions: PBOOT_OPTIONS,
-        BootOptionsLength: PULONG,
+        BootOptionsLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryDebugFilterState(
-        ComponentId: ULONG,
-        Level: ULONG,
+        ComponentId: c_ulong,
+        Level: c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryDefaultLocale(
-        UserProfile: BOOLEAN,
-        DefaultLocaleId: PLCID,
+        UserProfile: c_uchar,
+        DefaultLocaleId: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryDefaultUILanguage(
-        DefaultUILanguageId: *mut LANGID,
+        DefaultUILanguageId: *mut c_ushort,
     ) -> NTSTATUS;
     fn ZwQueryDirectoryFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FileInformation: PVOID,
-        Length: ULONG,
+        FileInformation: *mut c_void,
+        Length: c_ulong,
         FileInformationClass: FILE_INFORMATION_CLASS,
-        ReturnSingleEntry: BOOLEAN,
-        FileName: PUNICODE_STRING,
-        RestartScan: BOOLEAN,
+        ReturnSingleEntry: c_uchar,
+        FileName: *mut UNICODE_STRING,
+        RestartScan: c_uchar,
     ) -> NTSTATUS;
     fn ZwQueryDirectoryObject(
         DirectoryHandle: HANDLE,
-        Buffer: PVOID,
-        Length: ULONG,
-        ReturnSingleEntry: BOOLEAN,
-        RestartScan: BOOLEAN,
-        Context: PULONG,
-        ReturnLength: PULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ReturnSingleEntry: c_uchar,
+        RestartScan: c_uchar,
+        Context: *mut c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryDriverEntryOrder(
-        Ids: PULONG,
-        Count: PULONG,
+        Ids: *mut c_ulong,
+        Count: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryEaFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ReturnSingleEntry: BOOLEAN,
-        EaList: PVOID,
-        EaListLength: ULONG,
-        EaIndex: PULONG,
-        RestartScan: BOOLEAN,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ReturnSingleEntry: c_uchar,
+        EaList: *mut c_void,
+        EaListLength: c_ulong,
+        EaIndex: *mut c_ulong,
+        RestartScan: c_uchar,
     ) -> NTSTATUS;
     fn ZwQueryEvent(
         EventHandle: HANDLE,
         EventInformationClass: EVENT_INFORMATION_CLASS,
-        EventInformation: PVOID,
-        EventInformationLength: ULONG,
-        ReturnLength: PULONG,
+        EventInformation: *mut c_void,
+        EventInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryFullAttributesFile(
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         FileInformation: PFILE_NETWORK_OPEN_INFORMATION,
     ) -> NTSTATUS;
     fn ZwQueryInformationAtom(
         Atom: RTL_ATOM,
         AtomInformationClass: ATOM_INFORMATION_CLASS,
-        AtomInformation: PVOID,
-        AtomInformationLength: ULONG,
-        ReturnLength: PULONG,
+        AtomInformation: *mut c_void,
+        AtomInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationEnlistment(
         EnlistmentHandle: HANDLE,
         EnlistmentInformationClass: ENLISTMENT_INFORMATION_CLASS,
-        EnlistmentInformation: PVOID,
-        EnlistmentInformationLength: ULONG,
-        ReturnLength: PULONG,
+        EnlistmentInformation: *mut c_void,
+        EnlistmentInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FileInformation: PVOID,
-        Length: ULONG,
+        FileInformation: *mut c_void,
+        Length: c_ulong,
         FileInformationClass: FILE_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn ZwQueryInformationJobObject(
         JobHandle: HANDLE,
         JobObjectInformationClass: JOBOBJECTINFOCLASS,
-        JobObjectInformation: PVOID,
-        JobObjectInformationLength: ULONG,
-        ReturnLength: PULONG,
+        JobObjectInformation: *mut c_void,
+        JobObjectInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationPort(
         PortHandle: HANDLE,
         PortInformationClass: PORT_INFORMATION_CLASS,
-        PortInformation: PVOID,
-        Length: ULONG,
-        ReturnLength: PULONG,
+        PortInformation: *mut c_void,
+        Length: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationProcess(
         ProcessHandle: HANDLE,
         ProcessInformationClass: PROCESSINFOCLASS,
-        ProcessInformation: PVOID,
-        ProcessInformationLength: ULONG,
-        ReturnLength: PULONG,
+        ProcessInformation: *mut c_void,
+        ProcessInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationResourceManager(
         ResourceManagerHandle: HANDLE,
         ResourceManagerInformationClass: RESOURCEMANAGER_INFORMATION_CLASS,
-        ResourceManagerInformation: PVOID,
-        ResourceManagerInformationLength: ULONG,
-        ReturnLength: PULONG,
+        ResourceManagerInformation: *mut c_void,
+        ResourceManagerInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationThread(
         ThreadHandle: HANDLE,
         ThreadInformationClass: THREADINFOCLASS,
-        ThreadInformation: PVOID,
-        ThreadInformationLength: ULONG,
-        ReturnLength: PULONG,
+        ThreadInformation: *mut c_void,
+        ThreadInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationToken(
         TokenHandle: HANDLE,
         TokenInformationClass: TOKEN_INFORMATION_CLASS,
-        TokenInformation: PVOID,
-        TokenInformationLength: ULONG,
-        ReturnLength: PULONG,
+        TokenInformation: *mut c_void,
+        TokenInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationTransaction(
         TransactionHandle: HANDLE,
         TransactionInformationClass: TRANSACTION_INFORMATION_CLASS,
-        TransactionInformation: PVOID,
-        TransactionInformationLength: ULONG,
-        ReturnLength: PULONG,
+        TransactionInformation: *mut c_void,
+        TransactionInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationTransactionManager(
         TransactionManagerHandle: HANDLE,
         TransactionManagerInformationClass: TRANSACTIONMANAGER_INFORMATION_CLASS,
-        TransactionManagerInformation: PVOID,
-        TransactionManagerInformationLength: ULONG,
-        ReturnLength: PULONG,
+        TransactionManagerInformation: *mut c_void,
+        TransactionManagerInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInformationWorkerFactory(
         WorkerFactoryHandle: HANDLE,
         WorkerFactoryInformationClass: WORKERFACTORYINFOCLASS,
-        WorkerFactoryInformation: PVOID,
-        WorkerFactoryInformationLength: ULONG,
-        ReturnLength: PULONG,
+        WorkerFactoryInformation: *mut c_void,
+        WorkerFactoryInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryInstallUILanguage(
-        InstallUILanguageId: *mut LANGID,
+        InstallUILanguageId: *mut c_ushort,
     ) -> NTSTATUS;
     fn ZwQueryIntervalProfile(
         ProfileSource: KPROFILE_SOURCE,
-        Interval: PULONG,
+        Interval: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryIoCompletion(
         IoCompletionHandle: HANDLE,
         IoCompletionInformationClass: IO_COMPLETION_INFORMATION_CLASS,
-        IoCompletionInformation: PVOID,
-        IoCompletionInformationLength: ULONG,
-        ReturnLength: PULONG,
+        IoCompletionInformation: *mut c_void,
+        IoCompletionInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryKey(
         KeyHandle: HANDLE,
         KeyInformationClass: KEY_INFORMATION_CLASS,
-        KeyInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryLicenseValue(
-        ValueName: PUNICODE_STRING,
-        Type: PULONG,
-        Data: PVOID,
-        DataSize: ULONG,
-        ResultDataSize: PULONG,
+        ValueName: *mut UNICODE_STRING,
+        Type: *mut c_ulong,
+        Data: *mut c_void,
+        DataSize: c_ulong,
+        ResultDataSize: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryMultipleValueKey(
         KeyHandle: HANDLE,
         ValueEntries: PKEY_VALUE_ENTRY,
-        EntryCount: ULONG,
-        ValueBuffer: PVOID,
-        BufferLength: PULONG,
-        RequiredBufferLength: PULONG,
+        EntryCount: c_ulong,
+        ValueBuffer: *mut c_void,
+        BufferLength: *mut c_ulong,
+        RequiredBufferLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryMutant(
         MutantHandle: HANDLE,
         MutantInformationClass: MUTANT_INFORMATION_CLASS,
-        MutantInformation: PVOID,
-        MutantInformationLength: ULONG,
-        ReturnLength: PULONG,
+        MutantInformation: *mut c_void,
+        MutantInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryObject(
         Handle: HANDLE,
         ObjectInformationClass: OBJECT_INFORMATION_CLASS,
-        ObjectInformation: PVOID,
-        ObjectInformationLength: ULONG,
-        ReturnLength: PULONG,
+        ObjectInformation: *mut c_void,
+        ObjectInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryOpenSubKeys(
-        TargetKey: POBJECT_ATTRIBUTES,
-        HandleCount: PULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        HandleCount: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryOpenSubKeysEx(
-        TargetKey: POBJECT_ATTRIBUTES,
-        BufferLength: ULONG,
-        Buffer: PVOID,
-        RequiredSize: PULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        BufferLength: c_ulong,
+        Buffer: *mut c_void,
+        RequiredSize: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryPerformanceCounter(
-        PerformanceCounter: PLARGE_INTEGER,
-        PerformanceFrequency: PLARGE_INTEGER,
+        PerformanceCounter: *mut LARGE_INTEGER,
+        PerformanceFrequency: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwQueryPortInformationProcess() -> NTSTATUS;
     fn ZwQueryQuotaInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ReturnSingleEntry: BOOLEAN,
-        SidList: PVOID,
-        SidListLength: ULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ReturnSingleEntry: c_uchar,
+        SidList: *mut c_void,
+        SidListLength: c_ulong,
         StartSid: PSID,
-        RestartScan: BOOLEAN,
+        RestartScan: c_uchar,
     ) -> NTSTATUS;
     fn ZwQuerySection(
         SectionHandle: HANDLE,
         SectionInformationClass: SECTION_INFORMATION_CLASS,
-        SectionInformation: PVOID,
-        SectionInformationLength: SIZE_T,
-        ReturnLength: PSIZE_T,
+        SectionInformation: *mut c_void,
+        SectionInformationLength: usize,
+        ReturnLength: *mut usize,
     ) -> NTSTATUS;
     fn ZwQuerySecurityAttributesToken(
         TokenHandle: HANDLE,
-        Attributes: PUNICODE_STRING,
-        NumberOfAttributes: ULONG,
-        Buffer: PVOID,
-        Length: ULONG,
-        ReturnLength: PULONG,
+        Attributes: *mut UNICODE_STRING,
+        NumberOfAttributes: c_ulong,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQuerySecurityObject(
         Handle: HANDLE,
-        SecurityInformation: SECURITY_INFORMATION,
+        SecurityInformation: c_ulong,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
-        Length: ULONG,
-        LengthNeeded: PULONG,
+        Length: c_ulong,
+        LengthNeeded: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQuerySemaphore(
         SemaphoreHandle: HANDLE,
         SemaphoreInformationClass: SEMAPHORE_INFORMATION_CLASS,
-        SemaphoreInformation: PVOID,
-        SemaphoreInformationLength: ULONG,
-        ReturnLength: PULONG,
+        SemaphoreInformation: *mut c_void,
+        SemaphoreInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQuerySymbolicLinkObject(
         LinkHandle: HANDLE,
-        LinkTarget: PUNICODE_STRING,
-        ReturnedLength: PULONG,
+        LinkTarget: *mut UNICODE_STRING,
+        ReturnedLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQuerySystemEnvironmentValue(
-        VariableName: PUNICODE_STRING,
-        VariableValue: PWSTR,
-        ValueLength: USHORT,
-        ReturnLength: PUSHORT,
+        VariableName: *mut UNICODE_STRING,
+        VariableValue: *mut wchar_t,
+        ValueLength: c_ushort,
+        ReturnLength: *mut c_ushort,
     ) -> NTSTATUS;
     fn ZwQuerySystemEnvironmentValueEx(
-        VariableName: PUNICODE_STRING,
-        VendorGuid: LPGUID,
-        Value: PVOID,
-        ValueLength: PULONG,
-        Attributes: PULONG,
+        VariableName: *mut UNICODE_STRING,
+        VendorGuid: *mut GUID,
+        Value: *mut c_void,
+        ValueLength: *mut c_ulong,
+        Attributes: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQuerySystemInformation(
         SystemInformationClass: SYSTEM_INFORMATION_CLASS,
-        SystemInformation: PVOID,
-        SystemInformationLength: ULONG,
-        ReturnLength: PULONG,
+        SystemInformation: *mut c_void,
+        SystemInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQuerySystemInformationEx(
         SystemInformationClass: SYSTEM_INFORMATION_CLASS,
-        InputBuffer: PVOID,
-        InputBufferLength: ULONG,
-        SystemInformation: PVOID,
-        SystemInformationLength: ULONG,
-        ReturnLength: PULONG,
+        InputBuffer: *mut c_void,
+        InputBufferLength: c_ulong,
+        SystemInformation: *mut c_void,
+        SystemInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQuerySystemTime(
-        SystemTime: PLARGE_INTEGER,
+        SystemTime: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwQueryTimer(
         TimerHandle: HANDLE,
         TimerInformationClass: TIMER_INFORMATION_CLASS,
-        TimerInformation: PVOID,
-        TimerInformationLength: ULONG,
-        ReturnLength: PULONG,
+        TimerInformation: *mut c_void,
+        TimerInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryTimerResolution(
-        MaximumTime: PULONG,
-        MinimumTime: PULONG,
-        CurrentTime: PULONG,
+        MaximumTime: *mut c_ulong,
+        MinimumTime: *mut c_ulong,
+        CurrentTime: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryValueKey(
         KeyHandle: HANDLE,
-        ValueName: PUNICODE_STRING,
+        ValueName: *mut UNICODE_STRING,
         KeyValueInformationClass: KEY_VALUE_INFORMATION_CLASS,
-        KeyValueInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyValueInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: PVOID,
+        BaseAddress: *mut c_void,
         MemoryInformationClass: MEMORY_INFORMATION_CLASS,
-        MemoryInformation: PVOID,
-        MemoryInformationLength: SIZE_T,
-        ReturnLength: PSIZE_T,
+        MemoryInformation: *mut c_void,
+        MemoryInformationLength: usize,
+        ReturnLength: *mut usize,
     ) -> NTSTATUS;
     fn ZwQueryVolumeInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FsInformation: PVOID,
-        Length: ULONG,
+        FsInformation: *mut c_void,
+        Length: c_ulong,
         FsInformationClass: FS_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn ZwQueryWnfStateData(
-        StateName: PCWNF_STATE_NAME,
+        StateName: *const WNF_STATE_NAME,
         TypeId: PCWNF_TYPE_ID,
-        ExplicitScope: *const VOID,
+        ExplicitScope: *const c_void,
         ChangeStamp: PWNF_CHANGE_STAMP,
-        Buffer: PVOID,
-        BufferSize: PULONG,
+        Buffer: *mut c_void,
+        BufferSize: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwQueryWnfStateNameInformation(
-        StateName: PCWNF_STATE_NAME,
+        StateName: *const WNF_STATE_NAME,
         NameInfoClass: WNF_STATE_NAME_INFORMATION,
-        ExplicitScope: *const VOID,
-        InfoBuffer: PVOID,
-        InfoBufferSize: ULONG,
+        ExplicitScope: *const c_void,
+        InfoBuffer: *mut c_void,
+        InfoBufferSize: c_ulong,
     ) -> NTSTATUS;
     fn ZwQueueApcThread(
         ThreadHandle: HANDLE,
         ApcRoutine: PPS_APC_ROUTINE,
-        ApcArgument1: PVOID,
-        ApcArgument2: PVOID,
-        ApcArgument3: PVOID,
+        ApcArgument1: *mut c_void,
+        ApcArgument2: *mut c_void,
+        ApcArgument3: *mut c_void,
     ) -> NTSTATUS;
     fn ZwQueueApcThreadEx(
         ThreadHandle: HANDLE,
         UserApcReserveHandle: HANDLE,
         ApcRoutine: PPS_APC_ROUTINE,
-        ApcArgument1: PVOID,
-        ApcArgument2: PVOID,
-        ApcArgument3: PVOID,
+        ApcArgument1: *mut c_void,
+        ApcArgument2: *mut c_void,
+        ApcArgument3: *mut c_void,
     ) -> NTSTATUS;
     fn ZwRaiseException(
-        ExceptionRecord: PEXCEPTION_RECORD,
-        ContextRecord: PCONTEXT,
-        FirstChance: BOOLEAN,
+        ExceptionRecord: *mut EXCEPTION_RECORD,
+        ContextRecord: *mut CONTEXT,
+        FirstChance: c_uchar,
     ) -> NTSTATUS;
     fn ZwRaiseHardError(
         ErrorStatus: NTSTATUS,
-        NumberOfParameters: ULONG,
-        UnicodeStringParameterMask: ULONG,
-        Parameters: PULONG_PTR,
-        ValidResponseOptions: ULONG,
-        Response: PULONG,
+        NumberOfParameters: c_ulong,
+        UnicodeStringParameterMask: c_ulong,
+        Parameters: *mut usize,
+        ValidResponseOptions: c_ulong,
+        Response: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwReadFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwReadFileScatter(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        SegmentArray: PFILE_SEGMENT_ELEMENT,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        SegmentArray: *mut FILE_SEGMENT_ELEMENT,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwReadOnlyEnlistment(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwReadRequestData(
         PortHandle: HANDLE,
         Message: PPORT_MESSAGE,
-        DataEntryIndex: ULONG,
-        Buffer: PVOID,
-        BufferSize: SIZE_T,
-        NumberOfBytesRead: PSIZE_T,
+        DataEntryIndex: c_ulong,
+        Buffer: *mut c_void,
+        BufferSize: usize,
+        NumberOfBytesRead: *mut usize,
     ) -> NTSTATUS;
     fn ZwReadVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: PVOID,
-        Buffer: PVOID,
-        BufferSize: SIZE_T,
-        NumberOfBytesRead: PSIZE_T,
+        BaseAddress: *mut c_void,
+        Buffer: *mut c_void,
+        BufferSize: usize,
+        NumberOfBytesRead: *mut usize,
     ) -> NTSTATUS;
     fn ZwRecoverEnlistment(
         EnlistmentHandle: HANDLE,
-        EnlistmentKey: PVOID,
+        EnlistmentKey: *mut c_void,
     ) -> NTSTATUS;
     fn ZwRecoverResourceManager(
         ResourceManagerHandle: HANDLE,
@@ -2046,10 +2069,10 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwRegisterProtocolAddressInformation(
         ResourceManager: HANDLE,
-        ProtocolId: PCRM_PROTOCOL_ID,
-        ProtocolInformationSize: ULONG,
-        ProtocolInformation: PVOID,
-        CreateOptions: ULONG,
+        ProtocolId: *mut GUID,
+        ProtocolInformationSize: c_ulong,
+        ProtocolInformation: *mut c_void,
+        CreateOptions: c_ulong,
     ) -> NTSTATUS;
     fn ZwRegisterThreadTerminatePort(
         PortHandle: HANDLE,
@@ -2057,36 +2080,36 @@ EXTERN!{extern "system" {
     fn ZwReleaseCMFViewOwnership() -> NTSTATUS;
     fn ZwReleaseKeyedEvent(
         KeyedEventHandle: HANDLE,
-        KeyValue: PVOID,
-        Alertable: BOOLEAN,
-        Timeout: PLARGE_INTEGER,
+        KeyValue: *mut c_void,
+        Alertable: c_uchar,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwReleaseMutant(
         MutantHandle: HANDLE,
-        PreviousCount: PLONG,
+        PreviousCount: *mut c_long,
     ) -> NTSTATUS;
     fn ZwReleaseSemaphore(
         SemaphoreHandle: HANDLE,
-        ReleaseCount: LONG,
-        PreviousCount: PLONG,
+        ReleaseCount: c_long,
+        PreviousCount: *mut c_long,
     ) -> NTSTATUS;
     fn ZwReleaseWorkerFactoryWorker(
         WorkerFactoryHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwRemoveIoCompletion(
         IoCompletionHandle: HANDLE,
-        KeyContext: *mut PVOID,
-        ApcContext: *mut PVOID,
+        KeyContext: *mut *mut c_void,
+        ApcContext: *mut *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Timeout: PLARGE_INTEGER,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwRemoveIoCompletionEx(
         IoCompletionHandle: HANDLE,
         IoCompletionInformation: PFILE_IO_COMPLETION_INFORMATION,
-        Count: ULONG,
-        NumEntriesRemoved: PULONG,
-        Timeout: PLARGE_INTEGER,
-        Alertable: BOOLEAN,
+        Count: c_ulong,
+        NumEntriesRemoved: *mut c_ulong,
+        Timeout: *mut LARGE_INTEGER,
+        Alertable: c_uchar,
     ) -> NTSTATUS;
     fn ZwRemoveProcessDebug(
         ProcessHandle: HANDLE,
@@ -2094,21 +2117,21 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwRenameKey(
         KeyHandle: HANDLE,
-        NewName: PUNICODE_STRING,
+        NewName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwRenameTransactionManager(
-        LogFileName: PUNICODE_STRING,
-        ExistingTransactionManagerGuid: LPGUID,
+        LogFileName: *mut UNICODE_STRING,
+        ExistingTransactionManagerGuid: *mut GUID,
     ) -> NTSTATUS;
     fn ZwReplaceKey(
-        NewFile: POBJECT_ATTRIBUTES,
+        NewFile: *mut OBJECT_ATTRIBUTES,
         TargetHandle: HANDLE,
-        OldFile: POBJECT_ATTRIBUTES,
+        OldFile: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwReplacePartitionUnit(
-        TargetInstancePath: PUNICODE_STRING,
-        SpareInstancePath: PUNICODE_STRING,
-        Flags: ULONG,
+        TargetInstancePath: *mut UNICODE_STRING,
+        SpareInstancePath: *mut UNICODE_STRING,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwReplyPort(
         PortHandle: HANDLE,
@@ -2116,16 +2139,16 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwReplyWaitReceivePort(
         PortHandle: HANDLE,
-        PortContext: *mut PVOID,
+        PortContext: *mut *mut c_void,
         ReplyMessage: PPORT_MESSAGE,
         ReceiveMessage: PPORT_MESSAGE,
     ) -> NTSTATUS;
     fn ZwReplyWaitReceivePortEx(
         PortHandle: HANDLE,
-        PortContext: *mut PVOID,
+        PortContext: *mut *mut c_void,
         ReplyMessage: PPORT_MESSAGE,
         ReceiveMessage: PPORT_MESSAGE,
-        Timeout: PLARGE_INTEGER,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwReplyWaitReplyPort(
         PortHandle: HANDLE,
@@ -2145,41 +2168,41 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwResetEvent(
         EventHandle: HANDLE,
-        PreviousState: PLONG,
+        PreviousState: *mut c_long,
     ) -> NTSTATUS;
     fn ZwResetWriteWatch(
         ProcessHandle: HANDLE,
-        BaseAddress: PVOID,
-        RegionSize: SIZE_T,
+        BaseAddress: *mut c_void,
+        RegionSize: usize,
     ) -> NTSTATUS;
     fn ZwRestoreKey(
         KeyHandle: HANDLE,
         FileHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwResumeProcess(
         ProcessHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwResumeThread(
         ThreadHandle: HANDLE,
-        PreviousSuspendCount: PULONG,
+        PreviousSuspendCount: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwRevertContainerImpersonation() -> NTSTATUS;
     fn ZwRollbackComplete(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwRollbackEnlistment(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwRollbackTransaction(
         TransactionHandle: HANDLE,
-        Wait: BOOLEAN,
+        Wait: c_uchar,
     ) -> NTSTATUS;
     fn ZwRollforwardTransactionManager(
         TransactionManagerHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwSaveKey(
         KeyHandle: HANDLE,
@@ -2188,7 +2211,7 @@ EXTERN!{extern "system" {
     fn ZwSaveKeyEx(
         KeyHandle: HANDLE,
         FileHandle: HANDLE,
-        Format: ULONG,
+        Format: c_ulong,
     ) -> NTSTATUS;
     fn ZwSaveMergedKeys(
         HighPrecedenceKeyHandle: HANDLE,
@@ -2196,64 +2219,64 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwSecureConnectPort(
-        PortHandle: PHANDLE,
-        PortName: PUNICODE_STRING,
-        SecurityQos: PSECURITY_QUALITY_OF_SERVICE,
+        PortHandle: *mut HANDLE,
+        PortName: *mut UNICODE_STRING,
+        SecurityQos: *mut SECURITY_QUALITY_OF_SERVICE,
         ClientView: PPORT_VIEW,
         RequiredServerSid: PSID,
         ServerView: PREMOTE_PORT_VIEW,
-        MaxMessageLength: PULONG,
-        ConnectionInformation: PVOID,
-        ConnectionInformationLength: PULONG,
+        MaxMessageLength: *mut c_ulong,
+        ConnectionInformation: *mut c_void,
+        ConnectionInformationLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwSerializeBoot() -> NTSTATUS;
     fn ZwSetBootEntryOrder(
-        Ids: PULONG,
-        Count: ULONG,
+        Ids: *mut c_ulong,
+        Count: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetBootOptions(
         BootOptions: PBOOT_OPTIONS,
-        FieldsToChange: ULONG,
+        FieldsToChange: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetCachedSigningLevel(
-        Flags: ULONG,
-        InputSigningLevel: SE_SIGNING_LEVEL,
-        SourceFiles: PHANDLE,
-        SourceFileCount: ULONG,
+        Flags: c_ulong,
+        InputSigningLevel: c_uchar,
+        SourceFiles: *mut HANDLE,
+        SourceFileCount: c_ulong,
         TargetFile: HANDLE,
     ) -> NTSTATUS;
     fn ZwSetContextThread(
         ThreadHandle: HANDLE,
-        ThreadContext: PCONTEXT,
+        ThreadContext: *mut CONTEXT,
     ) -> NTSTATUS;
     fn ZwSetDebugFilterState(
-        ComponentId: ULONG,
-        Level: ULONG,
-        State: BOOLEAN,
+        ComponentId: c_ulong,
+        Level: c_ulong,
+        State: c_uchar,
     ) -> NTSTATUS;
     fn ZwSetDefaultHardErrorPort(
         DefaultHardErrorPort: HANDLE,
     ) -> NTSTATUS;
     fn ZwSetDefaultLocale(
-        UserProfile: BOOLEAN,
-        DefaultLocaleId: LCID,
+        UserProfile: c_uchar,
+        DefaultLocaleId: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetDefaultUILanguage(
-        DefaultUILanguageId: LANGID,
+        DefaultUILanguageId: c_ushort,
     ) -> NTSTATUS;
     fn ZwSetDriverEntryOrder(
-        Ids: PULONG,
-        Count: ULONG,
+        Ids: *mut c_ulong,
+        Count: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetEaFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetEvent(
         EventHandle: HANDLE,
-        PreviousState: PLONG,
+        PreviousState: *mut c_long,
     ) -> NTSTATUS;
     fn ZwSetEventBoostPriority(
         EventHandle: HANDLE,
@@ -2266,122 +2289,122 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwSetIRTimer(
         TimerHandle: HANDLE,
-        DueTime: PLARGE_INTEGER,
+        DueTime: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwSetInformationDebugObject(
         DebugObjectHandle: HANDLE,
         DebugObjectInformationClass: DEBUGOBJECTINFOCLASS,
-        DebugInformation: PVOID,
-        DebugInformationLength: ULONG,
-        ReturnLength: PULONG,
+        DebugInformation: *mut c_void,
+        DebugInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationEnlistment(
         EnlistmentHandle: HANDLE,
         EnlistmentInformationClass: ENLISTMENT_INFORMATION_CLASS,
-        EnlistmentInformation: PVOID,
-        EnlistmentInformationLength: ULONG,
+        EnlistmentInformation: *mut c_void,
+        EnlistmentInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FileInformation: PVOID,
-        Length: ULONG,
+        FileInformation: *mut c_void,
+        Length: c_ulong,
         FileInformationClass: FILE_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn ZwSetInformationJobObject(
         JobHandle: HANDLE,
         JobObjectInformationClass: JOBOBJECTINFOCLASS,
-        JobObjectInformation: PVOID,
-        JobObjectInformationLength: ULONG,
+        JobObjectInformation: *mut c_void,
+        JobObjectInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationKey(
         KeyHandle: HANDLE,
         KeySetInformationClass: KEY_SET_INFORMATION_CLASS,
-        KeySetInformation: PVOID,
-        KeySetInformationLength: ULONG,
+        KeySetInformation: *mut c_void,
+        KeySetInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationObject(
         Handle: HANDLE,
         ObjectInformationClass: OBJECT_INFORMATION_CLASS,
-        ObjectInformation: PVOID,
-        ObjectInformationLength: ULONG,
+        ObjectInformation: *mut c_void,
+        ObjectInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationProcess(
         ProcessHandle: HANDLE,
         ProcessInformationClass: PROCESSINFOCLASS,
-        ProcessInformation: PVOID,
-        ProcessInformationLength: ULONG,
+        ProcessInformation: *mut c_void,
+        ProcessInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationResourceManager(
         ResourceManagerHandle: HANDLE,
         ResourceManagerInformationClass: RESOURCEMANAGER_INFORMATION_CLASS,
-        ResourceManagerInformation: PVOID,
-        ResourceManagerInformationLength: ULONG,
+        ResourceManagerInformation: *mut c_void,
+        ResourceManagerInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationThread(
         ThreadHandle: HANDLE,
         ThreadInformationClass: THREADINFOCLASS,
-        ThreadInformation: PVOID,
-        ThreadInformationLength: ULONG,
+        ThreadInformation: *mut c_void,
+        ThreadInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationToken(
         TokenHandle: HANDLE,
         TokenInformationClass: TOKEN_INFORMATION_CLASS,
-        TokenInformation: PVOID,
-        TokenInformationLength: ULONG,
+        TokenInformation: *mut c_void,
+        TokenInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationTransaction(
         TransactionHandle: HANDLE,
         TransactionInformationClass: TRANSACTION_INFORMATION_CLASS,
-        TransactionInformation: PVOID,
-        TransactionInformationLength: ULONG,
+        TransactionInformation: *mut c_void,
+        TransactionInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationTransactionManager(
         TmHandle: HANDLE,
         TransactionManagerInformationClass: TRANSACTIONMANAGER_INFORMATION_CLASS,
-        TransactionManagerInformation: PVOID,
-        TransactionManagerInformationLength: ULONG,
+        TransactionManagerInformation: *mut c_void,
+        TransactionManagerInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationVirtualMemory(
         ProcessHandle: HANDLE,
         VmInformationClass: VIRTUAL_MEMORY_INFORMATION_CLASS,
-        NumberOfEntries: ULONG_PTR,
+        NumberOfEntries: usize,
         VirtualAddresses: PMEMORY_RANGE_ENTRY,
-        VmInformation: PVOID,
-        VmInformationLength: ULONG,
+        VmInformation: *mut c_void,
+        VmInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetInformationWorkerFactory(
         WorkerFactoryHandle: HANDLE,
         WorkerFactoryInformationClass: WORKERFACTORYINFOCLASS,
-        WorkerFactoryInformation: PVOID,
-        WorkerFactoryInformationLength: ULONG,
+        WorkerFactoryInformation: *mut c_void,
+        WorkerFactoryInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetIntervalProfile(
-        Interval: ULONG,
+        Interval: c_ulong,
         Source: KPROFILE_SOURCE,
     ) -> NTSTATUS;
     fn ZwSetIoCompletion(
         IoCompletionHandle: HANDLE,
-        KeyContext: PVOID,
-        ApcContext: PVOID,
+        KeyContext: *mut c_void,
+        ApcContext: *mut c_void,
         IoStatus: NTSTATUS,
-        IoStatusInformation: ULONG_PTR,
+        IoStatusInformation: usize,
     ) -> NTSTATUS;
     fn ZwSetIoCompletionEx(
         IoCompletionHandle: HANDLE,
         IoCompletionPacketHandle: HANDLE,
-        KeyContext: PVOID,
-        ApcContext: PVOID,
+        KeyContext: *mut c_void,
+        ApcContext: *mut c_void,
         IoStatus: NTSTATUS,
-        IoStatusInformation: ULONG_PTR,
+        IoStatusInformation: usize,
     ) -> NTSTATUS;
     fn ZwSetLdtEntries(
-        Selector0: ULONG,
-        Entry0Low: ULONG,
-        Entry0Hi: ULONG,
-        Selector1: ULONG,
-        Entry1Low: ULONG,
-        Entry1Hi: ULONG,
+        Selector0: c_ulong,
+        Entry0Low: c_ulong,
+        Entry0Hi: c_ulong,
+        Selector1: c_ulong,
+        Entry1Low: c_ulong,
+        Entry1Hi: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetLowEventPair(
         EventPairHandle: HANDLE,
@@ -2392,38 +2415,38 @@ EXTERN!{extern "system" {
     fn ZwSetQuotaInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetSecurityObject(
         Handle: HANDLE,
-        SecurityInformation: SECURITY_INFORMATION,
+        SecurityInformation: c_ulong,
         SecurityDescriptor: PSECURITY_DESCRIPTOR,
     ) -> NTSTATUS;
     fn ZwSetSystemEnvironmentValue(
-        VariableName: PUNICODE_STRING,
-        VariableValue: PUNICODE_STRING,
+        VariableName: *mut UNICODE_STRING,
+        VariableValue: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwSetSystemEnvironmentValueEx(
-        VariableName: PUNICODE_STRING,
-        VendorGuid: LPGUID,
-        Value: PVOID,
-        ValueLength: ULONG,
-        Attributes: ULONG,
+        VariableName: *mut UNICODE_STRING,
+        VendorGuid: *mut GUID,
+        Value: *mut c_void,
+        ValueLength: c_ulong,
+        Attributes: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetSystemInformation(
         SystemInformationClass: SYSTEM_INFORMATION_CLASS,
-        SystemInformation: PVOID,
-        SystemInformationLength: ULONG,
+        SystemInformation: *mut c_void,
+        SystemInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetSystemPowerState(
         SystemAction: POWER_ACTION,
         LightestSystemState: SYSTEM_POWER_STATE,
-        Flags: ULONG,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetSystemTime(
-        SystemTime: PLARGE_INTEGER,
-        PreviousTime: PLARGE_INTEGER,
+        SystemTime: *mut LARGE_INTEGER,
+        PreviousTime: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwSetThreadExecutionState(
         NewFlags: EXECUTION_STATE,
@@ -2431,46 +2454,46 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwSetTimer(
         TimerHandle: HANDLE,
-        DueTime: PLARGE_INTEGER,
+        DueTime: *mut LARGE_INTEGER,
         TimerApcRoutine: PTIMER_APC_ROUTINE,
-        TimerContext: PVOID,
-        ResumeTimer: BOOLEAN,
-        Period: LONG,
-        PreviousState: PBOOLEAN,
+        TimerContext: *mut c_void,
+        ResumeTimer: c_uchar,
+        Period: c_long,
+        PreviousState: *mut c_uchar,
     ) -> NTSTATUS;
     fn ZwSetTimer2(
         TimerHandle: HANDLE,
-        DueTime: PLARGE_INTEGER,
-        Period: PLARGE_INTEGER,
+        DueTime: *mut LARGE_INTEGER,
+        Period: *mut LARGE_INTEGER,
         Parameters: PT2_SET_PARAMETERS,
     ) -> NTSTATUS;
     fn ZwSetTimerEx(
         TimerHandle: HANDLE,
         TimerSetInformationClass: TIMER_SET_INFORMATION_CLASS,
-        TimerSetInformation: PVOID,
-        TimerSetInformationLength: ULONG,
+        TimerSetInformation: *mut c_void,
+        TimerSetInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetTimerResolution(
-        DesiredTime: ULONG,
-        SetResolution: BOOLEAN,
-        ActualTime: PULONG,
+        DesiredTime: c_ulong,
+        SetResolution: c_uchar,
+        ActualTime: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwSetUuidSeed(
-        Seed: PCHAR,
+        Seed: *mut c_char,
     ) -> NTSTATUS;
     fn ZwSetValueKey(
         KeyHandle: HANDLE,
-        ValueName: PUNICODE_STRING,
-        TitleIndex: ULONG,
-        Type: ULONG,
-        Data: PVOID,
-        DataSize: ULONG,
+        ValueName: *mut UNICODE_STRING,
+        TitleIndex: c_ulong,
+        Type: c_ulong,
+        Data: *mut c_void,
+        DataSize: c_ulong,
     ) -> NTSTATUS;
     fn ZwSetVolumeInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FsInformation: PVOID,
-        Length: ULONG,
+        FsInformation: *mut c_void,
+        Length: c_ulong,
         FsInformationClass: FS_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn ZwSetWnfProcessNotificationEvent(
@@ -2481,17 +2504,17 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn ZwShutdownWorkerFactory(
         WorkerFactoryHandle: HANDLE,
-        PendingWorkerCount: *mut LONG,
+        PendingWorkerCount: *mut c_long,
     ) -> NTSTATUS;
     fn ZwSignalAndWaitForSingleObject(
         SignalHandle: HANDLE,
         WaitHandle: HANDLE,
-        Alertable: BOOLEAN,
-        Timeout: PLARGE_INTEGER,
+        Alertable: c_uchar,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwSinglePhaseReject(
         EnlistmentHandle: HANDLE,
-        TmVirtualClock: PLARGE_INTEGER,
+        TmVirtualClock: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwStartProfile(
         ProfileHandle: HANDLE,
@@ -2500,25 +2523,25 @@ EXTERN!{extern "system" {
         ProfileHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwSubscribeWnfStateChange(
-        StateName: PCWNF_STATE_NAME,
+        StateName: *const WNF_STATE_NAME,
         ChangeStamp: WNF_CHANGE_STAMP,
-        EventMask: ULONG,
-        SubscriptionId: PULONG64,
+        EventMask: c_ulong,
+        SubscriptionId: *mut __uint64,
     ) -> NTSTATUS;
     fn ZwSuspendProcess(
         ProcessHandle: HANDLE,
     ) -> NTSTATUS;
     fn ZwSuspendThread(
         ThreadHandle: HANDLE,
-        PreviousSuspendCount: PULONG,
+        PreviousSuspendCount: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwSystemDebugControl(
         Command: SYSDBG_COMMAND,
-        InputBuffer: PVOID,
-        InputBufferLength: ULONG,
-        OutputBuffer: PVOID,
-        OutputBufferLength: ULONG,
-        ReturnLength: PULONG,
+        InputBuffer: *mut c_void,
+        InputBufferLength: c_ulong,
+        OutputBuffer: *mut c_void,
+        OutputBufferLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwTerminateJobObject(
         JobHandle: HANDLE,
@@ -2536,114 +2559,114 @@ EXTERN!{extern "system" {
     fn ZwThawRegistry() -> NTSTATUS;
     fn ZwThawTransactions() -> NTSTATUS;
     fn ZwTraceControl(
-        FunctionCode: ULONG,
-        InBuffer: PVOID,
-        InBufferLen: ULONG,
-        OutBuffer: PVOID,
-        OutBufferLen: ULONG,
-        ReturnLength: PULONG,
+        FunctionCode: c_ulong,
+        InBuffer: *mut c_void,
+        InBufferLen: c_ulong,
+        OutBuffer: *mut c_void,
+        OutBufferLen: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwTraceEvent(
         TraceHandle: HANDLE,
-        Flags: ULONG,
-        FieldSize: ULONG,
-        Fields: PVOID,
+        Flags: c_ulong,
+        FieldSize: c_ulong,
+        Fields: *mut c_void,
     ) -> NTSTATUS;
     fn ZwTranslateFilePath(
         InputFilePath: PFILE_PATH,
-        OutputType: ULONG,
+        OutputType: c_ulong,
         OutputFilePath: PFILE_PATH,
-        OutputFilePathLength: PULONG,
+        OutputFilePathLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwUmsThreadYield(
-        SchedulerParam: PVOID,
+        SchedulerParam: *mut c_void,
     ) -> NTSTATUS;
     fn ZwUnloadDriver(
-        DriverServiceName: PUNICODE_STRING,
+        DriverServiceName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn ZwUnloadKey(
-        TargetKey: POBJECT_ATTRIBUTES,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn ZwUnloadKey2(
-        TargetKey: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwUnloadKeyEx(
-        TargetKey: POBJECT_ATTRIBUTES,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
         Event: HANDLE,
     ) -> NTSTATUS;
     fn ZwUnlockFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ByteOffset: PLARGE_INTEGER,
-        Length: PLARGE_INTEGER,
-        Key: ULONG,
+        ByteOffset: *mut LARGE_INTEGER,
+        Length: *mut LARGE_INTEGER,
+        Key: c_ulong,
     ) -> NTSTATUS;
     fn ZwUnlockVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: *mut PVOID,
-        RegionSize: PSIZE_T,
-        MapType: ULONG,
+        BaseAddress: *mut *mut c_void,
+        RegionSize: *mut usize,
+        MapType: c_ulong,
     ) -> NTSTATUS;
     fn ZwUnmapViewOfSection(
         ProcessHandle: HANDLE,
-        BaseAddress: PVOID,
+        BaseAddress: *mut c_void,
     ) -> NTSTATUS;
     fn ZwUnmapViewOfSectionEx(
         ProcessHandle: HANDLE,
-        BaseAddress: PVOID,
-        Flags: ULONG,
+        BaseAddress: *mut c_void,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn ZwUnsubscribeWnfStateChange(
-        StateName: PCWNF_STATE_NAME,
+        StateName: *const WNF_STATE_NAME,
     ) -> NTSTATUS;
     fn ZwUpdateWnfStateData(
-        StateName: PCWNF_STATE_NAME,
-        Buffer: *const VOID,
-        Length: ULONG,
+        StateName: *const WNF_STATE_NAME,
+        Buffer: *const c_void,
+        Length: c_ulong,
         TypeId: PCWNF_TYPE_ID,
-        ExplicitScope: *const VOID,
+        ExplicitScope: *const c_void,
         MatchingChangeStamp: WNF_CHANGE_STAMP,
-        CheckStamp: LOGICAL,
+        CheckStamp: c_ulong,
     ) -> NTSTATUS;
     fn ZwVdmControl(
         Service: VDMSERVICECLASS,
-        ServiceData: PVOID,
+        ServiceData: *mut c_void,
     ) -> NTSTATUS;
     fn ZwWaitForAlertByThreadId(
-        Address: PVOID,
-        Timeout: PLARGE_INTEGER,
+        Address: *mut c_void,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwWaitForDebugEvent(
         DebugObjectHandle: HANDLE,
-        Alertable: BOOLEAN,
-        Timeout: PLARGE_INTEGER,
-        WaitStateChange: PVOID,
+        Alertable: c_uchar,
+        Timeout: *mut LARGE_INTEGER,
+        WaitStateChange: *mut c_void,
     ) -> NTSTATUS;
     fn ZwWaitForKeyedEvent(
         KeyedEventHandle: HANDLE,
-        KeyValue: PVOID,
-        Alertable: BOOLEAN,
-        Timeout: PLARGE_INTEGER,
+        KeyValue: *mut c_void,
+        Alertable: c_uchar,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwWaitForMultipleObjects(
-        Count: ULONG,
+        Count: c_ulong,
         Handles: *mut HANDLE,
         WaitType: WAIT_TYPE,
-        Alertable: BOOLEAN,
-        Timeout: PLARGE_INTEGER,
+        Alertable: c_uchar,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwWaitForMultipleObjects32(
-        Count: ULONG,
-        Handles: *mut LONG,
+        Count: c_ulong,
+        Handles: *mut c_long,
         WaitType: WAIT_TYPE,
-        Alertable: BOOLEAN,
-        Timeout: PLARGE_INTEGER,
+        Alertable: c_uchar,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwWaitForSingleObject(
         Handle: HANDLE,
-        Alertable: BOOLEAN,
-        Timeout: PLARGE_INTEGER,
+        Alertable: c_uchar,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn ZwWaitForWorkViaWorkerFactory(
         WorkerFactoryHandle: HANDLE,
@@ -2662,38 +2685,38 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwWriteFileGather(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        SegmentArray: PFILE_SEGMENT_ELEMENT,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        SegmentArray: *mut FILE_SEGMENT_ELEMENT,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn ZwWriteRequestData(
         PortHandle: HANDLE,
         Message: PPORT_MESSAGE,
-        DataEntryIndex: ULONG,
-        Buffer: PVOID,
-        BufferSize: SIZE_T,
-        NumberOfBytesWritten: PSIZE_T,
+        DataEntryIndex: c_ulong,
+        Buffer: *mut c_void,
+        BufferSize: usize,
+        NumberOfBytesWritten: *mut usize,
     ) -> NTSTATUS;
     fn ZwWriteVirtualMemory(
         ProcessHandle: HANDLE,
-        BaseAddress: PVOID,
-        Buffer: PVOID,
-        BufferSize: SIZE_T,
-        NumberOfBytesWritten: PSIZE_T,
+        BaseAddress: *mut c_void,
+        Buffer: *mut c_void,
+        BufferSize: usize,
+        NumberOfBytesWritten: *mut usize,
     ) -> NTSTATUS;
     fn ZwYieldExecution() -> NTSTATUS;
 }}

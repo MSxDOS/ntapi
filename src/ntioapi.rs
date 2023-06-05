@@ -1,136 +1,147 @@
-use crate::string::UTF16Const;
-use crate::winapi_local::um::winioctl::CTL_CODE;
-use winapi::shared::basetsd::ULONG_PTR;
-use winapi::shared::guiddef::GUID;
-use winapi::shared::minwindef::DWORD;
-use winapi::shared::ntdef::{
-    BOOLEAN, CCHAR, CHAR, HANDLE, LARGE_INTEGER, LONG, LONGLONG, NTSTATUS, PBOOLEAN, PHANDLE,
-    PLARGE_INTEGER, POBJECT_ATTRIBUTES, PUCHAR, PULONG, PUNICODE_STRING, PVOID, UCHAR, ULONG,
-    ULONGLONG, USHORT, WCHAR,
+use windows_sys::{
+    core::GUID,
+    Win32::{
+        Foundation::{HANDLE, NTSTATUS, PSID, UNICODE_STRING},
+        Security::SID,
+        Storage::FileSystem::{
+            FILE_ID_128, FILE_READ_DATA, FILE_SEGMENT_ELEMENT, FILE_WRITE_DATA,
+        },
+        System::{
+            Ioctl::{
+                FILE_ANY_ACCESS, FILE_DEVICE_MAILSLOT, FILE_DEVICE_NAMED_PIPE,
+                METHOD_BUFFERED, METHOD_NEITHER,
+            },
+            WindowsProgramming::OBJECT_ATTRIBUTES,
+        },
+    },
 };
-use winapi::um::winioctl::{
-    FILE_ANY_ACCESS, FILE_DEVICE_MAILSLOT, FILE_DEVICE_NAMED_PIPE, METHOD_BUFFERED, METHOD_NEITHER,
+
+use crate::{
+    ctypes::{
+        __int64, __uint64, c_char, c_long, c_uchar, c_ulong, c_ushort, c_void,
+        wchar_t,
+    },
+    string::UTF16Const,
+    windows_local::{shared::ntdef::LARGE_INTEGER, um::winioctl::CTL_CODE},
 };
-use winapi::um::winnt::{
-    ACCESS_MASK, FILE_ID_128, FILE_READ_DATA, FILE_WRITE_DATA, PFILE_SEGMENT_ELEMENT, PSID, SID,
-};
-pub const FILE_SUPERSEDE: ULONG = 0x00000000;
-pub const FILE_OPEN: ULONG = 0x00000001;
-pub const FILE_CREATE: ULONG = 0x00000002;
-pub const FILE_OPEN_IF: ULONG = 0x00000003;
-pub const FILE_OVERWRITE: ULONG = 0x00000004;
-pub const FILE_OVERWRITE_IF: ULONG = 0x00000005;
-pub const FILE_MAXIMUM_DISPOSITION: ULONG = 0x00000005;
-pub const FILE_DIRECTORY_FILE: ULONG = 0x00000001;
-pub const FILE_WRITE_THROUGH: ULONG = 0x00000002;
-pub const FILE_SEQUENTIAL_ONLY: ULONG = 0x00000004;
-pub const FILE_NO_INTERMEDIATE_BUFFERING: ULONG = 0x00000008;
-pub const FILE_SYNCHRONOUS_IO_ALERT: ULONG = 0x00000010;
-pub const FILE_SYNCHRONOUS_IO_NONALERT: ULONG = 0x00000020;
-pub const FILE_NON_DIRECTORY_FILE: ULONG = 0x00000040;
-pub const FILE_CREATE_TREE_CONNECTION: ULONG = 0x00000080;
-pub const FILE_COMPLETE_IF_OPLOCKED: ULONG = 0x00000100;
-pub const FILE_NO_EA_KNOWLEDGE: ULONG = 0x00000200;
-pub const FILE_OPEN_FOR_RECOVERY: ULONG = 0x00000400;
-pub const FILE_RANDOM_ACCESS: ULONG = 0x00000800;
-pub const FILE_DELETE_ON_CLOSE: ULONG = 0x00001000;
-pub const FILE_OPEN_BY_FILE_ID: ULONG = 0x00002000;
-pub const FILE_OPEN_FOR_BACKUP_INTENT: ULONG = 0x00004000;
-pub const FILE_NO_COMPRESSION: ULONG = 0x00008000;
-pub const FILE_OPEN_REQUIRING_OPLOCK: ULONG = 0x00010000;
-pub const FILE_DISALLOW_EXCLUSIVE: ULONG = 0x00020000;
-pub const FILE_SESSION_AWARE: ULONG = 0x00040000;
-pub const FILE_RESERVE_OPFILTER: ULONG = 0x00100000;
-pub const FILE_OPEN_REPARSE_POINT: ULONG = 0x00200000;
-pub const FILE_OPEN_NO_RECALL: ULONG = 0x00400000;
-pub const FILE_OPEN_FOR_FREE_SPACE_QUERY: ULONG = 0x00800000;
-pub const FILE_COPY_STRUCTURED_STORAGE: ULONG = 0x00000041;
-pub const FILE_STRUCTURED_STORAGE: ULONG = 0x00000441;
-pub const FILE_SUPERSEDED: ULONG = 0x00000000;
-pub const FILE_OPENED: ULONG = 0x00000001;
-pub const FILE_CREATED: ULONG = 0x00000002;
-pub const FILE_OVERWRITTEN: ULONG = 0x00000003;
-pub const FILE_EXISTS: ULONG = 0x00000004;
-pub const FILE_DOES_NOT_EXIST: ULONG = 0x00000005;
-pub const FILE_WRITE_TO_END_OF_FILE: ULONG = 0xffffffff;
-pub const FILE_USE_FILE_POINTER_POSITION: ULONG = 0xfffffffe;
-pub const FILE_BYTE_ALIGNMENT: ULONG = 0x00000000;
-pub const FILE_WORD_ALIGNMENT: ULONG = 0x00000001;
-pub const FILE_LONG_ALIGNMENT: ULONG = 0x00000003;
-pub const FILE_QUAD_ALIGNMENT: ULONG = 0x00000007;
-pub const FILE_OCTA_ALIGNMENT: ULONG = 0x0000000f;
-pub const FILE_32_BYTE_ALIGNMENT: ULONG = 0x0000001f;
-pub const FILE_64_BYTE_ALIGNMENT: ULONG = 0x0000003f;
-pub const FILE_128_BYTE_ALIGNMENT: ULONG = 0x0000007f;
-pub const FILE_256_BYTE_ALIGNMENT: ULONG = 0x000000ff;
-pub const FILE_512_BYTE_ALIGNMENT: ULONG = 0x000001ff;
+
+pub const FILE_SUPERSEDE: c_ulong = 0x00000000;
+pub const FILE_OPEN: c_ulong = 0x00000001;
+pub const FILE_CREATE: c_ulong = 0x00000002;
+pub const FILE_OPEN_IF: c_ulong = 0x00000003;
+pub const FILE_OVERWRITE: c_ulong = 0x00000004;
+pub const FILE_OVERWRITE_IF: c_ulong = 0x00000005;
+pub const FILE_MAXIMUM_DISPOSITION: c_ulong = 0x00000005;
+pub const FILE_DIRECTORY_FILE: c_ulong = 0x00000001;
+pub const FILE_WRITE_THROUGH: c_ulong = 0x00000002;
+pub const FILE_SEQUENTIAL_ONLY: c_ulong = 0x00000004;
+pub const FILE_NO_INTERMEDIATE_BUFFERING: c_ulong = 0x00000008;
+pub const FILE_SYNCHRONOUS_IO_ALERT: c_ulong = 0x00000010;
+pub const FILE_SYNCHRONOUS_IO_NONALERT: c_ulong = 0x00000020;
+pub const FILE_NON_DIRECTORY_FILE: c_ulong = 0x00000040;
+pub const FILE_CREATE_TREE_CONNECTION: c_ulong = 0x00000080;
+pub const FILE_COMPLETE_IF_OPLOCKED: c_ulong = 0x00000100;
+pub const FILE_NO_EA_KNOWLEDGE: c_ulong = 0x00000200;
+pub const FILE_OPEN_FOR_RECOVERY: c_ulong = 0x00000400;
+pub const FILE_RANDOM_ACCESS: c_ulong = 0x00000800;
+pub const FILE_DELETE_ON_CLOSE: c_ulong = 0x00001000;
+pub const FILE_OPEN_BY_FILE_ID: c_ulong = 0x00002000;
+pub const FILE_OPEN_FOR_BACKUP_INTENT: c_ulong = 0x00004000;
+pub const FILE_NO_COMPRESSION: c_ulong = 0x00008000;
+pub const FILE_OPEN_REQUIRING_OPLOCK: c_ulong = 0x00010000;
+pub const FILE_DISALLOW_EXCLUSIVE: c_ulong = 0x00020000;
+pub const FILE_SESSION_AWARE: c_ulong = 0x00040000;
+pub const FILE_RESERVE_OPFILTER: c_ulong = 0x00100000;
+pub const FILE_OPEN_REPARSE_POINT: c_ulong = 0x00200000;
+pub const FILE_OPEN_NO_RECALL: c_ulong = 0x00400000;
+pub const FILE_OPEN_FOR_FREE_SPACE_QUERY: c_ulong = 0x00800000;
+pub const FILE_COPY_STRUCTURED_STORAGE: c_ulong = 0x00000041;
+pub const FILE_STRUCTURED_STORAGE: c_ulong = 0x00000441;
+pub const FILE_SUPERSEDED: c_ulong = 0x00000000;
+pub const FILE_OPENED: c_ulong = 0x00000001;
+pub const FILE_CREATED: c_ulong = 0x00000002;
+pub const FILE_OVERWRITTEN: c_ulong = 0x00000003;
+pub const FILE_EXISTS: c_ulong = 0x00000004;
+pub const FILE_DOES_NOT_EXIST: c_ulong = 0x00000005;
+pub const FILE_WRITE_TO_END_OF_FILE: c_ulong = 0xffffffff;
+pub const FILE_USE_FILE_POINTER_POSITION: c_ulong = 0xfffffffe;
+pub const FILE_BYTE_ALIGNMENT: c_ulong = 0x00000000;
+pub const FILE_WORD_ALIGNMENT: c_ulong = 0x00000001;
+pub const FILE_LONG_ALIGNMENT: c_ulong = 0x00000003;
+pub const FILE_QUAD_ALIGNMENT: c_ulong = 0x00000007;
+pub const FILE_OCTA_ALIGNMENT: c_ulong = 0x0000000f;
+pub const FILE_32_BYTE_ALIGNMENT: c_ulong = 0x0000001f;
+pub const FILE_64_BYTE_ALIGNMENT: c_ulong = 0x0000003f;
+pub const FILE_128_BYTE_ALIGNMENT: c_ulong = 0x0000007f;
+pub const FILE_256_BYTE_ALIGNMENT: c_ulong = 0x000000ff;
+pub const FILE_512_BYTE_ALIGNMENT: c_ulong = 0x000001ff;
 pub const MAXIMUM_FILENAME_LENGTH: u32 = 256;
-pub const FILE_NEED_EA: ULONG = 0x00000080;
-pub const FILE_EA_TYPE_BINARY: ULONG = 0xfffe;
-pub const FILE_EA_TYPE_ASCII: ULONG = 0xfffd;
-pub const FILE_EA_TYPE_BITMAP: ULONG = 0xfffb;
-pub const FILE_EA_TYPE_METAFILE: ULONG = 0xfffa;
-pub const FILE_EA_TYPE_ICON: ULONG = 0xfff9;
-pub const FILE_EA_TYPE_EA: ULONG = 0xffee;
-pub const FILE_EA_TYPE_MVMT: ULONG = 0xffdf;
-pub const FILE_EA_TYPE_MVST: ULONG = 0xffde;
-pub const FILE_EA_TYPE_ASN1: ULONG = 0xffdd;
-pub const FILE_EA_TYPE_FAMILY_IDS: ULONG = 0xff01;
-pub const FILE_REMOVABLE_MEDIA: ULONG = 0x00000001;
-pub const FILE_READ_ONLY_DEVICE: ULONG = 0x00000002;
-pub const FILE_FLOPPY_DISKETTE: ULONG = 0x00000004;
-pub const FILE_WRITE_ONCE_MEDIA: ULONG = 0x00000008;
-pub const FILE_REMOTE_DEVICE: ULONG = 0x00000010;
-pub const FILE_DEVICE_IS_MOUNTED: ULONG = 0x00000020;
-pub const FILE_VIRTUAL_VOLUME: ULONG = 0x00000040;
-pub const FILE_AUTOGENERATED_DEVICE_NAME: ULONG = 0x00000080;
-pub const FILE_DEVICE_SECURE_OPEN: ULONG = 0x00000100;
-pub const FILE_CHARACTERISTIC_PNP_DEVICE: ULONG = 0x00000800;
-pub const FILE_CHARACTERISTIC_TS_DEVICE: ULONG = 0x00001000;
-pub const FILE_CHARACTERISTIC_WEBDAV_DEVICE: ULONG = 0x00002000;
-pub const FILE_CHARACTERISTIC_CSV: ULONG = 0x00010000;
-pub const FILE_DEVICE_ALLOW_APPCONTAINER_TRAVERSAL: ULONG = 0x00020000;
-pub const FILE_PORTABLE_DEVICE: ULONG = 0x00040000;
-pub const FILE_PIPE_BYTE_STREAM_TYPE: ULONG = 0x00000000;
-pub const FILE_PIPE_MESSAGE_TYPE: ULONG = 0x00000001;
-pub const FILE_PIPE_ACCEPT_REMOTE_CLIENTS: ULONG = 0x00000000;
-pub const FILE_PIPE_REJECT_REMOTE_CLIENTS: ULONG = 0x00000002;
-pub const FILE_PIPE_TYPE_VALID_MASK: ULONG = 0x00000003;
-pub const FILE_PIPE_QUEUE_OPERATION: ULONG = 0x00000000;
-pub const FILE_PIPE_COMPLETE_OPERATION: ULONG = 0x00000001;
-pub const FILE_PIPE_BYTE_STREAM_MODE: ULONG = 0x00000000;
-pub const FILE_PIPE_MESSAGE_MODE: ULONG = 0x00000001;
-pub const FILE_PIPE_INBOUND: ULONG = 0x00000000;
-pub const FILE_PIPE_OUTBOUND: ULONG = 0x00000001;
-pub const FILE_PIPE_FULL_DUPLEX: ULONG = 0x00000002;
-pub const FILE_PIPE_DISCONNECTED_STATE: ULONG = 0x00000001;
-pub const FILE_PIPE_LISTENING_STATE: ULONG = 0x00000002;
-pub const FILE_PIPE_CONNECTED_STATE: ULONG = 0x00000003;
-pub const FILE_PIPE_CLOSING_STATE: ULONG = 0x00000004;
-pub const FILE_PIPE_CLIENT_END: ULONG = 0x00000000;
-pub const FILE_PIPE_SERVER_END: ULONG = 0x00000001;
+pub const FILE_NEED_EA: c_ulong = 0x00000080;
+pub const FILE_EA_TYPE_BINARY: c_ulong = 0xfffe;
+pub const FILE_EA_TYPE_ASCII: c_ulong = 0xfffd;
+pub const FILE_EA_TYPE_BITMAP: c_ulong = 0xfffb;
+pub const FILE_EA_TYPE_METAFILE: c_ulong = 0xfffa;
+pub const FILE_EA_TYPE_ICON: c_ulong = 0xfff9;
+pub const FILE_EA_TYPE_EA: c_ulong = 0xffee;
+pub const FILE_EA_TYPE_MVMT: c_ulong = 0xffdf;
+pub const FILE_EA_TYPE_MVST: c_ulong = 0xffde;
+pub const FILE_EA_TYPE_ASN1: c_ulong = 0xffdd;
+pub const FILE_EA_TYPE_FAMILY_IDS: c_ulong = 0xff01;
+pub const FILE_REMOVABLE_MEDIA: c_ulong = 0x00000001;
+pub const FILE_READ_ONLY_DEVICE: c_ulong = 0x00000002;
+pub const FILE_FLOPPY_DISKETTE: c_ulong = 0x00000004;
+pub const FILE_WRITE_ONCE_MEDIA: c_ulong = 0x00000008;
+pub const FILE_REMOTE_DEVICE: c_ulong = 0x00000010;
+pub const FILE_DEVICE_IS_MOUNTED: c_ulong = 0x00000020;
+pub const FILE_VIRTUAL_VOLUME: c_ulong = 0x00000040;
+pub const FILE_AUTOGENERATED_DEVICE_NAME: c_ulong = 0x00000080;
+pub const FILE_DEVICE_SECURE_OPEN: c_ulong = 0x00000100;
+pub const FILE_CHARACTERISTIC_PNP_DEVICE: c_ulong = 0x00000800;
+pub const FILE_CHARACTERISTIC_TS_DEVICE: c_ulong = 0x00001000;
+pub const FILE_CHARACTERISTIC_WEBDAV_DEVICE: c_ulong = 0x00002000;
+pub const FILE_CHARACTERISTIC_CSV: c_ulong = 0x00010000;
+pub const FILE_DEVICE_ALLOW_APPCONTAINER_TRAVERSAL: c_ulong = 0x00020000;
+pub const FILE_PORTABLE_DEVICE: c_ulong = 0x00040000;
+pub const FILE_PIPE_BYTE_STREAM_TYPE: c_ulong = 0x00000000;
+pub const FILE_PIPE_MESSAGE_TYPE: c_ulong = 0x00000001;
+pub const FILE_PIPE_ACCEPT_REMOTE_CLIENTS: c_ulong = 0x00000000;
+pub const FILE_PIPE_REJECT_REMOTE_CLIENTS: c_ulong = 0x00000002;
+pub const FILE_PIPE_TYPE_VALID_MASK: c_ulong = 0x00000003;
+pub const FILE_PIPE_QUEUE_OPERATION: c_ulong = 0x00000000;
+pub const FILE_PIPE_COMPLETE_OPERATION: c_ulong = 0x00000001;
+pub const FILE_PIPE_BYTE_STREAM_MODE: c_ulong = 0x00000000;
+pub const FILE_PIPE_MESSAGE_MODE: c_ulong = 0x00000001;
+pub const FILE_PIPE_INBOUND: c_ulong = 0x00000000;
+pub const FILE_PIPE_OUTBOUND: c_ulong = 0x00000001;
+pub const FILE_PIPE_FULL_DUPLEX: c_ulong = 0x00000002;
+pub const FILE_PIPE_DISCONNECTED_STATE: c_ulong = 0x00000001;
+pub const FILE_PIPE_LISTENING_STATE: c_ulong = 0x00000002;
+pub const FILE_PIPE_CONNECTED_STATE: c_ulong = 0x00000003;
+pub const FILE_PIPE_CLOSING_STATE: c_ulong = 0x00000004;
+pub const FILE_PIPE_CLIENT_END: c_ulong = 0x00000000;
+pub const FILE_PIPE_SERVER_END: c_ulong = 0x00000001;
 pub const MAILSLOT_SIZE_AUTO: u32 = 0;
-UNION!{union IO_STATUS_BLOCK_u {
+UNION! {union IO_STATUS_BLOCK_u {
     Status: NTSTATUS,
-    Pointer: PVOID,
+    Pointer: *mut c_void,
 }}
-STRUCT!{struct IO_STATUS_BLOCK {
+STRUCT! {struct IO_STATUS_BLOCK {
     u: IO_STATUS_BLOCK_u,
-    Information: ULONG_PTR,
+    Information: usize,
 }}
 pub type PIO_STATUS_BLOCK = *mut IO_STATUS_BLOCK;
-FN!{stdcall PIO_APC_ROUTINE(
-    ApcContext: PVOID,
+FN! {stdcall PIO_APC_ROUTINE(
+    ApcContext: *mut c_void,
     IoStatusBlock: PIO_STATUS_BLOCK,
-    Reserved: ULONG,
+    Reserved: c_ulong,
 ) -> ()}
-STRUCT!{struct FILE_IO_COMPLETION_INFORMATION {
-    KeyContext: PVOID,
-    ApcContext: PVOID,
+STRUCT! {struct FILE_IO_COMPLETION_INFORMATION {
+    KeyContext: *mut c_void,
+    ApcContext: *mut c_void,
     IoStatusBlock: IO_STATUS_BLOCK,
 }}
 pub type PFILE_IO_COMPLETION_INFORMATION = *mut FILE_IO_COMPLETION_INFORMATION;
-ENUM!{enum FILE_INFORMATION_CLASS {
+ENUM! {enum FILE_INFORMATION_CLASS {
     FileDirectoryInformation = 1,
     FileFullDirectoryInformation = 2,
     FileBothDirectoryInformation = 3,
@@ -209,62 +220,62 @@ ENUM!{enum FILE_INFORMATION_CLASS {
     FileMaximumInformation = 76,
 }}
 pub type PFILE_INFORMATION_CLASS = *mut FILE_INFORMATION_CLASS;
-STRUCT!{struct FILE_BASIC_INFORMATION {
+STRUCT! {struct FILE_BASIC_INFORMATION {
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
-    FileAttributes: ULONG,
+    FileAttributes: c_ulong,
 }}
 pub type PFILE_BASIC_INFORMATION = *mut FILE_BASIC_INFORMATION;
-STRUCT!{struct FILE_STANDARD_INFORMATION {
+STRUCT! {struct FILE_STANDARD_INFORMATION {
     AllocationSize: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
-    NumberOfLinks: ULONG,
-    DeletePending: BOOLEAN,
-    Directory: BOOLEAN,
+    NumberOfLinks: c_ulong,
+    DeletePending: c_uchar,
+    Directory: c_uchar,
 }}
 pub type PFILE_STANDARD_INFORMATION = *mut FILE_STANDARD_INFORMATION;
-STRUCT!{struct FILE_STANDARD_INFORMATION_EX {
+STRUCT! {struct FILE_STANDARD_INFORMATION_EX {
     AllocationSize: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
-    NumberOfLinks: ULONG,
-    DeletePending: BOOLEAN,
-    Directory: BOOLEAN,
-    AlternateStream: BOOLEAN,
-    MetadataAttribute: BOOLEAN,
+    NumberOfLinks: c_ulong,
+    DeletePending: c_uchar,
+    Directory: c_uchar,
+    AlternateStream: c_uchar,
+    MetadataAttribute: c_uchar,
 }}
 pub type PFILE_STANDARD_INFORMATION_EX = *mut FILE_STANDARD_INFORMATION_EX;
-STRUCT!{struct FILE_INTERNAL_INFORMATION {
+STRUCT! {struct FILE_INTERNAL_INFORMATION {
     IndexNumber: LARGE_INTEGER,
 }}
 pub type PFILE_INTERNAL_INFORMATION = *mut FILE_INTERNAL_INFORMATION;
-STRUCT!{struct FILE_EA_INFORMATION {
-    EaSize: ULONG,
+STRUCT! {struct FILE_EA_INFORMATION {
+    EaSize: c_ulong,
 }}
 pub type PFILE_EA_INFORMATION = *mut FILE_EA_INFORMATION;
-STRUCT!{struct FILE_ACCESS_INFORMATION {
-    AccessFlags: ACCESS_MASK,
+STRUCT! {struct FILE_ACCESS_INFORMATION {
+    AccessFlags: c_ulong,
 }}
 pub type PFILE_ACCESS_INFORMATION = *mut FILE_ACCESS_INFORMATION;
-STRUCT!{struct FILE_POSITION_INFORMATION {
+STRUCT! {struct FILE_POSITION_INFORMATION {
     CurrentByteOffset: LARGE_INTEGER,
 }}
 pub type PFILE_POSITION_INFORMATION = *mut FILE_POSITION_INFORMATION;
-STRUCT!{struct FILE_MODE_INFORMATION {
-    Mode: ULONG,
+STRUCT! {struct FILE_MODE_INFORMATION {
+    Mode: c_ulong,
 }}
 pub type PFILE_MODE_INFORMATION = *mut FILE_MODE_INFORMATION;
-STRUCT!{struct FILE_ALIGNMENT_INFORMATION {
-    AlignmentRequirement: ULONG,
+STRUCT! {struct FILE_ALIGNMENT_INFORMATION {
+    AlignmentRequirement: c_ulong,
 }}
 pub type PFILE_ALIGNMENT_INFORMATION = *mut FILE_ALIGNMENT_INFORMATION;
-STRUCT!{struct FILE_NAME_INFORMATION {
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+STRUCT! {struct FILE_NAME_INFORMATION {
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_NAME_INFORMATION = *mut FILE_NAME_INFORMATION;
-STRUCT!{struct FILE_ALL_INFORMATION {
+STRUCT! {struct FILE_ALL_INFORMATION {
     BasicInformation: FILE_BASIC_INFORMATION,
     StandardInformation: FILE_STANDARD_INFORMATION,
     InternalInformation: FILE_INTERNAL_INFORMATION,
@@ -276,167 +287,170 @@ STRUCT!{struct FILE_ALL_INFORMATION {
     NameInformation: FILE_NAME_INFORMATION,
 }}
 pub type PFILE_ALL_INFORMATION = *mut FILE_ALL_INFORMATION;
-STRUCT!{struct FILE_NETWORK_OPEN_INFORMATION {
+STRUCT! {struct FILE_NETWORK_OPEN_INFORMATION {
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
-    FileAttributes: ULONG,
+    FileAttributes: c_ulong,
 }}
 pub type PFILE_NETWORK_OPEN_INFORMATION = *mut FILE_NETWORK_OPEN_INFORMATION;
-STRUCT!{struct FILE_ATTRIBUTE_TAG_INFORMATION {
-    FileAttributes: ULONG,
-    ReparseTag: ULONG,
+STRUCT! {struct FILE_ATTRIBUTE_TAG_INFORMATION {
+    FileAttributes: c_ulong,
+    ReparseTag: c_ulong,
 }}
 pub type PFILE_ATTRIBUTE_TAG_INFORMATION = *mut FILE_ATTRIBUTE_TAG_INFORMATION;
-STRUCT!{struct FILE_ALLOCATION_INFORMATION {
+STRUCT! {struct FILE_ALLOCATION_INFORMATION {
     AllocationSize: LARGE_INTEGER,
 }}
 pub type PFILE_ALLOCATION_INFORMATION = *mut FILE_ALLOCATION_INFORMATION;
-STRUCT!{struct FILE_COMPRESSION_INFORMATION {
+STRUCT! {struct FILE_COMPRESSION_INFORMATION {
     CompressedFileSize: LARGE_INTEGER,
-    CompressionFormat: USHORT,
-    CompressionUnitShift: UCHAR,
-    ChunkShift: UCHAR,
-    ClusterShift: UCHAR,
-    Reserved: [UCHAR; 3],
+    CompressionFormat: c_ushort,
+    CompressionUnitShift: c_uchar,
+    ChunkShift: c_uchar,
+    ClusterShift: c_uchar,
+    Reserved: [c_uchar; 3],
 }}
 pub type PFILE_COMPRESSION_INFORMATION = *mut FILE_COMPRESSION_INFORMATION;
-STRUCT!{struct FILE_DISPOSITION_INFORMATION {
-    DeleteFileA: BOOLEAN,
+STRUCT! {struct FILE_DISPOSITION_INFORMATION {
+    DeleteFileA: c_uchar,
 }}
 pub type PFILE_DISPOSITION_INFORMATION = *mut FILE_DISPOSITION_INFORMATION;
-STRUCT!{struct FILE_END_OF_FILE_INFORMATION {
+STRUCT! {struct FILE_END_OF_FILE_INFORMATION {
     EndOfFile: LARGE_INTEGER,
 }}
 pub type PFILE_END_OF_FILE_INFORMATION = *mut FILE_END_OF_FILE_INFORMATION;
-STRUCT!{struct FILE_VALID_DATA_LENGTH_INFORMATION {
+STRUCT! {struct FILE_VALID_DATA_LENGTH_INFORMATION {
     ValidDataLength: LARGE_INTEGER,
 }}
-pub type PFILE_VALID_DATA_LENGTH_INFORMATION = *mut FILE_VALID_DATA_LENGTH_INFORMATION;
-STRUCT!{struct FILE_LINK_INFORMATION {
-    ReplaceIfExists: BOOLEAN,
+pub type PFILE_VALID_DATA_LENGTH_INFORMATION =
+    *mut FILE_VALID_DATA_LENGTH_INFORMATION;
+STRUCT! {struct FILE_LINK_INFORMATION {
+    ReplaceIfExists: c_uchar,
     RootDirectory: HANDLE,
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_LINK_INFORMATION = *mut FILE_LINK_INFORMATION;
-STRUCT!{struct FILE_MOVE_CLUSTER_INFORMATION {
-    ClusterCount: ULONG,
+STRUCT! {struct FILE_MOVE_CLUSTER_INFORMATION {
+    ClusterCount: c_ulong,
     RootDirectory: HANDLE,
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_MOVE_CLUSTER_INFORMATION = *mut FILE_MOVE_CLUSTER_INFORMATION;
-STRUCT!{struct FILE_RENAME_INFORMATION {
-    ReplaceIfExists: BOOLEAN,
+STRUCT! {struct FILE_RENAME_INFORMATION {
+    ReplaceIfExists: c_uchar,
     RootDirectory: HANDLE,
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_RENAME_INFORMATION = *mut FILE_RENAME_INFORMATION;
-STRUCT!{struct FILE_STREAM_INFORMATION {
-    NextEntryOffset: ULONG,
-    StreamNameLength: ULONG,
+STRUCT! {struct FILE_STREAM_INFORMATION {
+    NextEntryOffset: c_ulong,
+    StreamNameLength: c_ulong,
     StreamSize: LARGE_INTEGER,
     StreamAllocationSize: LARGE_INTEGER,
-    StreamName: [WCHAR; 1],
+    StreamName: [wchar_t; 1],
 }}
 pub type PFILE_STREAM_INFORMATION = *mut FILE_STREAM_INFORMATION;
-STRUCT!{struct FILE_TRACKING_INFORMATION {
+STRUCT! {struct FILE_TRACKING_INFORMATION {
     DestinationFile: HANDLE,
-    ObjectInformationLength: ULONG,
-    ObjectInformation: [CHAR; 1],
+    ObjectInformationLength: c_ulong,
+    ObjectInformation: [c_char; 1],
 }}
 pub type PFILE_TRACKING_INFORMATION = *mut FILE_TRACKING_INFORMATION;
-STRUCT!{struct FILE_COMPLETION_INFORMATION {
+STRUCT! {struct FILE_COMPLETION_INFORMATION {
     Port: HANDLE,
-    Key: PVOID,
+    Key: *mut c_void,
 }}
 pub type PFILE_COMPLETION_INFORMATION = *mut FILE_COMPLETION_INFORMATION;
-STRUCT!{struct FILE_PIPE_INFORMATION {
-    ReadMode: ULONG,
-    CompletionMode: ULONG,
+STRUCT! {struct FILE_PIPE_INFORMATION {
+    ReadMode: c_ulong,
+    CompletionMode: c_ulong,
 }}
 pub type PFILE_PIPE_INFORMATION = *mut FILE_PIPE_INFORMATION;
-STRUCT!{struct FILE_PIPE_LOCAL_INFORMATION {
-    NamedPipeType: ULONG,
-    NamedPipeConfiguration: ULONG,
-    MaximumInstances: ULONG,
-    CurrentInstances: ULONG,
-    InboundQuota: ULONG,
-    ReadDataAvailable: ULONG,
-    OutboundQuota: ULONG,
-    WriteQuotaAvailable: ULONG,
-    NamedPipeState: ULONG,
-    NamedPipeEnd: ULONG,
+STRUCT! {struct FILE_PIPE_LOCAL_INFORMATION {
+    NamedPipeType: c_ulong,
+    NamedPipeConfiguration: c_ulong,
+    MaximumInstances: c_ulong,
+    CurrentInstances: c_ulong,
+    InboundQuota: c_ulong,
+    ReadDataAvailable: c_ulong,
+    OutboundQuota: c_ulong,
+    WriteQuotaAvailable: c_ulong,
+    NamedPipeState: c_ulong,
+    NamedPipeEnd: c_ulong,
 }}
 pub type PFILE_PIPE_LOCAL_INFORMATION = *mut FILE_PIPE_LOCAL_INFORMATION;
-STRUCT!{struct FILE_PIPE_REMOTE_INFORMATION {
+STRUCT! {struct FILE_PIPE_REMOTE_INFORMATION {
     CollectDataTime: LARGE_INTEGER,
-    MaximumCollectionCount: ULONG,
+    MaximumCollectionCount: c_ulong,
 }}
 pub type PFILE_PIPE_REMOTE_INFORMATION = *mut FILE_PIPE_REMOTE_INFORMATION;
-STRUCT!{struct FILE_MAILSLOT_QUERY_INFORMATION {
-    MaximumMessageSize: ULONG,
-    MailslotQuota: ULONG,
-    NextMessageSize: ULONG,
-    MessagesAvailable: ULONG,
+STRUCT! {struct FILE_MAILSLOT_QUERY_INFORMATION {
+    MaximumMessageSize: c_ulong,
+    MailslotQuota: c_ulong,
+    NextMessageSize: c_ulong,
+    MessagesAvailable: c_ulong,
     ReadTimeout: LARGE_INTEGER,
 }}
-pub type PFILE_MAILSLOT_QUERY_INFORMATION = *mut FILE_MAILSLOT_QUERY_INFORMATION;
-STRUCT!{struct FILE_MAILSLOT_SET_INFORMATION {
-    ReadTimeout: PLARGE_INTEGER,
+pub type PFILE_MAILSLOT_QUERY_INFORMATION =
+    *mut FILE_MAILSLOT_QUERY_INFORMATION;
+STRUCT! {struct FILE_MAILSLOT_SET_INFORMATION {
+    ReadTimeout: *mut LARGE_INTEGER,
 }}
 pub type PFILE_MAILSLOT_SET_INFORMATION = *mut FILE_MAILSLOT_SET_INFORMATION;
-STRUCT!{struct FILE_REPARSE_POINT_INFORMATION {
-    FileReference: LONGLONG,
-    Tag: ULONG,
+STRUCT! {struct FILE_REPARSE_POINT_INFORMATION {
+    FileReference: __int64,
+    Tag: c_ulong,
 }}
 pub type PFILE_REPARSE_POINT_INFORMATION = *mut FILE_REPARSE_POINT_INFORMATION;
-STRUCT!{struct FILE_LINK_ENTRY_INFORMATION {
-    NextEntryOffset: ULONG,
-    ParentFileId: LONGLONG,
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+STRUCT! {struct FILE_LINK_ENTRY_INFORMATION {
+    NextEntryOffset: c_ulong,
+    ParentFileId: __int64,
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_LINK_ENTRY_INFORMATION = *mut FILE_LINK_ENTRY_INFORMATION;
-STRUCT!{struct FILE_LINKS_INFORMATION {
-    BytesNeeded: ULONG,
-    EntriesReturned: ULONG,
+STRUCT! {struct FILE_LINKS_INFORMATION {
+    BytesNeeded: c_ulong,
+    EntriesReturned: c_ulong,
     Entry: FILE_LINK_ENTRY_INFORMATION,
 }}
 pub type PFILE_LINKS_INFORMATION = *mut FILE_LINKS_INFORMATION;
-STRUCT!{struct FILE_NETWORK_PHYSICAL_NAME_INFORMATION {
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+STRUCT! {struct FILE_NETWORK_PHYSICAL_NAME_INFORMATION {
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
-pub type PFILE_NETWORK_PHYSICAL_NAME_INFORMATION = *mut FILE_NETWORK_PHYSICAL_NAME_INFORMATION;
-STRUCT!{struct FILE_STANDARD_LINK_INFORMATION {
-    NumberOfAccessibleLinks: ULONG,
-    TotalNumberOfLinks: ULONG,
-    DeletePending: BOOLEAN,
-    Directory: BOOLEAN,
+pub type PFILE_NETWORK_PHYSICAL_NAME_INFORMATION =
+    *mut FILE_NETWORK_PHYSICAL_NAME_INFORMATION;
+STRUCT! {struct FILE_STANDARD_LINK_INFORMATION {
+    NumberOfAccessibleLinks: c_ulong,
+    TotalNumberOfLinks: c_ulong,
+    DeletePending: c_uchar,
+    Directory: c_uchar,
 }}
 pub type PFILE_STANDARD_LINK_INFORMATION = *mut FILE_STANDARD_LINK_INFORMATION;
-STRUCT!{struct FILE_SFIO_RESERVE_INFORMATION {
-    RequestsPerPeriod: ULONG,
-    Period: ULONG,
-    RetryFailures: BOOLEAN,
-    Discardable: BOOLEAN,
-    RequestSize: ULONG,
-    NumOutstandingRequests: ULONG,
+STRUCT! {struct FILE_SFIO_RESERVE_INFORMATION {
+    RequestsPerPeriod: c_ulong,
+    Period: c_ulong,
+    RetryFailures: c_uchar,
+    Discardable: c_uchar,
+    RequestSize: c_ulong,
+    NumOutstandingRequests: c_ulong,
 }}
 pub type PFILE_SFIO_RESERVE_INFORMATION = *mut FILE_SFIO_RESERVE_INFORMATION;
-STRUCT!{struct FILE_SFIO_VOLUME_INFORMATION {
-    MaximumRequestsPerPeriod: ULONG,
-    MinimumPeriod: ULONG,
-    MinimumTransferSize: ULONG,
+STRUCT! {struct FILE_SFIO_VOLUME_INFORMATION {
+    MaximumRequestsPerPeriod: c_ulong,
+    MinimumPeriod: c_ulong,
+    MinimumTransferSize: c_ulong,
 }}
 pub type PFILE_SFIO_VOLUME_INFORMATION = *mut FILE_SFIO_VOLUME_INFORMATION;
-ENUM!{enum IO_PRIORITY_HINT {
+ENUM! {enum IO_PRIORITY_HINT {
     IoPriorityVeryLow = 0,
     IoPriorityLow = 1,
     IoPriorityNormal = 2,
@@ -444,134 +458,143 @@ ENUM!{enum IO_PRIORITY_HINT {
     IoPriorityCritical = 4,
     MaxIoPriorityTypes = 5,
 }}
-STRUCT!{struct FILE_IO_PRIORITY_HINT_INFORMATION {
+STRUCT! {struct FILE_IO_PRIORITY_HINT_INFORMATION {
     PriorityHint: IO_PRIORITY_HINT,
 }}
-pub type PFILE_IO_PRIORITY_HINT_INFORMATION = *mut FILE_IO_PRIORITY_HINT_INFORMATION;
-STRUCT!{struct FILE_IO_PRIORITY_HINT_INFORMATION_EX {
+pub type PFILE_IO_PRIORITY_HINT_INFORMATION =
+    *mut FILE_IO_PRIORITY_HINT_INFORMATION;
+STRUCT! {struct FILE_IO_PRIORITY_HINT_INFORMATION_EX {
     PriorityHint: IO_PRIORITY_HINT,
-    BoostOutstanding: BOOLEAN,
+    BoostOutstanding: c_uchar,
 }}
-pub type PFILE_IO_PRIORITY_HINT_INFORMATION_EX = *mut FILE_IO_PRIORITY_HINT_INFORMATION_EX;
+pub type PFILE_IO_PRIORITY_HINT_INFORMATION_EX =
+    *mut FILE_IO_PRIORITY_HINT_INFORMATION_EX;
 pub const FILE_SKIP_COMPLETION_PORT_ON_SUCCESS: u32 = 0x1;
 pub const FILE_SKIP_SET_EVENT_ON_HANDLE: u32 = 0x2;
 pub const FILE_SKIP_SET_USER_EVENT_ON_FAST_IO: u32 = 0x4;
-STRUCT!{struct FILE_IO_COMPLETION_NOTIFICATION_INFORMATION {
-    Flags: ULONG,
+STRUCT! {struct FILE_IO_COMPLETION_NOTIFICATION_INFORMATION {
+    Flags: c_ulong,
 }}
 pub type PFILE_IO_COMPLETION_NOTIFICATION_INFORMATION =
     *mut FILE_IO_COMPLETION_NOTIFICATION_INFORMATION;
-STRUCT!{struct FILE_PROCESS_IDS_USING_FILE_INFORMATION {
-    NumberOfProcessIdsInList: ULONG,
-    ProcessIdList: [ULONG_PTR; 1],
+STRUCT! {struct FILE_PROCESS_IDS_USING_FILE_INFORMATION {
+    NumberOfProcessIdsInList: c_ulong,
+    ProcessIdList: [usize; 1],
 }}
-pub type PFILE_PROCESS_IDS_USING_FILE_INFORMATION = *mut FILE_PROCESS_IDS_USING_FILE_INFORMATION;
-STRUCT!{struct FILE_IS_REMOTE_DEVICE_INFORMATION {
-    IsRemote: BOOLEAN,
+pub type PFILE_PROCESS_IDS_USING_FILE_INFORMATION =
+    *mut FILE_PROCESS_IDS_USING_FILE_INFORMATION;
+STRUCT! {struct FILE_IS_REMOTE_DEVICE_INFORMATION {
+    IsRemote: c_uchar,
 }}
-pub type PFILE_IS_REMOTE_DEVICE_INFORMATION = *mut FILE_IS_REMOTE_DEVICE_INFORMATION;
-STRUCT!{struct FILE_NUMA_NODE_INFORMATION {
-    NodeNumber: USHORT,
+pub type PFILE_IS_REMOTE_DEVICE_INFORMATION =
+    *mut FILE_IS_REMOTE_DEVICE_INFORMATION;
+STRUCT! {struct FILE_NUMA_NODE_INFORMATION {
+    NodeNumber: c_ushort,
 }}
 pub type PFILE_NUMA_NODE_INFORMATION = *mut FILE_NUMA_NODE_INFORMATION;
-STRUCT!{struct FILE_IOSTATUSBLOCK_RANGE_INFORMATION {
-    IoStatusBlockRange: PUCHAR,
-    Length: ULONG,
+STRUCT! {struct FILE_IOSTATUSBLOCK_RANGE_INFORMATION {
+    IoStatusBlockRange: *mut c_uchar,
+    Length: c_ulong,
 }}
-pub type PFILE_IOSTATUSBLOCK_RANGE_INFORMATION = *mut FILE_IOSTATUSBLOCK_RANGE_INFORMATION;
-STRUCT!{struct FILE_REMOTE_PROTOCOL_INFORMATION_GenericReserved {
-    Reserved: [ULONG; 8],
+pub type PFILE_IOSTATUSBLOCK_RANGE_INFORMATION =
+    *mut FILE_IOSTATUSBLOCK_RANGE_INFORMATION;
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_GenericReserved {
+    Reserved: [c_ulong; 8],
 }}
-STRUCT!{struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Server {
-    Capabilities: ULONG,
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Server {
+    Capabilities: c_ulong,
 }}
-STRUCT!{struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Share {
-    Capabilities: ULONG,
-    CachingFlags: ULONG,
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Share {
+    Capabilities: c_ulong,
+    CachingFlags: c_ulong,
 }}
-STRUCT!{struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2 {
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2 {
     Server: FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Server,
     Share: FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2_Share,
 }}
-UNION!{union FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific {
+UNION! {union FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific {
     Smb2: FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific_Smb2,
-    Reserved: [ULONG; 16],
+    Reserved: [c_ulong; 16],
 }}
-STRUCT!{struct FILE_REMOTE_PROTOCOL_INFORMATION {
-    StructureVersion: USHORT,
-    StructureSize: USHORT,
-    Protocol: ULONG,
-    ProtocolMajorVersion: USHORT,
-    ProtocolMinorVersion: USHORT,
-    ProtocolRevision: USHORT,
-    Reserved: USHORT,
-    Flags: ULONG,
+STRUCT! {struct FILE_REMOTE_PROTOCOL_INFORMATION {
+    StructureVersion: c_ushort,
+    StructureSize: c_ushort,
+    Protocol: c_ulong,
+    ProtocolMajorVersion: c_ushort,
+    ProtocolMinorVersion: c_ushort,
+    ProtocolRevision: c_ushort,
+    Reserved: c_ushort,
+    Flags: c_ulong,
     GenericReserved: FILE_REMOTE_PROTOCOL_INFORMATION_GenericReserved,
     ProtocolSpecific: FILE_REMOTE_PROTOCOL_INFORMATION_ProtocolSpecific,
 }}
-pub type PFILE_REMOTE_PROTOCOL_INFORMATION = *mut FILE_REMOTE_PROTOCOL_INFORMATION;
+pub type PFILE_REMOTE_PROTOCOL_INFORMATION =
+    *mut FILE_REMOTE_PROTOCOL_INFORMATION;
 pub const CHECKSUM_ENFORCEMENT_OFF: u32 = 0x00000001;
-STRUCT!{struct FILE_INTEGRITY_STREAM_INFORMATION {
-    ChecksumAlgorithm: USHORT,
-    ChecksumChunkShift: UCHAR,
-    ClusterShift: UCHAR,
-    Flags: ULONG,
+STRUCT! {struct FILE_INTEGRITY_STREAM_INFORMATION {
+    ChecksumAlgorithm: c_ushort,
+    ChecksumChunkShift: c_uchar,
+    ClusterShift: c_uchar,
+    Flags: c_ulong,
 }}
-pub type PFILE_INTEGRITY_STREAM_INFORMATION = *mut FILE_INTEGRITY_STREAM_INFORMATION;
-STRUCT!{struct FILE_VOLUME_NAME_INFORMATION {
-    DeviceNameLength: ULONG,
-    DeviceName: [WCHAR; 1],
+pub type PFILE_INTEGRITY_STREAM_INFORMATION =
+    *mut FILE_INTEGRITY_STREAM_INFORMATION;
+STRUCT! {struct FILE_VOLUME_NAME_INFORMATION {
+    DeviceNameLength: c_ulong,
+    DeviceName: [wchar_t; 1],
 }}
 pub type PFILE_VOLUME_NAME_INFORMATION = *mut FILE_VOLUME_NAME_INFORMATION;
-STRUCT!{struct FILE_ID_INFORMATION {
-    VolumeSerialNumber: ULONGLONG,
+STRUCT! {struct FILE_ID_INFORMATION {
+    VolumeSerialNumber: __uint64,
     FileId: FILE_ID_128,
 }}
 pub type PFILE_ID_INFORMATION = *mut FILE_ID_INFORMATION;
-STRUCT!{struct FILE_ID_EXTD_DIR_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+STRUCT! {struct FILE_ID_EXTD_DIR_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
-    EaSize: ULONG,
-    ReparsePointTag: ULONG,
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
+    EaSize: c_ulong,
+    ReparsePointTag: c_ulong,
     FileId: FILE_ID_128,
-    FileName: [WCHAR; 1],
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_ID_EXTD_DIR_INFORMATION = *mut FILE_ID_EXTD_DIR_INFORMATION;
-STRUCT!{struct FILE_LINK_ENTRY_FULL_ID_INFORMATION {
-    NextEntryOffset: ULONG,
+STRUCT! {struct FILE_LINK_ENTRY_FULL_ID_INFORMATION {
+    NextEntryOffset: c_ulong,
     ParentFileId: FILE_ID_128,
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
-pub type PFILE_LINK_ENTRY_FULL_ID_INFORMATION = *mut FILE_LINK_ENTRY_FULL_ID_INFORMATION;
-STRUCT!{struct FILE_ID_EXTD_BOTH_DIR_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+pub type PFILE_LINK_ENTRY_FULL_ID_INFORMATION =
+    *mut FILE_LINK_ENTRY_FULL_ID_INFORMATION;
+STRUCT! {struct FILE_ID_EXTD_BOTH_DIR_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
-    EaSize: ULONG,
-    ReparsePointTag: ULONG,
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
+    EaSize: c_ulong,
+    ReparsePointTag: c_ulong,
     FileId: FILE_ID_128,
-    ShortNameLength: CCHAR,
-    ShortName: [WCHAR; 12],
-    FileName: [WCHAR; 1],
+    ShortNameLength: c_char,
+    ShortName: [wchar_t; 12],
+    FileName: [wchar_t; 1],
 }}
-pub type PFILE_ID_EXTD_BOTH_DIR_INFORMATION = *mut FILE_ID_EXTD_BOTH_DIR_INFORMATION;
-STRUCT!{struct FILE_STAT_INFORMATION {
+pub type PFILE_ID_EXTD_BOTH_DIR_INFORMATION =
+    *mut FILE_ID_EXTD_BOTH_DIR_INFORMATION;
+STRUCT! {struct FILE_STAT_INFORMATION {
     FileId: LARGE_INTEGER,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
@@ -579,26 +602,27 @@ STRUCT!{struct FILE_STAT_INFORMATION {
     ChangeTime: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    ReparseTag: ULONG,
-    NumberOfLinks: ULONG,
-    EffectiveAccess: ULONG,
+    FileAttributes: c_ulong,
+    ReparseTag: c_ulong,
+    NumberOfLinks: c_ulong,
+    EffectiveAccess: c_ulong,
 }}
 pub type PFILE_STAT_INFORMATION = *mut FILE_STAT_INFORMATION;
-STRUCT!{struct FILE_MEMORY_PARTITION_INFORMATION_Flags_s {
-    NoCrossPartitionAccess: UCHAR,
-    Spare: [UCHAR; 3],
+STRUCT! {struct FILE_MEMORY_PARTITION_INFORMATION_Flags_s {
+    NoCrossPartitionAccess: c_uchar,
+    Spare: [c_uchar; 3],
 }}
-UNION!{union FILE_MEMORY_PARTITION_INFORMATION_Flags {
+UNION! {union FILE_MEMORY_PARTITION_INFORMATION_Flags {
     s: FILE_MEMORY_PARTITION_INFORMATION_Flags_s,
-    AllFlags: ULONG,
+    AllFlags: c_ulong,
 }}
-STRUCT!{struct FILE_MEMORY_PARTITION_INFORMATION {
+STRUCT! {struct FILE_MEMORY_PARTITION_INFORMATION {
     OwnerPartitionHandle: HANDLE,
     Flags: FILE_MEMORY_PARTITION_INFORMATION_Flags,
 }}
-pub type PFILE_MEMORY_PARTITION_INFORMATION = *mut FILE_MEMORY_PARTITION_INFORMATION;
-STRUCT!{struct FILE_STAT_LX_INFORMATION {
+pub type PFILE_MEMORY_PARTITION_INFORMATION =
+    *mut FILE_MEMORY_PARTITION_INFORMATION;
+STRUCT! {struct FILE_STAT_LX_INFORMATION {
     FileId: LARGE_INTEGER,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
@@ -606,167 +630,169 @@ STRUCT!{struct FILE_STAT_LX_INFORMATION {
     ChangeTime: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    ReparseTag: ULONG,
-    NumberOfLinks: ULONG,
-    EffectiveAccess: ULONG,
-    LxFlags: ULONG,
-    LxUid: ULONG,
-    LxGid: ULONG,
-    LxMode: ULONG,
-    LxDeviceIdMajor: ULONG,
-    LxDeviceIdMinor: ULONG,
+    FileAttributes: c_ulong,
+    ReparseTag: c_ulong,
+    NumberOfLinks: c_ulong,
+    EffectiveAccess: c_ulong,
+    LxFlags: c_ulong,
+    LxUid: c_ulong,
+    LxGid: c_ulong,
+    LxMode: c_ulong,
+    LxDeviceIdMajor: c_ulong,
+    LxDeviceIdMinor: c_ulong,
 }}
 pub type PFILE_STAT_LX_INFORMATION = *mut FILE_STAT_LX_INFORMATION;
-STRUCT!{struct FILE_CASE_SENSITIVE_INFORMATION {
-    Flags: ULONG,
+STRUCT! {struct FILE_CASE_SENSITIVE_INFORMATION {
+    Flags: c_ulong,
 }}
-pub type PFILE_CASE_SENSITIVE_INFORMATION = *mut FILE_CASE_SENSITIVE_INFORMATION;
-STRUCT!{struct FILE_DIRECTORY_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+pub type PFILE_CASE_SENSITIVE_INFORMATION =
+    *mut FILE_CASE_SENSITIVE_INFORMATION;
+STRUCT! {struct FILE_DIRECTORY_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_DIRECTORY_INFORMATION = *mut FILE_DIRECTORY_INFORMATION;
-STRUCT!{struct FILE_FULL_DIR_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+STRUCT! {struct FILE_FULL_DIR_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
-    EaSize: ULONG,
-    FileName: [WCHAR; 1],
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
+    EaSize: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_FULL_DIR_INFORMATION = *mut FILE_FULL_DIR_INFORMATION;
-STRUCT!{struct FILE_ID_FULL_DIR_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+STRUCT! {struct FILE_ID_FULL_DIR_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
-    EaSize: ULONG,
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
+    EaSize: c_ulong,
     FileId: LARGE_INTEGER,
-    FileName: [WCHAR; 1],
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_ID_FULL_DIR_INFORMATION = *mut FILE_ID_FULL_DIR_INFORMATION;
-STRUCT!{struct FILE_BOTH_DIR_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+STRUCT! {struct FILE_BOTH_DIR_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
-    EaSize: ULONG,
-    ShortNameLength: CCHAR,
-    ShortName: [WCHAR; 12],
-    FileName: [WCHAR; 1],
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
+    EaSize: c_ulong,
+    ShortNameLength: c_char,
+    ShortName: [wchar_t; 12],
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_BOTH_DIR_INFORMATION = *mut FILE_BOTH_DIR_INFORMATION;
-STRUCT!{struct FILE_ID_BOTH_DIR_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+STRUCT! {struct FILE_ID_BOTH_DIR_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
-    EaSize: ULONG,
-    ShortNameLength: CCHAR,
-    ShortName: [WCHAR; 12],
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
+    EaSize: c_ulong,
+    ShortNameLength: c_char,
+    ShortName: [wchar_t; 12],
     FileId: LARGE_INTEGER,
-    FileName: [WCHAR; 1],
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_ID_BOTH_DIR_INFORMATION = *mut FILE_ID_BOTH_DIR_INFORMATION;
-STRUCT!{struct FILE_NAMES_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
-    FileNameLength: ULONG,
-    FileName: [WCHAR; 1],
+STRUCT! {struct FILE_NAMES_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
+    FileNameLength: c_ulong,
+    FileName: [wchar_t; 1],
 }}
 pub type PFILE_NAMES_INFORMATION = *mut FILE_NAMES_INFORMATION;
-STRUCT!{struct FILE_ID_GLOBAL_TX_DIR_INFORMATION {
-    NextEntryOffset: ULONG,
-    FileIndex: ULONG,
+STRUCT! {struct FILE_ID_GLOBAL_TX_DIR_INFORMATION {
+    NextEntryOffset: c_ulong,
+    FileIndex: c_ulong,
     CreationTime: LARGE_INTEGER,
     LastAccessTime: LARGE_INTEGER,
     LastWriteTime: LARGE_INTEGER,
     ChangeTime: LARGE_INTEGER,
     EndOfFile: LARGE_INTEGER,
     AllocationSize: LARGE_INTEGER,
-    FileAttributes: ULONG,
-    FileNameLength: ULONG,
+    FileAttributes: c_ulong,
+    FileNameLength: c_ulong,
     FileId: LARGE_INTEGER,
     LockingTransactionId: GUID,
-    TxInfoFlags: ULONG,
-    FileName: [WCHAR; 1],
+    TxInfoFlags: c_ulong,
+    FileName: [wchar_t; 1],
 }}
-pub type PFILE_ID_GLOBAL_TX_DIR_INFORMATION = *mut FILE_ID_GLOBAL_TX_DIR_INFORMATION;
+pub type PFILE_ID_GLOBAL_TX_DIR_INFORMATION =
+    *mut FILE_ID_GLOBAL_TX_DIR_INFORMATION;
 pub const FILE_ID_GLOBAL_TX_DIR_INFO_FLAG_WRITELOCKED: u32 = 0x00000001;
 pub const FILE_ID_GLOBAL_TX_DIR_INFO_FLAG_VISIBLE_TO_TX: u32 = 0x00000002;
 pub const FILE_ID_GLOBAL_TX_DIR_INFO_FLAG_VISIBLE_OUTSIDE_TX: u32 = 0x00000004;
-STRUCT!{struct FILE_OBJECTID_INFORMATION_u_s {
-    BirthVolumeId: [UCHAR; 16],
-    BirthObjectId: [UCHAR; 16],
-    DomainId: [UCHAR; 16],
+STRUCT! {struct FILE_OBJECTID_INFORMATION_u_s {
+    BirthVolumeId: [c_uchar; 16],
+    BirthObjectId: [c_uchar; 16],
+    DomainId: [c_uchar; 16],
 }}
-UNION!{union FILE_OBJECTID_INFORMATION_u {
+UNION! {union FILE_OBJECTID_INFORMATION_u {
     s: FILE_OBJECTID_INFORMATION_u_s,
-    ExtendedInfo: [UCHAR; 48],
+    ExtendedInfo: [c_uchar; 48],
 }}
-STRUCT!{struct FILE_OBJECTID_INFORMATION {
-    FileReference: LONGLONG,
-    ObjectId: [UCHAR; 16],
+STRUCT! {struct FILE_OBJECTID_INFORMATION {
+    FileReference: __int64,
+    ObjectId: [c_uchar; 16],
     u: FILE_OBJECTID_INFORMATION_u,
 }}
 pub type PFILE_OBJECTID_INFORMATION = *mut FILE_OBJECTID_INFORMATION;
-STRUCT!{struct FILE_FULL_EA_INFORMATION {
-    NextEntryOffset: ULONG,
-    Flags: UCHAR,
-    EaNameLength: UCHAR,
-    EaValueLength: USHORT,
-    EaName: [CHAR; 1],
+STRUCT! {struct FILE_FULL_EA_INFORMATION {
+    NextEntryOffset: c_ulong,
+    Flags: c_uchar,
+    EaNameLength: c_uchar,
+    EaValueLength: c_ushort,
+    EaName: [c_char; 1],
 }}
 pub type PFILE_FULL_EA_INFORMATION = *mut FILE_FULL_EA_INFORMATION;
-STRUCT!{struct FILE_GET_EA_INFORMATION {
-    NextEntryOffset: ULONG,
-    EaNameLength: UCHAR,
-    EaName: [CHAR; 1],
+STRUCT! {struct FILE_GET_EA_INFORMATION {
+    NextEntryOffset: c_ulong,
+    EaNameLength: c_uchar,
+    EaName: [c_char; 1],
 }}
 pub type PFILE_GET_EA_INFORMATION = *mut FILE_GET_EA_INFORMATION;
-STRUCT!{struct FILE_GET_QUOTA_INFORMATION {
-    NextEntryOffset: ULONG,
-    SidLength: ULONG,
+STRUCT! {struct FILE_GET_QUOTA_INFORMATION {
+    NextEntryOffset: c_ulong,
+    SidLength: c_ulong,
     Sid: SID,
 }}
 pub type PFILE_GET_QUOTA_INFORMATION = *mut FILE_GET_QUOTA_INFORMATION;
-STRUCT!{struct FILE_QUOTA_INFORMATION {
-    NextEntryOffset: ULONG,
-    SidLength: ULONG,
+STRUCT! {struct FILE_QUOTA_INFORMATION {
+    NextEntryOffset: c_ulong,
+    SidLength: c_ulong,
     ChangeTime: LARGE_INTEGER,
     QuotaUsed: LARGE_INTEGER,
     QuotaThreshold: LARGE_INTEGER,
@@ -774,7 +800,7 @@ STRUCT!{struct FILE_QUOTA_INFORMATION {
     Sid: SID,
 }}
 pub type PFILE_QUOTA_INFORMATION = *mut FILE_QUOTA_INFORMATION;
-ENUM!{enum FS_INFORMATION_CLASS {
+ENUM! {enum FS_INFORMATION_CLASS {
     FileFsVolumeInformation = 1,
     FileFsLabelInformation = 2,
     FileFsSizeInformation = 3,
@@ -792,159 +818,164 @@ ENUM!{enum FS_INFORMATION_CLASS {
     FileFsMaximumInformation = 15,
 }}
 pub type PFS_INFORMATION_CLASS = *mut FS_INFORMATION_CLASS;
-STRUCT!{struct FILE_FS_LABEL_INFORMATION {
-    VolumeLabelLength: ULONG,
-    VolumeLabel: [WCHAR; 1],
+STRUCT! {struct FILE_FS_LABEL_INFORMATION {
+    VolumeLabelLength: c_ulong,
+    VolumeLabel: [wchar_t; 1],
 }}
 pub type PFILE_FS_LABEL_INFORMATION = *mut FILE_FS_LABEL_INFORMATION;
-STRUCT!{struct FILE_FS_VOLUME_INFORMATION {
+STRUCT! {struct FILE_FS_VOLUME_INFORMATION {
     VolumeCreationTime: LARGE_INTEGER,
-    VolumeSerialNumber: ULONG,
-    VolumeLabelLength: ULONG,
-    SupportsObjects: BOOLEAN,
-    VolumeLabel: [WCHAR; 1],
+    VolumeSerialNumber: c_ulong,
+    VolumeLabelLength: c_ulong,
+    SupportsObjects: c_uchar,
+    VolumeLabel: [wchar_t; 1],
 }}
 pub type PFILE_FS_VOLUME_INFORMATION = *mut FILE_FS_VOLUME_INFORMATION;
-STRUCT!{struct FILE_FS_SIZE_INFORMATION {
+STRUCT! {struct FILE_FS_SIZE_INFORMATION {
     TotalAllocationUnits: LARGE_INTEGER,
     AvailableAllocationUnits: LARGE_INTEGER,
-    SectorsPerAllocationUnit: ULONG,
-    BytesPerSector: ULONG,
+    SectorsPerAllocationUnit: c_ulong,
+    BytesPerSector: c_ulong,
 }}
 pub type PFILE_FS_SIZE_INFORMATION = *mut FILE_FS_SIZE_INFORMATION;
-STRUCT!{struct FILE_FS_CONTROL_INFORMATION {
+STRUCT! {struct FILE_FS_CONTROL_INFORMATION {
     FreeSpaceStartFiltering: LARGE_INTEGER,
     FreeSpaceThreshold: LARGE_INTEGER,
     FreeSpaceStopFiltering: LARGE_INTEGER,
     DefaultQuotaThreshold: LARGE_INTEGER,
     DefaultQuotaLimit: LARGE_INTEGER,
-    FileSystemControlFlags: ULONG,
+    FileSystemControlFlags: c_ulong,
 }}
 pub type PFILE_FS_CONTROL_INFORMATION = *mut FILE_FS_CONTROL_INFORMATION;
-STRUCT!{struct FILE_FS_FULL_SIZE_INFORMATION {
+STRUCT! {struct FILE_FS_FULL_SIZE_INFORMATION {
     TotalAllocationUnits: LARGE_INTEGER,
     CallerAvailableAllocationUnits: LARGE_INTEGER,
     ActualAvailableAllocationUnits: LARGE_INTEGER,
-    SectorsPerAllocationUnit: ULONG,
-    BytesPerSector: ULONG,
+    SectorsPerAllocationUnit: c_ulong,
+    BytesPerSector: c_ulong,
 }}
 pub type PFILE_FS_FULL_SIZE_INFORMATION = *mut FILE_FS_FULL_SIZE_INFORMATION;
-STRUCT!{struct FILE_FS_OBJECTID_INFORMATION {
-    ObjectId: [UCHAR; 16],
-    ExtendedInfo: [UCHAR; 48],
+STRUCT! {struct FILE_FS_OBJECTID_INFORMATION {
+    ObjectId: [c_uchar; 16],
+    ExtendedInfo: [c_uchar; 48],
 }}
 pub type PFILE_FS_OBJECTID_INFORMATION = *mut FILE_FS_OBJECTID_INFORMATION;
-STRUCT!{struct FILE_FS_DEVICE_INFORMATION {
-    DeviceType: DWORD,
-    Characteristics: ULONG,
+STRUCT! {struct FILE_FS_DEVICE_INFORMATION {
+    DeviceType: c_ulong,
+    Characteristics: c_ulong,
 }}
 pub type PFILE_FS_DEVICE_INFORMATION = *mut FILE_FS_DEVICE_INFORMATION;
-STRUCT!{struct FILE_FS_ATTRIBUTE_INFORMATION {
-    FileSystemAttributes: ULONG,
-    MaximumComponentNameLength: LONG,
-    FileSystemNameLength: ULONG,
-    FileSystemName: [WCHAR; 1],
+STRUCT! {struct FILE_FS_ATTRIBUTE_INFORMATION {
+    FileSystemAttributes: c_ulong,
+    MaximumComponentNameLength: c_long,
+    FileSystemNameLength: c_ulong,
+    FileSystemName: [wchar_t; 1],
 }}
 pub type PFILE_FS_ATTRIBUTE_INFORMATION = *mut FILE_FS_ATTRIBUTE_INFORMATION;
-STRUCT!{struct FILE_FS_DRIVER_PATH_INFORMATION {
-    DriverInPath: BOOLEAN,
-    DriverNameLength: ULONG,
-    DriverName: [WCHAR; 1],
+STRUCT! {struct FILE_FS_DRIVER_PATH_INFORMATION {
+    DriverInPath: c_uchar,
+    DriverNameLength: c_ulong,
+    DriverName: [wchar_t; 1],
 }}
-pub type PFILE_FS_DRIVER_PATH_INFORMATION = *mut FILE_FS_DRIVER_PATH_INFORMATION;
-STRUCT!{struct FILE_FS_VOLUME_FLAGS_INFORMATION {
-    Flags: ULONG,
+pub type PFILE_FS_DRIVER_PATH_INFORMATION =
+    *mut FILE_FS_DRIVER_PATH_INFORMATION;
+STRUCT! {struct FILE_FS_VOLUME_FLAGS_INFORMATION {
+    Flags: c_ulong,
 }}
-pub type PFILE_FS_VOLUME_FLAGS_INFORMATION = *mut FILE_FS_VOLUME_FLAGS_INFORMATION;
+pub type PFILE_FS_VOLUME_FLAGS_INFORMATION =
+    *mut FILE_FS_VOLUME_FLAGS_INFORMATION;
 pub const SSINFO_FLAGS_ALIGNED_DEVICE: u32 = 0x00000001;
 pub const SSINFO_FLAGS_PARTITION_ALIGNED_ON_DEVICE: u32 = 0x00000002;
 pub const SSINFO_OFFSET_UNKNOWN: u32 = 0xffffffff;
-STRUCT!{struct FILE_FS_SECTOR_SIZE_INFORMATION {
-    LogicalBytesPerSector: ULONG,
-    PhysicalBytesPerSectorForAtomicity: ULONG,
-    PhysicalBytesPerSectorForPerformance: ULONG,
-    FileSystemEffectivePhysicalBytesPerSectorForAtomicity: ULONG,
-    Flags: ULONG,
-    ByteOffsetForSectorAlignment: ULONG,
-    ByteOffsetForPartitionAlignment: ULONG,
+STRUCT! {struct FILE_FS_SECTOR_SIZE_INFORMATION {
+    LogicalBytesPerSector: c_ulong,
+    PhysicalBytesPerSectorForAtomicity: c_ulong,
+    PhysicalBytesPerSectorForPerformance: c_ulong,
+    FileSystemEffectivePhysicalBytesPerSectorForAtomicity: c_ulong,
+    Flags: c_ulong,
+    ByteOffsetForSectorAlignment: c_ulong,
+    ByteOffsetForPartitionAlignment: c_ulong,
 }}
-pub type PFILE_FS_SECTOR_SIZE_INFORMATION = *mut FILE_FS_SECTOR_SIZE_INFORMATION;
-STRUCT!{struct FILE_FS_DATA_COPY_INFORMATION {
-    NumberOfCopies: ULONG,
+pub type PFILE_FS_SECTOR_SIZE_INFORMATION =
+    *mut FILE_FS_SECTOR_SIZE_INFORMATION;
+STRUCT! {struct FILE_FS_DATA_COPY_INFORMATION {
+    NumberOfCopies: c_ulong,
 }}
 pub type PFILE_FS_DATA_COPY_INFORMATION = *mut FILE_FS_DATA_COPY_INFORMATION;
-STRUCT!{struct FILE_FS_METADATA_SIZE_INFORMATION {
+STRUCT! {struct FILE_FS_METADATA_SIZE_INFORMATION {
     TotalMetadataAllocationUnits: LARGE_INTEGER,
-    SectorsPerAllocationUnit: ULONG,
-    BytesPerSector: ULONG,
+    SectorsPerAllocationUnit: c_ulong,
+    BytesPerSector: c_ulong,
 }}
-pub type PFILE_FS_METADATA_SIZE_INFORMATION = *mut FILE_FS_METADATA_SIZE_INFORMATION;
-STRUCT!{struct FILE_FS_FULL_SIZE_INFORMATION_EX {
-    ActualTotalAllocationUnits: ULONGLONG,
-    ActualAvailableAllocationUnits: ULONGLONG,
-    ActualPoolUnavailableAllocationUnits: ULONGLONG,
-    CallerTotalAllocationUnits: ULONGLONG,
-    CallerAvailableAllocationUnits: ULONGLONG,
-    CallerPoolUnavailableAllocationUnits: ULONGLONG,
-    UsedAllocationUnits: ULONGLONG,
-    TotalReservedAllocationUnits: ULONGLONG,
-    VolumeStorageReserveAllocationUnits: ULONGLONG,
-    AvailableCommittedAllocationUnits: ULONGLONG,
-    PoolAvailableAllocationUnits: ULONGLONG,
-    SectorsPerAllocationUnit: ULONG,
-    BytesPerSector: ULONG,
+pub type PFILE_FS_METADATA_SIZE_INFORMATION =
+    *mut FILE_FS_METADATA_SIZE_INFORMATION;
+STRUCT! {struct FILE_FS_FULL_SIZE_INFORMATION_EX {
+    ActualTotalAllocationUnits: __uint64,
+    ActualAvailableAllocationUnits: __uint64,
+    ActualPoolUnavailableAllocationUnits: __uint64,
+    CallerTotalAllocationUnits: __uint64,
+    CallerAvailableAllocationUnits: __uint64,
+    CallerPoolUnavailableAllocationUnits: __uint64,
+    UsedAllocationUnits: __uint64,
+    TotalReservedAllocationUnits: __uint64,
+    VolumeStorageReserveAllocationUnits: __uint64,
+    AvailableCommittedAllocationUnits: __uint64,
+    PoolAvailableAllocationUnits: __uint64,
+    SectorsPerAllocationUnit: c_ulong,
+    BytesPerSector: c_ulong,
 }}
-pub type PFILE_FS_FULL_SIZE_INFORMATION_EX = *mut FILE_FS_FULL_SIZE_INFORMATION_EX;
-EXTERN!{extern "system" {
+pub type PFILE_FS_FULL_SIZE_INFORMATION_EX =
+    *mut FILE_FS_FULL_SIZE_INFORMATION_EX;
+EXTERN! {extern "system" {
     fn NtCreateFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        AllocationSize: PLARGE_INTEGER,
-        FileAttributes: ULONG,
-        ShareAccess: ULONG,
-        CreateDisposition: ULONG,
-        CreateOptions: ULONG,
-        EaBuffer: PVOID,
-        EaLength: ULONG,
+        AllocationSize: *mut LARGE_INTEGER,
+        FileAttributes: c_ulong,
+        ShareAccess: c_ulong,
+        CreateDisposition: c_ulong,
+        CreateOptions: c_ulong,
+        EaBuffer: *mut c_void,
+        EaLength: c_ulong,
     ) -> NTSTATUS;
     fn NtCreateNamedPipeFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ULONG,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ShareAccess: ULONG,
-        CreateDisposition: ULONG,
-        CreateOptions: ULONG,
-        NamedPipeType: ULONG,
-        ReadMode: ULONG,
-        CompletionMode: ULONG,
-        MaximumInstances: ULONG,
-        InboundQuota: ULONG,
-        OutboundQuota: ULONG,
-        DefaultTimeout: PLARGE_INTEGER,
+        ShareAccess: c_ulong,
+        CreateDisposition: c_ulong,
+        CreateOptions: c_ulong,
+        NamedPipeType: c_ulong,
+        ReadMode: c_ulong,
+        CompletionMode: c_ulong,
+        MaximumInstances: c_ulong,
+        InboundQuota: c_ulong,
+        OutboundQuota: c_ulong,
+        DefaultTimeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn NtCreateMailslotFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ULONG,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        CreateOptions: ULONG,
-        MailslotQuota: ULONG,
-        MaximumMessageSize: ULONG,
-        ReadTimeout: PLARGE_INTEGER,
+        CreateOptions: c_ulong,
+        MailslotQuota: c_ulong,
+        MaximumMessageSize: c_ulong,
+        ReadTimeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn NtOpenFile(
-        FileHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        FileHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ShareAccess: ULONG,
-        OpenOptions: ULONG,
+        ShareAccess: c_ulong,
+        OpenOptions: c_ulong,
     ) -> NTSTATUS;
     fn NtDeleteFile(
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn NtFlushBuffersFile(
         FileHandle: HANDLE,
@@ -952,91 +983,91 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn NtFlushBuffersFileEx(
         FileHandle: HANDLE,
-        Flags: ULONG,
-        Parameters: PVOID,
-        ParametersSize: ULONG,
+        Flags: c_ulong,
+        Parameters: *mut c_void,
+        ParametersSize: c_ulong,
         IoStatusBlock: PIO_STATUS_BLOCK,
     ) -> NTSTATUS;
     fn NtQueryInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FileInformation: PVOID,
-        Length: ULONG,
+        FileInformation: *mut c_void,
+        Length: c_ulong,
         FileInformationClass: FILE_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn NtQueryInformationByName(
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FileInformation: PVOID,
-        Length: ULONG,
+        FileInformation: *mut c_void,
+        Length: c_ulong,
         FileInformationClass: FILE_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn NtSetInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FileInformation: PVOID,
-        Length: ULONG,
+        FileInformation: *mut c_void,
+        Length: c_ulong,
         FileInformationClass: FILE_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn NtQueryDirectoryFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FileInformation: PVOID,
-        Length: ULONG,
+        FileInformation: *mut c_void,
+        Length: c_ulong,
         FileInformationClass: FILE_INFORMATION_CLASS,
-        ReturnSingleEntry: BOOLEAN,
-        FileName: PUNICODE_STRING,
-        RestartScan: BOOLEAN,
+        ReturnSingleEntry: c_uchar,
+        FileName: *mut UNICODE_STRING,
+        RestartScan: c_uchar,
     ) -> NTSTATUS;
     fn NtQueryEaFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ReturnSingleEntry: BOOLEAN,
-        EaList: PVOID,
-        EaListLength: ULONG,
-        EaIndex: PULONG,
-        RestartScan: BOOLEAN,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ReturnSingleEntry: c_uchar,
+        EaList: *mut c_void,
+        EaListLength: c_ulong,
+        EaIndex: *mut c_ulong,
+        RestartScan: c_uchar,
     ) -> NTSTATUS;
     fn NtSetEaFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
     ) -> NTSTATUS;
     fn NtQueryQuotaInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ReturnSingleEntry: BOOLEAN,
-        SidList: PVOID,
-        SidListLength: ULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ReturnSingleEntry: c_uchar,
+        SidList: *mut c_void,
+        SidListLength: c_ulong,
         StartSid: PSID,
-        RestartScan: BOOLEAN,
+        RestartScan: c_uchar,
     ) -> NTSTATUS;
     fn NtSetQuotaInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
     ) -> NTSTATUS;
     fn NtQueryVolumeInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FsInformation: PVOID,
-        Length: ULONG,
+        FsInformation: *mut c_void,
+        Length: c_ulong,
         FsInformationClass: FS_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn NtSetVolumeInformationFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FsInformation: PVOID,
-        Length: ULONG,
+        FsInformation: *mut c_void,
+        Length: c_ulong,
         FsInformationClass: FS_INFORMATION_CLASS,
     ) -> NTSTATUS;
     fn NtCancelIoFile(
@@ -1057,193 +1088,194 @@ EXTERN!{extern "system" {
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        IoControlCode: ULONG,
-        InputBuffer: PVOID,
-        InputBufferLength: ULONG,
-        OutputBuffer: PVOID,
-        OutputBufferLength: ULONG,
+        IoControlCode: c_ulong,
+        InputBuffer: *mut c_void,
+        InputBufferLength: c_ulong,
+        OutputBuffer: *mut c_void,
+        OutputBufferLength: c_ulong,
     ) -> NTSTATUS;
     fn NtFsControlFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        FsControlCode: ULONG,
-        InputBuffer: PVOID,
-        InputBufferLength: ULONG,
-        OutputBuffer: PVOID,
-        OutputBufferLength: ULONG,
+        FsControlCode: c_ulong,
+        InputBuffer: *mut c_void,
+        InputBufferLength: c_ulong,
+        OutputBuffer: *mut c_void,
+        OutputBufferLength: c_ulong,
     ) -> NTSTATUS;
     fn NtReadFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtWriteFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtReadFileScatter(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        SegmentArray: PFILE_SEGMENT_ELEMENT,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        SegmentArray: *mut FILE_SEGMENT_ELEMENT,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtWriteFileGather(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        SegmentArray: PFILE_SEGMENT_ELEMENT,
-        Length: ULONG,
-        ByteOffset: PLARGE_INTEGER,
-        Key: PULONG,
+        SegmentArray: *mut FILE_SEGMENT_ELEMENT,
+        Length: c_ulong,
+        ByteOffset: *mut LARGE_INTEGER,
+        Key: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtLockFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ByteOffset: PLARGE_INTEGER,
-        Length: PLARGE_INTEGER,
-        Key: ULONG,
-        FailImmediately: BOOLEAN,
-        ExclusiveLock: BOOLEAN,
+        ByteOffset: *mut LARGE_INTEGER,
+        Length: *mut LARGE_INTEGER,
+        Key: c_ulong,
+        FailImmediately: c_uchar,
+        ExclusiveLock: c_uchar,
     ) -> NTSTATUS;
     fn NtUnlockFile(
         FileHandle: HANDLE,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        ByteOffset: PLARGE_INTEGER,
-        Length: PLARGE_INTEGER,
-        Key: ULONG,
+        ByteOffset: *mut LARGE_INTEGER,
+        Length: *mut LARGE_INTEGER,
+        Key: c_ulong,
     ) -> NTSTATUS;
     fn NtQueryAttributesFile(
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         FileInformation: PFILE_BASIC_INFORMATION,
     ) -> NTSTATUS;
     fn NtQueryFullAttributesFile(
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         FileInformation: PFILE_NETWORK_OPEN_INFORMATION,
     ) -> NTSTATUS;
     fn NtNotifyChangeDirectoryFile(
         FileHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Buffer: PVOID,
-        Length: ULONG,
-        CompletionFilter: ULONG,
-        WatchTree: BOOLEAN,
+        Buffer: *mut c_void,
+        Length: c_ulong,
+        CompletionFilter: c_ulong,
+        WatchTree: c_uchar,
     ) -> NTSTATUS;
     fn NtLoadDriver(
-        DriverServiceName: PUNICODE_STRING,
+        DriverServiceName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn NtUnloadDriver(
-        DriverServiceName: PUNICODE_STRING,
+        DriverServiceName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
 }}
 pub const IO_COMPLETION_QUERY_STATE: u32 = 0x0001;
-ENUM!{enum IO_COMPLETION_INFORMATION_CLASS {
+ENUM! {enum IO_COMPLETION_INFORMATION_CLASS {
     IoCompletionBasicInformation = 0,
 }}
-STRUCT!{struct IO_COMPLETION_BASIC_INFORMATION {
-    Depth: LONG,
+STRUCT! {struct IO_COMPLETION_BASIC_INFORMATION {
+    Depth: c_long,
 }}
-pub type PIO_COMPLETION_BASIC_INFORMATION = *mut IO_COMPLETION_BASIC_INFORMATION;
-EXTERN!{extern "system" {
+pub type PIO_COMPLETION_BASIC_INFORMATION =
+    *mut IO_COMPLETION_BASIC_INFORMATION;
+EXTERN! {extern "system" {
     fn NtCreateIoCompletion(
-        IoCompletionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        Count: ULONG,
+        IoCompletionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        Count: c_ulong,
     ) -> NTSTATUS;
     fn NtOpenIoCompletion(
-        IoCompletionHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        IoCompletionHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn NtQueryIoCompletion(
         IoCompletionHandle: HANDLE,
         IoCompletionInformationClass: IO_COMPLETION_INFORMATION_CLASS,
-        IoCompletionInformation: PVOID,
-        IoCompletionInformationLength: ULONG,
-        ReturnLength: PULONG,
+        IoCompletionInformation: *mut c_void,
+        IoCompletionInformationLength: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtSetIoCompletion(
         IoCompletionHandle: HANDLE,
-        KeyContext: PVOID,
-        ApcContext: PVOID,
+        KeyContext: *mut c_void,
+        ApcContext: *mut c_void,
         IoStatus: NTSTATUS,
-        IoStatusInformation: ULONG_PTR,
+        IoStatusInformation: usize,
     ) -> NTSTATUS;
     fn NtSetIoCompletionEx(
         IoCompletionHandle: HANDLE,
         IoCompletionPacketHandle: HANDLE,
-        KeyContext: PVOID,
-        ApcContext: PVOID,
+        KeyContext: *mut c_void,
+        ApcContext: *mut c_void,
         IoStatus: NTSTATUS,
-        IoStatusInformation: ULONG_PTR,
+        IoStatusInformation: usize,
     ) -> NTSTATUS;
     fn NtRemoveIoCompletion(
         IoCompletionHandle: HANDLE,
-        KeyContext: *mut PVOID,
-        ApcContext: *mut PVOID,
+        KeyContext: *mut *mut c_void,
+        ApcContext: *mut *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        Timeout: PLARGE_INTEGER,
+        Timeout: *mut LARGE_INTEGER,
     ) -> NTSTATUS;
     fn NtRemoveIoCompletionEx(
         IoCompletionHandle: HANDLE,
         IoCompletionInformation: PFILE_IO_COMPLETION_INFORMATION,
-        Count: ULONG,
-        NumEntriesRemoved: PULONG,
-        Timeout: PLARGE_INTEGER,
-        Alertable: BOOLEAN,
+        Count: c_ulong,
+        NumEntriesRemoved: *mut c_ulong,
+        Timeout: *mut LARGE_INTEGER,
+        Alertable: c_uchar,
     ) -> NTSTATUS;
     fn NtCreateWaitCompletionPacket(
-        WaitCompletionPacketHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        WaitCompletionPacketHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn NtAssociateWaitCompletionPacket(
         WaitCompletionPacketHandle: HANDLE,
         IoCompletionHandle: HANDLE,
         TargetObjectHandle: HANDLE,
-        KeyContext: PVOID,
-        ApcContext: PVOID,
+        KeyContext: *mut c_void,
+        ApcContext: *mut c_void,
         IoStatus: NTSTATUS,
-        IoStatusInformation: ULONG_PTR,
-        AlreadySignaled: PBOOLEAN,
+        IoStatusInformation: usize,
+        AlreadySignaled: *mut c_uchar,
     ) -> NTSTATUS;
     fn NtCancelWaitCompletionPacket(
         WaitCompletionPacketHandle: HANDLE,
-        RemoveSignaledPacket: BOOLEAN,
+        RemoveSignaledPacket: c_uchar,
     ) -> NTSTATUS;
 }}
-ENUM!{enum IO_SESSION_EVENT {
+ENUM! {enum IO_SESSION_EVENT {
     IoSessionEventIgnore = 0,
     IoSessionEventCreated = 1,
     IoSessionEventTerminated = 2,
@@ -1253,7 +1285,7 @@ ENUM!{enum IO_SESSION_EVENT {
     IoSessionEventLogoff = 6,
     IoSessionEventMax = 7,
 }}
-ENUM!{enum IO_SESSION_STATE {
+ENUM! {enum IO_SESSION_STATE {
     IoSessionStateCreated = 0,
     IoSessionStateInitialized = 1,
     IoSessionStateConnected = 2,
@@ -1264,19 +1296,19 @@ ENUM!{enum IO_SESSION_STATE {
     IoSessionStateTerminated = 7,
     IoSessionStateMax = 8,
 }}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtNotifyChangeSession(
         SessionHandle: HANDLE,
-        ChangeSequenceNumber: ULONG,
-        ChangeTimeStamp: PLARGE_INTEGER,
+        ChangeSequenceNumber: c_ulong,
+        ChangeTimeStamp: *mut LARGE_INTEGER,
         Event: IO_SESSION_EVENT,
         NewState: IO_SESSION_STATE,
         PreviousState: IO_SESSION_STATE,
-        Payload: PVOID,
-        PayloadSize: ULONG,
+        Payload: *mut c_void,
+        PayloadSize: c_ulong,
     ) -> NTSTATUS;
 }}
-ENUM!{enum INTERFACE_TYPE {
+ENUM! {enum INTERFACE_TYPE {
     InterfaceTypeUndefined = -1i32 as u32,
     Internal = 0,
     Isa = 1,
@@ -1298,14 +1330,14 @@ ENUM!{enum INTERFACE_TYPE {
     MaximumInterfaceType = 17,
 }}
 pub type PINTERFACE_TYPE = *mut INTERFACE_TYPE;
-ENUM!{enum DMA_WIDTH {
+ENUM! {enum DMA_WIDTH {
     Width8Bits = 0,
     Width16Bits = 1,
     Width32Bits = 2,
     MaximumDmaWidth = 3,
 }}
 pub type PDMA_WIDTH = *mut DMA_WIDTH;
-ENUM!{enum DMA_SPEED {
+ENUM! {enum DMA_SPEED {
     Compatible = 0,
     TypeA = 1,
     TypeB = 2,
@@ -1314,7 +1346,7 @@ ENUM!{enum DMA_SPEED {
     MaximumDmaSpeed = 5,
 }}
 pub type PDMA_SPEED = *mut DMA_SPEED;
-ENUM!{enum BUS_DATA_TYPE {
+ENUM! {enum BUS_DATA_TYPE {
     ConfigurationSpaceUndefined = -1i32 as u32,
     Cmos = 0,
     EisaConfiguration = 1,
@@ -1332,40 +1364,41 @@ ENUM!{enum BUS_DATA_TYPE {
 }}
 pub type PBUS_DATA_TYPE = *mut BUS_DATA_TYPE;
 pub const SYMLINK_FLAG_RELATIVE: u32 = 1;
-STRUCT!{struct REPARSE_DATA_BUFFER_u_SymbolicLinkReparseBuffer {
-    SubstituteNameOffset: USHORT,
-    SubstituteNameLength: USHORT,
-    PrintNameOffset: USHORT,
-    PrintNameLength: USHORT,
-    Flags: ULONG,
-    PathBuffer: [WCHAR; 1],
+STRUCT! {struct REPARSE_DATA_BUFFER_u_SymbolicLinkReparseBuffer {
+    SubstituteNameOffset: c_ushort,
+    SubstituteNameLength: c_ushort,
+    PrintNameOffset: c_ushort,
+    PrintNameLength: c_ushort,
+    Flags: c_ulong,
+    PathBuffer: [wchar_t; 1],
 }}
-STRUCT!{struct REPARSE_DATA_BUFFER_u_MountPointReparseBuffer {
-    SubstituteNameOffset: USHORT,
-    SubstituteNameLength: USHORT,
-    PrintNameOffset: USHORT,
-    PrintNameLength: USHORT,
-    PathBuffer: [WCHAR; 1],
+STRUCT! {struct REPARSE_DATA_BUFFER_u_MountPointReparseBuffer {
+    SubstituteNameOffset: c_ushort,
+    SubstituteNameLength: c_ushort,
+    PrintNameOffset: c_ushort,
+    PrintNameLength: c_ushort,
+    PathBuffer: [wchar_t; 1],
 }}
-STRUCT!{struct REPARSE_DATA_BUFFER_u_GenericReparseBuffer {
-    DataBuffer: [UCHAR; 1],
+STRUCT! {struct REPARSE_DATA_BUFFER_u_GenericReparseBuffer {
+    DataBuffer: [c_uchar; 1],
 }}
-UNION!{union REPARSE_DATA_BUFFER_u {
+UNION! {union REPARSE_DATA_BUFFER_u {
     SymbolicLinkReparseBuffer: REPARSE_DATA_BUFFER_u_SymbolicLinkReparseBuffer,
     MountPointReparseBuffer: REPARSE_DATA_BUFFER_u_MountPointReparseBuffer,
     GenericReparseBuffer: REPARSE_DATA_BUFFER_u_GenericReparseBuffer,
 }}
-STRUCT!{struct REPARSE_DATA_BUFFER {
-    ReparseTag: ULONG,
-    ReparseDataLength: USHORT,
-    Reserved: USHORT,
+STRUCT! {struct REPARSE_DATA_BUFFER {
+    ReparseTag: c_ulong,
+    ReparseDataLength: c_ushort,
+    Reserved: c_ushort,
     u: REPARSE_DATA_BUFFER_u,
 }}
 pub type PREPARSE_DATA_BUFFER = *mut REPARSE_DATA_BUFFER;
 /// "\Device\NamedPipe\"
 pub const DEVICE_NAMED_PIPE: UTF16Const = UTF16Const(&[
-    0x005C, 0x0044, 0x0065, 0x0076, 0x0069, 0x0063, 0x0065, 0x005C, 0x004E, 0x0061, 0x006D, 0x0065,
-    0x0064, 0x0050, 0x0069, 0x0070, 0x0065, 0x005C, 0u16,
+    0x005C, 0x0044, 0x0065, 0x0076, 0x0069, 0x0063, 0x0065, 0x005C, 0x004E,
+    0x0061, 0x006D, 0x0065, 0x0064, 0x0050, 0x0069, 0x0070, 0x0065, 0x005C,
+    0u16,
 ]);
 pub const FSCTL_PIPE_ASSIGN_EVENT: u32 =
     CTL_CODE(FILE_DEVICE_NAMED_PIPE, 0, METHOD_BUFFERED, FILE_ANY_ACCESS);
@@ -1377,8 +1410,12 @@ pub const FSTL_PIPE_PEEK: u32 =
     CTL_CODE(FILE_DEVICE_NAMED_PIPE, 3, METHOD_BUFFERED, FILE_READ_DATA);
 pub const FSTL_PIPE_QUERY_EVENT: u32 =
     CTL_CODE(FILE_DEVICE_NAMED_PIPE, 4, METHOD_BUFFERED, FILE_ANY_ACCESS);
-pub const FSTL_PIPE_TRANSCEIVE: u32 =
-    CTL_CODE(FILE_DEVICE_NAMED_PIPE, 5, METHOD_NEITHER, FILE_READ_DATA | FILE_WRITE_DATA);
+pub const FSTL_PIPE_TRANSCEIVE: u32 = CTL_CODE(
+    FILE_DEVICE_NAMED_PIPE,
+    5,
+    METHOD_NEITHER,
+    FILE_READ_DATA | FILE_WRITE_DATA,
+);
 pub const FSTL_PIPE_WAIT: u32 =
     CTL_CODE(FILE_DEVICE_NAMED_PIPE, 6, METHOD_BUFFERED, FILE_ANY_ACCESS);
 pub const FSTL_PIPE_IMPERSONATE: u32 =
@@ -1401,64 +1438,82 @@ pub const FSTL_PIPE_SET_HANDLE_ATTRIBUTE: u32 =
     CTL_CODE(FILE_DEVICE_NAMED_PIPE, 15, METHOD_BUFFERED, FILE_ANY_ACCESS);
 pub const FSTL_PIPE_FLUSH: u32 =
     CTL_CODE(FILE_DEVICE_NAMED_PIPE, 16, METHOD_BUFFERED, FILE_WRITE_DATA);
-pub const FSTL_PIPE_INTERNAL_READ: u32 =
-    CTL_CODE(FILE_DEVICE_NAMED_PIPE, 2045, METHOD_BUFFERED, FILE_READ_DATA);
-pub const FSTL_PIPE_INTERNAL_WRITE: u32 =
-    CTL_CODE(FILE_DEVICE_NAMED_PIPE, 2046, METHOD_BUFFERED, FILE_WRITE_DATA);
-pub const FSTL_PIPE_INTERNAL_TRANSCEIVE: u32 =
-    CTL_CODE(FILE_DEVICE_NAMED_PIPE, 2047, METHOD_NEITHER, FILE_READ_DATA | FILE_WRITE_DATA);
-pub const FSTL_PIPE_INTERNAL_READ_OVFLOW: u32 =
-    CTL_CODE(FILE_DEVICE_NAMED_PIPE, 2048, METHOD_BUFFERED, FILE_READ_DATA);
+pub const FSTL_PIPE_INTERNAL_READ: u32 = CTL_CODE(
+    FILE_DEVICE_NAMED_PIPE,
+    2045,
+    METHOD_BUFFERED,
+    FILE_READ_DATA,
+);
+pub const FSTL_PIPE_INTERNAL_WRITE: u32 = CTL_CODE(
+    FILE_DEVICE_NAMED_PIPE,
+    2046,
+    METHOD_BUFFERED,
+    FILE_WRITE_DATA,
+);
+pub const FSTL_PIPE_INTERNAL_TRANSCEIVE: u32 = CTL_CODE(
+    FILE_DEVICE_NAMED_PIPE,
+    2047,
+    METHOD_NEITHER,
+    FILE_READ_DATA | FILE_WRITE_DATA,
+);
+pub const FSTL_PIPE_INTERNAL_READ_OVFLOW: u32 = CTL_CODE(
+    FILE_DEVICE_NAMED_PIPE,
+    2048,
+    METHOD_BUFFERED,
+    FILE_READ_DATA,
+);
 pub const FILE_PIPE_READ_DATA: u32 = 0x00000000;
 pub const FILE_PIPE_WRITE_SPACE: u32 = 0x00000001;
-STRUCT!{struct FILE_PIPE_ASSIGN_EVENT_BUFFER {
+STRUCT! {struct FILE_PIPE_ASSIGN_EVENT_BUFFER {
     EventHandle: HANDLE,
-    KeyValue: ULONG,
+    KeyValue: c_ulong,
 }}
 pub type PFILE_PIPE_ASSIGN_EVENT_BUFFER = *mut FILE_PIPE_ASSIGN_EVENT_BUFFER;
-STRUCT!{struct FILE_PIPE_PEEK_BUFFER {
-    NamedPipeState: ULONG,
-    ReadDataAvailable: ULONG,
-    NumberOfMessages: ULONG,
-    MessageLength: ULONG,
-    Data: [CHAR; 1],
+STRUCT! {struct FILE_PIPE_PEEK_BUFFER {
+    NamedPipeState: c_ulong,
+    ReadDataAvailable: c_ulong,
+    NumberOfMessages: c_ulong,
+    MessageLength: c_ulong,
+    Data: [c_char; 1],
 }}
 pub type PFILE_PIPE_PEEK_BUFFER = *mut FILE_PIPE_PEEK_BUFFER;
-STRUCT!{struct FILE_PIPE_EVENT_BUFFER {
-    NamedPipeState: ULONG,
-    EntryType: ULONG,
-    ByteCount: ULONG,
-    KeyValue: ULONG,
-    NumberRequests: ULONG,
+STRUCT! {struct FILE_PIPE_EVENT_BUFFER {
+    NamedPipeState: c_ulong,
+    EntryType: c_ulong,
+    ByteCount: c_ulong,
+    KeyValue: c_ulong,
+    NumberRequests: c_ulong,
 }}
 pub type PFILE_PIPE_EVENT_BUFFER = *mut FILE_PIPE_EVENT_BUFFER;
-STRUCT!{struct FILE_PIPE_WAIT_FOR_BUFFER {
+STRUCT! {struct FILE_PIPE_WAIT_FOR_BUFFER {
     Timeout: LARGE_INTEGER,
-    NameLength: ULONG,
-    TimeoutSpecified: BOOLEAN,
-    Name: [WCHAR; 1],
+    NameLength: c_ulong,
+    TimeoutSpecified: c_uchar,
+    Name: [wchar_t; 1],
 }}
 pub type PFILE_PIPE_WAIT_FOR_BUFFER = *mut FILE_PIPE_WAIT_FOR_BUFFER;
-STRUCT!{struct FILE_PIPE_CLIENT_PROCESS_BUFFER {
-    ClientSession: PVOID,
-    ClientProcess: PVOID,
+STRUCT! {struct FILE_PIPE_CLIENT_PROCESS_BUFFER {
+    ClientSession: *mut c_void,
+    ClientProcess: *mut c_void,
 }}
-pub type PFILE_PIPE_CLIENT_PROCESS_BUFFER = *mut FILE_PIPE_CLIENT_PROCESS_BUFFER;
+pub type PFILE_PIPE_CLIENT_PROCESS_BUFFER =
+    *mut FILE_PIPE_CLIENT_PROCESS_BUFFER;
 pub const FILE_PIPE_COMPUTER_NAME_LENGTH: usize = 15;
-STRUCT!{struct FILE_PIPE_CLIENT_PROCESS_BUFFER_EX {
-    ClientSession: PVOID,
-    ClientProcess: PVOID,
-    ClientComputerNameLength: USHORT,
-    ClientComputerBuffer: [WCHAR; FILE_PIPE_COMPUTER_NAME_LENGTH + 1],
+STRUCT! {struct FILE_PIPE_CLIENT_PROCESS_BUFFER_EX {
+    ClientSession: *mut c_void,
+    ClientProcess: *mut c_void,
+    ClientComputerNameLength: c_ushort,
+    ClientComputerBuffer: [wchar_t; FILE_PIPE_COMPUTER_NAME_LENGTH + 1],
 }}
-pub type PFILE_PIPE_CLIENT_PROCESS_BUFFER_EX = *mut FILE_PIPE_CLIENT_PROCESS_BUFFER_EX;
+pub type PFILE_PIPE_CLIENT_PROCESS_BUFFER_EX =
+    *mut FILE_PIPE_CLIENT_PROCESS_BUFFER_EX;
 pub const MAILSLOT_CLASS_FIRSTCLASS: u32 = 1;
 pub const MAILSLOT_CLASS_SECONDCLASS: u32 = 2;
 pub const FSCTL_MAILSLOT_PEEK: u32 =
     CTL_CODE(FILE_DEVICE_MAILSLOT, 0, METHOD_NEITHER, FILE_READ_DATA);
-STRUCT!{struct FILE_MAILSLOT_PEEK_BUFFER {
-    ReadDataAvailable: ULONG,
-    NumberOfMessages: ULONG,
-    MessageLength: ULONG,
+STRUCT! {struct FILE_MAILSLOT_PEEK_BUFFER {
+    ReadDataAvailable: c_ulong,
+    NumberOfMessages: c_ulong,
+    MessageLength: c_ulong,
 }}
 pub type PFILE_MAILSLOT_PEEK_BUFFER = *mut FILE_MAILSLOT_PEEK_BUFFER;

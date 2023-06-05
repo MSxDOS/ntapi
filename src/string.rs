@@ -23,14 +23,17 @@ impl AsRef<[u16]> for UTF16Const {
 impl Copy for UTF16Const {}
 impl Clone for UTF16Const {
     #[inline]
-    fn clone(&self) -> UTF16Const { *self }
+    fn clone(&self) -> UTF16Const {
+        *self
+    }
 }
 /// A wrapper over UTF8 string constants.
 pub struct UTF8Const(pub &'static str);
 impl UTF8Const {
     #[inline]
     pub fn as_ptr(&self) -> *const i8 {
-        self.0.as_ptr() as *const i8
+        // self.0.as_ptr() as *const i8
+        self.0.as_ptr().cast::<i8>()
     }
     #[inline]
     pub fn as_mut_ptr(&self) -> *mut i8 {
@@ -54,5 +57,7 @@ impl AsRef<str> for UTF8Const {
 impl Copy for UTF8Const {}
 impl Clone for UTF8Const {
     #[inline]
-    fn clone(&self) -> UTF8Const { *self }
+    fn clone(&self) -> UTF8Const {
+        *self
+    }
 }
