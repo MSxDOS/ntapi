@@ -1,30 +1,42 @@
-use winapi::shared::basetsd::{LONG_PTR, PSIZE_T, SIZE_T, ULONG_PTR};
-use winapi::shared::ntdef::{
-    BOOLEAN, HANDLE, LARGE_INTEGER, LIST_ENTRY, LONG, LONGLONG, NTSTATUS, PANSI_STRING, PCSTR,
-    PCUNICODE_STRING, PCWSTR, PHANDLE, POBJECT_ATTRIBUTES, PSINGLE_LIST_ENTRY, PSTR, PULONG,
-    PUNICODE_STRING, PUSHORT, PVOID, PWSTR, RTL_BALANCED_NODE, SINGLE_LIST_ENTRY, UCHAR, ULONG,
-    UNICODE_STRING, USHORT,
+use windows_sys::Win32::{
+    Foundation::{HANDLE, NTSTATUS, UNICODE_STRING},
+    System::{
+        Kernel::{LIST_ENTRY, RTL_BALANCED_NODE, SINGLE_LIST_ENTRY, STRING},
+        SystemServices::{
+            IMAGE_BASE_RELOCATION, IMAGE_IMPORT_DESCRIPTOR,
+            IMAGE_RESOURCE_DATA_ENTRY, IMAGE_RESOURCE_DIRECTORY,
+            IMAGE_RESOURCE_DIRECTORY_ENTRY, IMAGE_RESOURCE_DIRECTORY_STRING,
+        },
+        WindowsProgramming::{
+            IMAGE_DELAYLOAD_DESCRIPTOR, IMAGE_THUNK_DATA64, OBJECT_ATTRIBUTES,
+        },
+    },
 };
-use winapi::um::winnt::{
-    ACCESS_MASK, ACTIVATION_CONTEXT, IMAGE_RESOURCE_DIRECTORY_ENTRY, PCIMAGE_DELAYLOAD_DESCRIPTOR,
-    PIMAGE_BASE_RELOCATION, PIMAGE_IMPORT_DESCRIPTOR, PIMAGE_RESOURCE_DATA_ENTRY,
-    PIMAGE_RESOURCE_DIRECTORY, PIMAGE_RESOURCE_DIRECTORY_STRING, PIMAGE_THUNK_DATA,
+
+use crate::{
+    ctypes::{
+        __int64, c_char, c_long, c_uchar, c_ulong, c_ushort, c_void, wchar_t,
+    },
+    windows_local::{
+        shared::ntdef::LARGE_INTEGER, um::winnt::ACTIVATION_CONTEXT,
+    },
 };
-FN!{stdcall PLDR_INIT_ROUTINE(
-    DllHandle: PVOID,
-    Reason: ULONG,
-    Context: PVOID,
-) -> BOOLEAN}
-STRUCT!{struct LDR_SERVICE_TAG_RECORD {
+
+FN! {stdcall PLDR_INIT_ROUTINE(
+    DllHandle: *mut c_void,
+    Reason: c_ulong,
+    Context: *mut c_void,
+) -> c_uchar}
+STRUCT! {struct LDR_SERVICE_TAG_RECORD {
     Next: *mut LDR_SERVICE_TAG_RECORD,
-    ServiceTag: ULONG,
+    ServiceTag: c_ulong,
 }}
 pub type PLDR_SERVICE_TAG_RECORD = *mut LDR_SERVICE_TAG_RECORD;
-STRUCT!{struct LDRP_CSLIST {
-    Tail: PSINGLE_LIST_ENTRY,
+STRUCT! {struct LDRP_CSLIST {
+    Tail: *mut SINGLE_LIST_ENTRY,
 }}
 pub type PLDRP_CSLIST = *mut LDRP_CSLIST;
-ENUM!{enum LDR_DDAG_STATE {
+ENUM! {enum LDR_DDAG_STATE {
     LdrModulesMerged = -5i32 as u32,
     LdrModulesInitError = -4i32 as u32,
     LdrModulesSnapError = -3i32 as u32,
@@ -41,31 +53,31 @@ ENUM!{enum LDR_DDAG_STATE {
     LdrModulesInitializing = 8,
     LdrModulesReadyToRun = 9,
 }}
-UNION!{union LDR_DDAG_NODE_u {
+UNION! {union LDR_DDAG_NODE_u {
     Dependencies: LDRP_CSLIST,
     RemovalLink: SINGLE_LIST_ENTRY,
 }}
-STRUCT!{struct LDR_DDAG_NODE {
+STRUCT! {struct LDR_DDAG_NODE {
     Modules: LIST_ENTRY,
     ServiceTagList: PLDR_SERVICE_TAG_RECORD,
-    LoadCount: ULONG,
-    LoadWhileUnloadingCount: ULONG,
-    LowestLink: ULONG,
+    LoadCount: c_ulong,
+    LoadWhileUnloadingCount: c_ulong,
+    LowestLink: c_ulong,
     u: LDR_DDAG_NODE_u,
     IncomingDependencies: LDRP_CSLIST,
     State: LDR_DDAG_STATE,
     CondenseLink: SINGLE_LIST_ENTRY,
-    PreorderNumber: ULONG,
+    PreorderNumber: c_ulong,
 }}
 pub type PLDR_DDAG_NODE = *mut LDR_DDAG_NODE;
-STRUCT!{struct LDR_DEPENDENCY_RECORD {
+STRUCT! {struct LDR_DEPENDENCY_RECORD {
     DependencyLink: SINGLE_LIST_ENTRY,
     DependencyNode: PLDR_DDAG_NODE,
     IncomingDependencyLink: SINGLE_LIST_ENTRY,
     IncomingDependencyNode: PLDR_DDAG_NODE,
 }}
 pub type PLDR_DEPENDENCY_RECORD = *mut LDR_DEPENDENCY_RECORD;
-ENUM!{enum LDR_DLL_LOAD_REASON {
+ENUM! {enum LDR_DLL_LOAD_REASON {
     LoadReasonStaticDependency = 0,
     LoadReasonStaticForwarderDependency = 1,
     LoadReasonDynamicForwarderDependency = 2,
@@ -78,90 +90,90 @@ ENUM!{enum LDR_DLL_LOAD_REASON {
     LoadReasonUnknown = -1i32 as u32,
 }}
 pub type PLDR_DLL_LOAD_REASON = *mut LDR_DLL_LOAD_REASON;
-pub const LDRP_PACKAGED_BINARY: ULONG = 0x00000001;
-pub const LDRP_STATIC_LINK: ULONG = 0x00000002;
-pub const LDRP_IMAGE_DLL: ULONG = 0x00000004;
-pub const LDRP_LOAD_IN_PROGRESS: ULONG = 0x00001000;
-pub const LDRP_UNLOAD_IN_PROGRESS: ULONG = 0x00002000;
-pub const LDRP_ENTRY_PROCESSED: ULONG = 0x00004000;
-pub const LDRP_ENTRY_INSERTED: ULONG = 0x00008000;
-pub const LDRP_CURRENT_LOAD: ULONG = 0x00010000;
-pub const LDRP_FAILED_BUILTIN_LOAD: ULONG = 0x00020000;
-pub const LDRP_DONT_CALL_FOR_THREADS: ULONG = 0x00040000;
-pub const LDRP_PROCESS_ATTACH_CALLED: ULONG = 0x00080000;
-pub const LDRP_DEBUG_SYMBOLS_LOADED: ULONG = 0x00100000;
-pub const LDRP_IMAGE_NOT_AT_BASE: ULONG = 0x00200000;
-pub const LDRP_COR_IMAGE: ULONG = 0x00400000;
-pub const LDRP_DONT_RELOCATE: ULONG = 0x00800000;
-pub const LDRP_SYSTEM_MAPPED: ULONG = 0x01000000;
-pub const LDRP_IMAGE_VERIFYING: ULONG = 0x02000000;
-pub const LDRP_DRIVER_DEPENDENT_DLL: ULONG = 0x04000000;
-pub const LDRP_ENTRY_NATIVE: ULONG = 0x08000000;
-pub const LDRP_REDIRECTED: ULONG = 0x10000000;
-pub const LDRP_NON_PAGED_DEBUG_INFO: ULONG = 0x20000000;
-pub const LDRP_MM_LOADED: ULONG = 0x40000000;
-pub const LDRP_COMPAT_DATABASE_PROCESSED: ULONG = 0x80000000;
-STRUCT!{struct LDRP_LOAD_CONTEXT {
+pub const LDRP_PACKAGED_BINARY: c_ulong = 0x00000001;
+pub const LDRP_STATIC_LINK: c_ulong = 0x00000002;
+pub const LDRP_IMAGE_DLL: c_ulong = 0x00000004;
+pub const LDRP_LOAD_IN_PROGRESS: c_ulong = 0x00001000;
+pub const LDRP_UNLOAD_IN_PROGRESS: c_ulong = 0x00002000;
+pub const LDRP_ENTRY_PROCESSED: c_ulong = 0x00004000;
+pub const LDRP_ENTRY_INSERTED: c_ulong = 0x00008000;
+pub const LDRP_CURRENT_LOAD: c_ulong = 0x00010000;
+pub const LDRP_FAILED_BUILTIN_LOAD: c_ulong = 0x00020000;
+pub const LDRP_DONT_CALL_FOR_THREADS: c_ulong = 0x00040000;
+pub const LDRP_PROCESS_ATTACH_CALLED: c_ulong = 0x00080000;
+pub const LDRP_DEBUG_SYMBOLS_LOADED: c_ulong = 0x00100000;
+pub const LDRP_IMAGE_NOT_AT_BASE: c_ulong = 0x00200000;
+pub const LDRP_COR_IMAGE: c_ulong = 0x00400000;
+pub const LDRP_DONT_RELOCATE: c_ulong = 0x00800000;
+pub const LDRP_SYSTEM_MAPPED: c_ulong = 0x01000000;
+pub const LDRP_IMAGE_VERIFYING: c_ulong = 0x02000000;
+pub const LDRP_DRIVER_DEPENDENT_DLL: c_ulong = 0x04000000;
+pub const LDRP_ENTRY_NATIVE: c_ulong = 0x08000000;
+pub const LDRP_REDIRECTED: c_ulong = 0x10000000;
+pub const LDRP_NON_PAGED_DEBUG_INFO: c_ulong = 0x20000000;
+pub const LDRP_MM_LOADED: c_ulong = 0x40000000;
+pub const LDRP_COMPAT_DATABASE_PROCESSED: c_ulong = 0x80000000;
+STRUCT! {struct LDRP_LOAD_CONTEXT {
     BaseDllName: UNICODE_STRING,
-    somestruct: PVOID,
-    Flags: ULONG,
+    somestruct: *mut c_void,
+    Flags: c_ulong,
     pstatus: *mut NTSTATUS,
     ParentEntry: *mut LDR_DATA_TABLE_ENTRY,
     Entry: *mut LDR_DATA_TABLE_ENTRY,
     WorkQueueListEntry: LIST_ENTRY,
     ReplacedEntry: *mut LDR_DATA_TABLE_ENTRY,
     pvImports: *mut *mut LDR_DATA_TABLE_ENTRY,
-    ImportDllCount: ULONG,
-    TaskCount: LONG,
-    pvIAT: PVOID,
-    SizeOfIAT: ULONG,
-    CurrentDll: ULONG,
-    piid: PIMAGE_IMPORT_DESCRIPTOR,
-    OriginalIATProtect: ULONG,
-    GuardCFCheckFunctionPointer: PVOID,
-    pGuardCFCheckFunctionPointer: *mut PVOID,
+    ImportDllCount: c_ulong,
+    TaskCount: c_long,
+    pvIAT: *mut c_void,
+    SizeOfIAT: c_ulong,
+    CurrentDll: c_ulong,
+    piid: *mut IMAGE_IMPORT_DESCRIPTOR,
+    OriginalIATProtect: c_ulong,
+    GuardCFCheckFunctionPointer: *mut c_void,
+    pGuardCFCheckFunctionPointer: *mut *mut c_void,
 }}
-UNION!{union LDR_DATA_TABLE_ENTRY_u1 {
+UNION! {union LDR_DATA_TABLE_ENTRY_u1 {
     InInitializationOrderLinks: LIST_ENTRY,
     InProgressLinks: LIST_ENTRY,
 }}
-UNION!{union LDR_DATA_TABLE_ENTRY_u2 {
-    FlagGroup: [UCHAR; 4],
-    Flags: ULONG,
+UNION! {union LDR_DATA_TABLE_ENTRY_u2 {
+    FlagGroup: [c_uchar; 4],
+    Flags: c_ulong,
 }}
-STRUCT!{struct LDR_DATA_TABLE_ENTRY {
+STRUCT! {struct LDR_DATA_TABLE_ENTRY {
     InLoadOrderLinks: LIST_ENTRY,
     InMemoryOrderLinks: LIST_ENTRY,
     u1: LDR_DATA_TABLE_ENTRY_u1,
-    DllBase: PVOID,
+    DllBase: *mut c_void,
     EntryPoint: PLDR_INIT_ROUTINE,
-    SizeOfImage: ULONG,
+    SizeOfImage: c_ulong,
     FullDllName: UNICODE_STRING,
     BaseDllName: UNICODE_STRING,
     u2: LDR_DATA_TABLE_ENTRY_u2,
-    ObsoleteLoadCount: USHORT,
-    TlsIndex: USHORT,
+    ObsoleteLoadCount: c_ushort,
+    TlsIndex: c_ushort,
     HashLinks: LIST_ENTRY,
-    TimeDateStamp: ULONG,
+    TimeDateStamp: c_ulong,
     EntryPointActivationContext: *mut ACTIVATION_CONTEXT,
-    Lock: PVOID,
+    Lock: *mut c_void,
     DdagNode: PLDR_DDAG_NODE,
     NodeModuleLink: LIST_ENTRY,
     LoadContext: *mut LDRP_LOAD_CONTEXT,
-    ParentDllBase: PVOID,
-    SwitchBackContext: PVOID,
+    ParentDllBase: *mut c_void,
+    SwitchBackContext: *mut c_void,
     BaseAddressIndexNode: RTL_BALANCED_NODE,
     MappingInfoIndexNode: RTL_BALANCED_NODE,
-    OriginalBase: ULONG_PTR,
+    OriginalBase: usize,
     LoadTime: LARGE_INTEGER,
-    BaseNameHashValue: ULONG,
+    BaseNameHashValue: c_ulong,
     LoadReason: LDR_DLL_LOAD_REASON,
-    ImplicitPathOptions: ULONG,
-    ReferenceCount: ULONG,
-    DependentLoadFlags: ULONG,
-    SigningLevel: UCHAR,
+    ImplicitPathOptions: c_ulong,
+    ReferenceCount: c_ulong,
+    DependentLoadFlags: c_ulong,
+    SigningLevel: c_uchar,
 }}
-BITFIELD!{unsafe LDR_DATA_TABLE_ENTRY_u2 Flags: ULONG [
+BITFIELD! {unsafe LDR_DATA_TABLE_ENTRY_u2 Flags: c_ulong [
     PackagedBinary set_PackagedBinary[0..1],
     MarkedForRemoval set_MarkedForRemoval[1..2],
     ImageDll set_ImageDll[2..3],
@@ -192,470 +204,479 @@ BITFIELD!{unsafe LDR_DATA_TABLE_ENTRY_u2 Flags: ULONG [
 ]}
 pub type PLDR_DATA_TABLE_ENTRY = *mut LDR_DATA_TABLE_ENTRY;
 #[inline]
-pub const fn LDR_IS_DATAFILE(DllHandle: ULONG_PTR) -> bool {
+pub const fn LDR_IS_DATAFILE(DllHandle: usize) -> bool {
     DllHandle & 1 != 0
 }
 #[inline]
-pub const fn LDR_IS_IMAGEMAPPING(DllHandle: ULONG_PTR) -> bool {
+pub const fn LDR_IS_IMAGEMAPPING(DllHandle: usize) -> bool {
     DllHandle & 2 != 0
 }
 #[inline]
-pub const fn LDR_IS_RESOURCE(DllHandle: ULONG_PTR) -> bool {
+pub const fn LDR_IS_RESOURCE(DllHandle: usize) -> bool {
     LDR_IS_IMAGEMAPPING(DllHandle) || LDR_IS_DATAFILE(DllHandle)
 }
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn LdrLoadDll(
-        DllPath: PWSTR,
-        DllCharacteristics: PULONG,
-        DllName: PUNICODE_STRING,
-        DllHandle: *mut PVOID,
+        DllPath: *mut wchar_t,
+        DllCharacteristics: *mut c_ulong,
+        DllName: *mut UNICODE_STRING,
+        DllHandle: *mut *mut c_void,
     ) -> NTSTATUS;
     fn LdrUnloadDll(
-        DllHandle: PVOID,
+        DllHandle: *mut c_void,
     ) -> NTSTATUS;
     fn LdrGetDllHandle(
-        DllPath: PWSTR,
-        DllCharacteristics: PULONG,
-        DllName: PUNICODE_STRING,
-        DllHandle: *mut PVOID,
+        DllPath: *mut wchar_t,
+        DllCharacteristics: *mut c_ulong,
+        DllName: *mut UNICODE_STRING,
+        DllHandle: *mut *mut c_void,
     ) -> NTSTATUS;
 }}
-pub const LDR_GET_DLL_HANDLE_EX_UNCHANGED_REFCOUNT: ULONG = 0x00000001;
-pub const LDR_GET_DLL_HANDLE_EX_PIN: ULONG = 0x00000002;
-EXTERN!{extern "system" {
+pub const LDR_GET_DLL_HANDLE_EX_UNCHANGED_REFCOUNT: c_ulong = 0x00000001;
+pub const LDR_GET_DLL_HANDLE_EX_PIN: c_ulong = 0x00000002;
+EXTERN! {extern "system" {
     fn LdrGetDllHandleEx(
-        Flags: ULONG,
-        DllPath: PWSTR,
-        DllCharacteristics: PULONG,
-        DllName: PUNICODE_STRING,
-        DllHandle: *mut PVOID,
+        Flags: c_ulong,
+        DllPath: *mut wchar_t,
+        DllCharacteristics: *mut c_ulong,
+        DllName: *mut UNICODE_STRING,
+        DllHandle: *mut *mut c_void,
     ) -> NTSTATUS;
     fn LdrGetDllHandleByMapping(
-        BaseAddress: PVOID,
-        DllHandle: *mut PVOID,
+        BaseAddress: *mut c_void,
+        DllHandle: *mut *mut c_void,
     ) -> NTSTATUS;
     fn LdrGetDllHandleByName(
-        BaseDllName: PUNICODE_STRING,
-        FullDllName: PUNICODE_STRING,
-        DllHandle: *mut PVOID,
+        BaseDllName: *mut UNICODE_STRING,
+        FullDllName: *mut UNICODE_STRING,
+        DllHandle: *mut *mut c_void,
     ) -> NTSTATUS;
     fn LdrGetDllFullName(
-        DllHandle: PVOID,
-        FullDllName: PUNICODE_STRING,
+        DllHandle: *mut c_void,
+        FullDllName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn LdrGetDllDirectory(
-        DllDirectory: PUNICODE_STRING,
+        DllDirectory: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn LdrSetDllDirectory(
-        DllDirectory: PUNICODE_STRING,
+        DllDirectory: *mut UNICODE_STRING,
     ) -> NTSTATUS;
 }}
-pub const LDR_ADDREF_DLL_PIN: ULONG = 0x00000001;
-EXTERN!{extern "system" {
+pub const LDR_ADDREF_DLL_PIN: c_ulong = 0x00000001;
+EXTERN! {extern "system" {
     fn LdrAddRefDll(
-        Flags: ULONG,
-        DllHandle: PVOID,
+        Flags: c_ulong,
+        DllHandle: *mut c_void,
     ) -> NTSTATUS;
     fn LdrGetProcedureAddress(
-        DllHandle: PVOID,
-        ProcedureName: PANSI_STRING,
-        ProcedureNumber: ULONG,
-        ProcedureAddress: *mut PVOID,
+        DllHandle: *mut c_void,
+        ProcedureName: *mut STRING,
+        ProcedureNumber: c_ulong,
+        ProcedureAddress: *mut *mut c_void,
     ) -> NTSTATUS;
 }}
-pub const LDR_GET_PROCEDURE_ADDRESS_DONT_RECORD_FORWARDER: ULONG = 0x00000001;
-EXTERN!{extern "system" {
+pub const LDR_GET_PROCEDURE_ADDRESS_DONT_RECORD_FORWARDER: c_ulong = 0x00000001;
+EXTERN! {extern "system" {
     fn LdrGetProcedureAddressEx(
-        DllHandle: PVOID,
-        ProcedureName: PANSI_STRING,
-        ProcedureNumber: ULONG,
-        ProcedureAddress: *mut PVOID,
-        Flags: ULONG,
+        DllHandle: *mut c_void,
+        ProcedureName: *mut STRING,
+        ProcedureNumber: c_ulong,
+        ProcedureAddress: *mut *mut c_void,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn LdrGetKnownDllSectionHandle(
-        DllName: PCWSTR,
-        KnownDlls32: BOOLEAN,
-        Section: PHANDLE,
+        DllName: *const wchar_t,
+        KnownDlls32: c_uchar,
+        Section: *mut HANDLE,
     ) -> NTSTATUS;
     fn LdrGetProcedureAddressForCaller(
-        DllHandle: PVOID,
-        ProcedureName: PANSI_STRING,
-        ProcedureNumber: ULONG,
-        ProcedureAddress: *mut PVOID,
-        Flags: ULONG,
-        Callback: *mut PVOID,
+        DllHandle: *mut c_void,
+        ProcedureName: *mut STRING,
+        ProcedureNumber: c_ulong,
+        ProcedureAddress: *mut *mut c_void,
+        Flags: c_ulong,
+        Callback: *mut *mut c_void,
     ) -> NTSTATUS;
 }}
-pub const LDR_LOCK_LOADER_LOCK_FLAG_RAISE_ON_ERRORS: ULONG = 0x00000001;
-pub const LDR_LOCK_LOADER_LOCK_FLAG_TRY_ONLY: ULONG = 0x00000002;
-pub const LDR_LOCK_LOADER_LOCK_DISPOSITION_INVALID: ULONG = 0;
-pub const LDR_LOCK_LOADER_LOCK_DISPOSITION_LOCK_ACQUIRED: ULONG = 1;
-pub const LDR_LOCK_LOADER_LOCK_DISPOSITION_LOCK_NOT_ACQUIRED: ULONG = 2;
-EXTERN!{extern "system" {
+pub const LDR_LOCK_LOADER_LOCK_FLAG_RAISE_ON_ERRORS: c_ulong = 0x00000001;
+pub const LDR_LOCK_LOADER_LOCK_FLAG_TRY_ONLY: c_ulong = 0x00000002;
+pub const LDR_LOCK_LOADER_LOCK_DISPOSITION_INVALID: c_ulong = 0;
+pub const LDR_LOCK_LOADER_LOCK_DISPOSITION_LOCK_ACQUIRED: c_ulong = 1;
+pub const LDR_LOCK_LOADER_LOCK_DISPOSITION_LOCK_NOT_ACQUIRED: c_ulong = 2;
+EXTERN! {extern "system" {
     fn LdrLockLoaderLock(
-        Flags: ULONG,
-        Disposition: *mut ULONG,
-        Cookie: *mut PVOID,
+        Flags: c_ulong,
+        Disposition: *mut c_ulong,
+        Cookie: *mut *mut c_void,
     ) -> NTSTATUS;
 }}
-pub const LDR_UNLOCK_LOADER_LOCK_FLAG_RAISE_ON_ERRORS: ULONG = 0x00000001;
-EXTERN!{extern "system" {
+pub const LDR_UNLOCK_LOADER_LOCK_FLAG_RAISE_ON_ERRORS: c_ulong = 0x00000001;
+EXTERN! {extern "system" {
     fn LdrUnlockLoaderLock(
-        Flags: ULONG,
-        Cookie: PVOID,
+        Flags: c_ulong,
+        Cookie: *mut c_void,
     ) -> NTSTATUS;
     fn LdrRelocateImage(
-        NewBase: PVOID,
-        LoaderName: PSTR,
+        NewBase: *mut c_void,
+        LoaderName: *mut c_char,
         Success: NTSTATUS,
         Conflict: NTSTATUS,
         Invalid: NTSTATUS,
     ) -> NTSTATUS;
     fn LdrRelocateImageWithBias(
-        NewBase: PVOID,
-        Bias: LONGLONG,
-        LoaderName: PSTR,
+        NewBase: *mut c_void,
+        Bias: __int64,
+        LoaderName: *mut c_char,
         Success: NTSTATUS,
         Conflict: NTSTATUS,
         Invalid: NTSTATUS,
     ) -> NTSTATUS;
     fn LdrProcessRelocationBlock(
-        VA: ULONG_PTR,
-        SizeOfBlock: ULONG,
-        NextOffset: PUSHORT,
-        Diff: LONG_PTR,
-    ) -> PIMAGE_BASE_RELOCATION;
+        VA: usize,
+        SizeOfBlock: c_ulong,
+        NextOffset: *mut c_ushort,
+        Diff: isize,
+    ) -> *mut IMAGE_BASE_RELOCATION;
     fn LdrVerifyMappedImageMatchesChecksum(
-        BaseAddress: PVOID,
-        NumberOfBytes: SIZE_T,
-        FileLength: ULONG,
-    ) -> BOOLEAN;
+        BaseAddress: *mut c_void,
+        NumberOfBytes: usize,
+        FileLength: c_ulong,
+    ) -> c_uchar;
 }}
-FN!{stdcall PLDR_IMPORT_MODULE_CALLBACK(
-    Parameter: PVOID,
-    ModuleName: PSTR,
+FN! {stdcall PLDR_IMPORT_MODULE_CALLBACK(
+    Parameter: *mut c_void,
+    ModuleName: *mut c_char,
 ) -> ()}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn LdrVerifyImageMatchesChecksum(
         ImageFileHandle: HANDLE,
         ImportCallbackRoutine: PLDR_IMPORT_MODULE_CALLBACK,
-        ImportCallbackParameter: PVOID,
-        ImageCharacteristics: PUSHORT,
+        ImportCallbackParameter: *mut c_void,
+        ImageCharacteristics: *mut c_ushort,
     ) -> NTSTATUS;
 }}
-STRUCT!{struct LDR_IMPORT_CALLBACK_INFO {
+STRUCT! {struct LDR_IMPORT_CALLBACK_INFO {
     ImportCallbackRoutine: PLDR_IMPORT_MODULE_CALLBACK,
-    ImportCallbackParameter: PVOID,
+    ImportCallbackParameter: *mut c_void,
 }}
 pub type PLDR_IMPORT_CALLBACK_INFO = *mut LDR_IMPORT_CALLBACK_INFO;
-STRUCT!{struct LDR_SECTION_INFO {
+STRUCT! {struct LDR_SECTION_INFO {
     SectionHandle: HANDLE,
-    DesiredAccess: ACCESS_MASK,
-    ObjA: POBJECT_ATTRIBUTES,
-    SectionPageProtection: ULONG,
-    AllocationAttributes: ULONG,
+    DesiredAccess: c_ulong,
+    ObjA: *mut OBJECT_ATTRIBUTES,
+    SectionPageProtection: c_ulong,
+    AllocationAttributes: c_ulong,
 }}
 pub type PLDR_SECTION_INFO = *mut LDR_SECTION_INFO;
-STRUCT!{struct LDR_VERIFY_IMAGE_INFO {
-    Size: ULONG,
-    Flags: ULONG,
+STRUCT! {struct LDR_VERIFY_IMAGE_INFO {
+    Size: c_ulong,
+    Flags: c_ulong,
     CallbackInfo: LDR_IMPORT_CALLBACK_INFO,
     SectionInfo: LDR_SECTION_INFO,
-    ImageCharacteristics: USHORT,
+    ImageCharacteristics: c_ushort,
 }}
 pub type PLDR_VERIFY_IMAGE_INFO = *mut LDR_VERIFY_IMAGE_INFO;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn LdrVerifyImageMatchesChecksumEx(
         ImageFileHandle: HANDLE,
         VerifyInfo: PLDR_VERIFY_IMAGE_INFO,
     ) -> NTSTATUS;
     fn LdrQueryModuleServiceTags(
-        DllHandle: PVOID,
-        ServiceTagBuffer: PULONG,
-        BufferSize: PULONG,
+        DllHandle: *mut c_void,
+        ServiceTagBuffer: *mut c_ulong,
+        BufferSize: *mut c_ulong,
     ) -> NTSTATUS;
 }}
-pub const LDR_DLL_NOTIFICATION_REASON_LOADED: ULONG = 1;
-pub const LDR_DLL_NOTIFICATION_REASON_UNLOADED: ULONG = 2;
-STRUCT!{struct LDR_DLL_LOADED_NOTIFICATION_DATA {
-    Flags: ULONG,
-    FullDllName: PUNICODE_STRING,
-    BaseDllName: PUNICODE_STRING,
-    DllBase: PVOID,
-    SizeOfImage: ULONG,
+pub const LDR_DLL_NOTIFICATION_REASON_LOADED: c_ulong = 1;
+pub const LDR_DLL_NOTIFICATION_REASON_UNLOADED: c_ulong = 2;
+STRUCT! {struct LDR_DLL_LOADED_NOTIFICATION_DATA {
+    Flags: c_ulong,
+    FullDllName: *mut UNICODE_STRING,
+    BaseDllName: *mut UNICODE_STRING,
+    DllBase: *mut c_void,
+    SizeOfImage: c_ulong,
 }}
-pub type PLDR_DLL_LOADED_NOTIFICATION_DATA = *mut LDR_DLL_LOADED_NOTIFICATION_DATA;
-STRUCT!{struct LDR_DLL_UNLOADED_NOTIFICATION_DATA {
-    Flags: ULONG,
-    FullDllName: PCUNICODE_STRING,
-    BaseDllName: PCUNICODE_STRING,
-    DllBase: PVOID,
-    SizeOfImage: ULONG,
+pub type PLDR_DLL_LOADED_NOTIFICATION_DATA =
+    *mut LDR_DLL_LOADED_NOTIFICATION_DATA;
+STRUCT! {struct LDR_DLL_UNLOADED_NOTIFICATION_DATA {
+    Flags: c_ulong,
+    FullDllName: *const UNICODE_STRING,
+    BaseDllName: *const UNICODE_STRING,
+    DllBase: *mut c_void,
+    SizeOfImage: c_ulong,
 }}
-pub type PLDR_DLL_UNLOADED_NOTIFICATION_DATA = *mut LDR_DLL_UNLOADED_NOTIFICATION_DATA;
-UNION!{union LDR_DLL_NOTIFICATION_DATA {
+pub type PLDR_DLL_UNLOADED_NOTIFICATION_DATA =
+    *mut LDR_DLL_UNLOADED_NOTIFICATION_DATA;
+UNION! {union LDR_DLL_NOTIFICATION_DATA {
     Loaded: LDR_DLL_LOADED_NOTIFICATION_DATA,
     Unloaded: LDR_DLL_UNLOADED_NOTIFICATION_DATA,
 }}
 pub type PLDR_DLL_NOTIFICATION_DATA = *mut LDR_DLL_NOTIFICATION_DATA;
-FN!{stdcall PLDR_DLL_NOTIFICATION_FUNCTION(
-    NotificationReason: ULONG,
+FN! {stdcall PLDR_DLL_NOTIFICATION_FUNCTION(
+    NotificationReason: c_ulong,
     NotificationData: PLDR_DLL_NOTIFICATION_DATA,
-    Context: PVOID,
+    Context: *mut c_void,
 ) -> ()}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn LdrRegisterDllNotification(
-        Flags: ULONG,
+        Flags: c_ulong,
         NotificationFunction: PLDR_DLL_NOTIFICATION_FUNCTION,
-        Context: PVOID,
-        Cookie: *mut PVOID,
+        Context: *mut c_void,
+        Cookie: *mut *mut c_void,
     ) -> NTSTATUS;
     fn LdrUnregisterDllNotification(
-        Cookie: PVOID,
+        Cookie: *mut c_void,
     ) -> NTSTATUS;
 }}
-STRUCT!{struct PS_MITIGATION_OPTIONS_MAP {
-    Map: [ULONG_PTR; 2],
+STRUCT! {struct PS_MITIGATION_OPTIONS_MAP {
+    Map: [usize; 2],
 }}
 pub type PPS_MITIGATION_OPTIONS_MAP = *mut PS_MITIGATION_OPTIONS_MAP;
-STRUCT!{struct PS_MITIGATION_AUDIT_OPTIONS_MAP {
-    Map: [ULONG_PTR; 2],
+STRUCT! {struct PS_MITIGATION_AUDIT_OPTIONS_MAP {
+    Map: [usize; 2],
 }}
-pub type PPS_MITIGATION_AUDIT_OPTIONS_MAP = *mut PS_MITIGATION_AUDIT_OPTIONS_MAP;
-STRUCT!{struct PS_SYSTEM_DLL_INIT_BLOCK {
-    Size: ULONG,
-    SystemDllWowRelocation: ULONG_PTR,
-    SystemDllNativeRelocation: ULONG_PTR,
-    Wow64SharedInformation: [ULONG_PTR; 16],
-    RngData: ULONG,
-    Flags: ULONG,
+pub type PPS_MITIGATION_AUDIT_OPTIONS_MAP =
+    *mut PS_MITIGATION_AUDIT_OPTIONS_MAP;
+STRUCT! {struct PS_SYSTEM_DLL_INIT_BLOCK {
+    Size: c_ulong,
+    SystemDllWowRelocation: usize,
+    SystemDllNativeRelocation: usize,
+    Wow64SharedInformation: [usize; 16],
+    RngData: c_ulong,
+    Flags: c_ulong,
     MitigationOptionsMap: PS_MITIGATION_OPTIONS_MAP,
-    CfgBitMap: ULONG_PTR,
-    CfgBitMapSize: ULONG_PTR,
-    Wow64CfgBitMap: ULONG_PTR,
-    Wow64CfgBitMapSize: ULONG_PTR,
+    CfgBitMap: usize,
+    CfgBitMapSize: usize,
+    Wow64CfgBitMap: usize,
+    Wow64CfgBitMapSize: usize,
     MitigationAuditOptionsMap: PS_MITIGATION_AUDIT_OPTIONS_MAP,
 }}
-BITFIELD!{PS_SYSTEM_DLL_INIT_BLOCK Flags: ULONG [
+BITFIELD! {PS_SYSTEM_DLL_INIT_BLOCK Flags: c_ulong [
     CfgOverride set_CfgOverride[0..1],
     Reserved set_Reserved[1..32],
 ]}
 pub type PPS_SYSTEM_DLL_INIT_BLOCK = *mut PS_SYSTEM_DLL_INIT_BLOCK;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn LdrSystemDllInitBlock() -> PPS_SYSTEM_DLL_INIT_BLOCK;
     fn LdrAddLoadAsDataTable(
-        Module: PVOID,
-        FilePath: PWSTR,
-        Size: SIZE_T,
+        Module: *mut c_void,
+        FilePath: *mut wchar_t,
+        Size: usize,
         Handle: HANDLE,
     ) -> NTSTATUS;
     fn LdrRemoveLoadAsDataTable(
-        InitModule: PVOID,
-        BaseModule: *mut PVOID,
-        Size: PSIZE_T,
-        Flags: ULONG,
+        InitModule: *mut c_void,
+        BaseModule: *mut *mut c_void,
+        Size: *mut usize,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn LdrGetFileNameFromLoadAsDataTable(
-        Module: PVOID,
-        pFileNamePrt: *mut PVOID,
+        Module: *mut c_void,
+        pFileNamePrt: *mut *mut c_void,
     ) -> NTSTATUS;
     fn LdrDisableThreadCalloutsForDll(
-        DllImageBase: PVOID,
+        DllImageBase: *mut c_void,
     ) -> NTSTATUS;
     fn LdrAccessResource(
-        DllHandle: PVOID,
-        ResourceDataEntry: PIMAGE_RESOURCE_DATA_ENTRY,
-        ResourceBuffer: *mut PVOID,
-        ResourceLength: *mut ULONG,
+        DllHandle: *mut c_void,
+        ResourceDataEntry: *mut IMAGE_RESOURCE_DATA_ENTRY,
+        ResourceBuffer: *mut *mut c_void,
+        ResourceLength: *mut c_ulong,
     ) -> NTSTATUS;
 }}
-STRUCT!{struct LDR_RESOURCE_INFO {
-    Type: ULONG_PTR,
-    Name: ULONG_PTR,
-    Language: ULONG_PTR,
+STRUCT! {struct LDR_RESOURCE_INFO {
+    Type: usize,
+    Name: usize,
+    Language: usize,
 }}
 pub type PLDR_RESOURCE_INFO = *mut LDR_RESOURCE_INFO;
-pub const RESOURCE_TYPE_LEVEL: ULONG = 0;
-pub const RESOURCE_NAME_LEVEL: ULONG = 1;
-pub const RESOURCE_LANGUAGE_LEVEL: ULONG = 2;
-pub const RESOURCE_DATA_LEVEL: ULONG = 3;
-EXTERN!{extern "system" {
+pub const RESOURCE_TYPE_LEVEL: c_ulong = 0;
+pub const RESOURCE_NAME_LEVEL: c_ulong = 1;
+pub const RESOURCE_LANGUAGE_LEVEL: c_ulong = 2;
+pub const RESOURCE_DATA_LEVEL: c_ulong = 3;
+EXTERN! {extern "system" {
     fn LdrFindResource_U(
-        DllHandle: PVOID,
+        DllHandle: *mut c_void,
         ResourceInfo: PLDR_RESOURCE_INFO,
-        Level: ULONG,
-        ResourceDataEntry: *mut PIMAGE_RESOURCE_DATA_ENTRY,
+        Level: c_ulong,
+        ResourceDataEntry: *mut *mut IMAGE_RESOURCE_DATA_ENTRY,
     ) -> NTSTATUS;
     fn LdrFindResourceDirectory_U(
-        DllHandle: PVOID,
+        DllHandle: *mut c_void,
         ResourceInfo: PLDR_RESOURCE_INFO,
-        Level: ULONG,
-        ResourceDirectory: *mut PIMAGE_RESOURCE_DIRECTORY,
+        Level: c_ulong,
+        ResourceDirectory: *mut *mut IMAGE_RESOURCE_DIRECTORY,
     ) -> NTSTATUS;
 }}
-STRUCT!{struct LDR_ENUM_RESOURCE_ENTRY_Path_s {
-    Id: USHORT,
-    NameIsPresent: USHORT,
+STRUCT! {struct LDR_ENUM_RESOURCE_ENTRY_Path_s {
+    Id: c_ushort,
+    NameIsPresent: c_ushort,
 }}
-UNION!{union LDR_ENUM_RESOURCE_ENTRY_Path {
-    NameOrId: ULONG_PTR,
-    Name: PIMAGE_RESOURCE_DIRECTORY_STRING,
+UNION! {union LDR_ENUM_RESOURCE_ENTRY_Path {
+    NameOrId: usize,
+    Name: *mut IMAGE_RESOURCE_DIRECTORY_STRING,
     s: LDR_ENUM_RESOURCE_ENTRY_Path_s,
 }}
-STRUCT!{struct LDR_ENUM_RESOURCE_ENTRY {
+STRUCT! {struct LDR_ENUM_RESOURCE_ENTRY {
     Path: [LDR_ENUM_RESOURCE_ENTRY_Path; 3],
-    Data: PVOID,
-    Size: ULONG,
-    Reserved: ULONG,
+    Data: *mut c_void,
+    Size: c_ulong,
+    Reserved: c_ulong,
 }}
 pub type PLDR_ENUM_RESOURCE_ENTRY = *mut LDR_ENUM_RESOURCE_ENTRY;
 #[inline]
 pub unsafe fn NAME_FROM_RESOURCE_ENTRY(
-    RootDirectory: PIMAGE_RESOURCE_DIRECTORY,
+    RootDirectory: *mut IMAGE_RESOURCE_DIRECTORY,
     Entry: &IMAGE_RESOURCE_DIRECTORY_ENTRY,
 ) -> usize {
-    if Entry.u.s().NameIsString() != 0 {
-        return RootDirectory as usize + Entry.u.s().NameOffset() as usize;
+    // if Entry.u.s().NameIsString() != 0 {
+    //     return RootDirectory as usize + Entry.u.s().NameOffset() as usize;
+    // }
+    // *Entry.u.Id() as usize
+    if Entry.Anonymous1.Name == 0 {
+        Entry.Anonymous1.Id as usize
+    } else {
+        RootDirectory as usize + Entry.Anonymous2.OffsetToData as usize
     }
-    *Entry.u.Id() as usize
 }
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn LdrEnumResources(
-        DllHandle: PVOID,
+        DllHandle: *mut c_void,
         ResourceInfo: PLDR_RESOURCE_INFO,
-        Level: ULONG,
-        ResourceCount: *mut ULONG,
+        Level: c_ulong,
+        ResourceCount: *mut c_ulong,
         Resources: PLDR_ENUM_RESOURCE_ENTRY,
     ) -> NTSTATUS;
     fn LdrFindEntryForAddress(
-        DllHandle: PVOID,
+        DllHandle: *mut c_void,
         Entry: *mut PLDR_DATA_TABLE_ENTRY,
     ) -> NTSTATUS;
 }}
-STRUCT!{struct RTL_PROCESS_MODULE_INFORMATION {
+STRUCT! {struct RTL_PROCESS_MODULE_INFORMATION {
     Section: HANDLE,
-    MappedBase: PVOID,
-    ImageBase: PVOID,
-    ImageSize: ULONG,
-    Flags: ULONG,
-    LoadOrderIndex: USHORT,
-    InitOrderIndex: USHORT,
-    LoadCount: USHORT,
-    OffsetToFileName: USHORT,
-    FullPathName: [UCHAR; 256],
+    MappedBase: *mut c_void,
+    ImageBase: *mut c_void,
+    ImageSize: c_ulong,
+    Flags: c_ulong,
+    LoadOrderIndex: c_ushort,
+    InitOrderIndex: c_ushort,
+    LoadCount: c_ushort,
+    OffsetToFileName: c_ushort,
+    FullPathName: [c_uchar; 256],
 }}
 pub type PRTL_PROCESS_MODULE_INFORMATION = *mut RTL_PROCESS_MODULE_INFORMATION;
-STRUCT!{struct RTL_PROCESS_MODULES {
-    NumberOfModules: ULONG,
+STRUCT! {struct RTL_PROCESS_MODULES {
+    NumberOfModules: c_ulong,
     Modules: [RTL_PROCESS_MODULE_INFORMATION; 1],
 }}
 pub type PRTL_PROCESS_MODULES = *mut RTL_PROCESS_MODULES;
-STRUCT!{struct RTL_PROCESS_MODULE_INFORMATION_EX {
-    NextOffset: USHORT,
+STRUCT! {struct RTL_PROCESS_MODULE_INFORMATION_EX {
+    NextOffset: c_ushort,
     BaseInfo: RTL_PROCESS_MODULE_INFORMATION,
-    ImageChecksum: ULONG,
-    TimeDateStamp: ULONG,
-    DefaultBase: PVOID,
+    ImageChecksum: c_ulong,
+    TimeDateStamp: c_ulong,
+    DefaultBase: *mut c_void,
 }}
-pub type PRTL_PROCESS_MODULE_INFORMATION_EX = *mut RTL_PROCESS_MODULE_INFORMATION_EX;
-EXTERN!{extern "system" {
+pub type PRTL_PROCESS_MODULE_INFORMATION_EX =
+    *mut RTL_PROCESS_MODULE_INFORMATION_EX;
+EXTERN! {extern "system" {
     fn LdrQueryProcessModuleInformation(
         ModuleInformation: PRTL_PROCESS_MODULES,
-        Size: ULONG,
-        ReturnedSize: PULONG,
+        Size: c_ulong,
+        ReturnedSize: *mut c_ulong,
     ) -> NTSTATUS;
 }}
-FN!{stdcall PLDR_ENUM_CALLBACK(
+FN! {stdcall PLDR_ENUM_CALLBACK(
     ModuleInformation: PLDR_DATA_TABLE_ENTRY,
-    Parameter: PVOID,
-    Stop: *mut BOOLEAN,
+    Parameter: *mut c_void,
+    Stop: *mut c_uchar,
 ) -> ()}
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn LdrEnumerateLoadedModules(
-        ReservedFlag: BOOLEAN,
+        ReservedFlag: c_uchar,
         EnumProc: PLDR_ENUM_CALLBACK,
-        Context: PVOID,
+        Context: *mut c_void,
     ) -> NTSTATUS;
     fn LdrOpenImageFileOptionsKey(
-        SubKey: PUNICODE_STRING,
-        Wow64: BOOLEAN,
-        NewKeyHandle: PHANDLE,
+        SubKey: *mut UNICODE_STRING,
+        Wow64: c_uchar,
+        NewKeyHandle: *mut HANDLE,
     ) -> NTSTATUS;
     fn LdrQueryImageFileKeyOption(
         KeyHandle: HANDLE,
-        ValueName: PCWSTR,
-        Type: ULONG,
-        Buffer: PVOID,
-        BufferSize: ULONG,
-        ReturnedLength: PULONG,
+        ValueName: *const wchar_t,
+        Type: c_ulong,
+        Buffer: *mut c_void,
+        BufferSize: c_ulong,
+        ReturnedLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn LdrQueryImageFileExecutionOptions(
-        SubKey: PUNICODE_STRING,
-        ValueName: PCWSTR,
-        ValueSize: ULONG,
-        Buffer: PVOID,
-        BufferSize: ULONG,
-        ReturnedLength: PULONG,
+        SubKey: *mut UNICODE_STRING,
+        ValueName: *const wchar_t,
+        ValueSize: c_ulong,
+        Buffer: *mut c_void,
+        BufferSize: c_ulong,
+        ReturnedLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn LdrQueryImageFileExecutionOptionsEx(
-        SubKey: PUNICODE_STRING,
-        ValueName: PCWSTR,
-        Type: ULONG,
-        Buffer: PVOID,
-        BufferSize: ULONG,
-        ReturnedLength: PULONG,
-        Wow64: BOOLEAN,
+        SubKey: *mut UNICODE_STRING,
+        ValueName: *const wchar_t,
+        Type: c_ulong,
+        Buffer: *mut c_void,
+        BufferSize: c_ulong,
+        ReturnedLength: *mut c_ulong,
+        Wow64: c_uchar,
     ) -> NTSTATUS;
 }}
-UNION!{union DELAYLOAD_PROC_DESCRIPTOR_Description {
-    Name: PCSTR,
-    Ordinal: ULONG,
+UNION! {union DELAYLOAD_PROC_DESCRIPTOR_Description {
+    Name: *const c_char,
+    Ordinal: c_ulong,
 }}
-STRUCT!{struct DELAYLOAD_PROC_DESCRIPTOR {
-    ImportDescribedByName: ULONG,
+STRUCT! {struct DELAYLOAD_PROC_DESCRIPTOR {
+    ImportDescribedByName: c_ulong,
     Description: DELAYLOAD_PROC_DESCRIPTOR_Description,
 }}
 pub type PDELAYLOAD_PROC_DESCRIPTOR = *mut DELAYLOAD_PROC_DESCRIPTOR;
-STRUCT!{struct DELAYLOAD_INFO {
-    Size: ULONG,
-    DelayloadDescriptor: PCIMAGE_DELAYLOAD_DESCRIPTOR,
-    ThunkAddress: PIMAGE_THUNK_DATA,
-    TargetDllName: PCSTR,
+STRUCT! {struct DELAYLOAD_INFO {
+    Size: c_ulong,
+    DelayloadDescriptor: *const IMAGE_DELAYLOAD_DESCRIPTOR,
+    ThunkAddress: *mut IMAGE_THUNK_DATA64,
+    TargetDllName: *const c_char,
     TargetApiDescriptor: DELAYLOAD_PROC_DESCRIPTOR,
-    TargetModuleBase: PVOID,
-    Unused: PVOID,
-    LastError: ULONG,
+    TargetModuleBase: *mut c_void,
+    Unused: *mut c_void,
+    LastError: c_ulong,
 }}
 pub type PDELAYLOAD_INFO = *mut DELAYLOAD_INFO;
-FN!{stdcall PDELAYLOAD_FAILURE_DLL_CALLBACK(
-    NotificationReason: ULONG,
+FN! {stdcall PDELAYLOAD_FAILURE_DLL_CALLBACK(
+    NotificationReason: c_ulong,
     DelayloadInfo: PDELAYLOAD_INFO,
-) -> PVOID}
-FN!{stdcall PDELAYLOAD_FAILURE_SYSTEM_ROUTINE(
-    DllName: PCSTR,
-    ProcName: PCSTR,
-) -> PVOID}
-EXTERN!{extern "system" {
+) -> *mut c_void}
+FN! {stdcall PDELAYLOAD_FAILURE_SYSTEM_ROUTINE(
+    DllName: *const c_char,
+    ProcName: *const c_char,
+) -> *mut c_void}
+EXTERN! {extern "system" {
     fn LdrResolveDelayLoadedAPI(
-        ParentModuleBase: PVOID,
-        DelayloadDescriptor: PCIMAGE_DELAYLOAD_DESCRIPTOR,
+        ParentModuleBase: *mut c_void,
+        DelayloadDescriptor: *const IMAGE_DELAYLOAD_DESCRIPTOR,
         FailureDllHook: PDELAYLOAD_FAILURE_DLL_CALLBACK,
         FailureSystemHook: PDELAYLOAD_FAILURE_SYSTEM_ROUTINE,
-        ThunkAddress: PIMAGE_THUNK_DATA,
-        Flags: ULONG,
-    ) -> PVOID;
+        ThunkAddress: *mut IMAGE_THUNK_DATA64,
+        Flags: c_ulong,
+    ) -> *mut c_void;
     fn LdrResolveDelayLoadsFromDll(
-        ParentBase: PVOID,
-        TargetDllName: PCSTR,
-        Flags: ULONG,
+        ParentBase: *mut c_void,
+        TargetDllName: *const c_char,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn LdrSetDefaultDllDirectories(
-        DirectoryFlags: ULONG,
+        DirectoryFlags: c_ulong,
     ) -> NTSTATUS;
     fn LdrShutdownProcess() -> NTSTATUS;
     fn LdrShutdownThread() -> NTSTATUS;
     fn LdrSetImplicitPathOptions(
-        ImplicitPathOptions: ULONG,
+        ImplicitPathOptions: c_ulong,
     ) -> NTSTATUS;
-    fn LdrControlFlowGuardEnforced() -> BOOLEAN;
+    fn LdrControlFlowGuardEnforced() -> c_uchar;
 }}

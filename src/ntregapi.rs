@@ -1,16 +1,21 @@
-use crate::ntioapi::{PIO_APC_ROUTINE, PIO_STATUS_BLOCK};
-use winapi::shared::ntdef::{
-    BOOLEAN, HANDLE, LARGE_INTEGER, NTSTATUS, OBJECT_ATTRIBUTES, PHANDLE, POBJECT_ATTRIBUTES,
-    PULONG, PUNICODE_STRING, PVOID, UCHAR, ULONG, UNICODE_STRING, USHORT, WCHAR,
+use windows_sys::Win32::{
+    Foundation::{HANDLE, NTSTATUS, UNICODE_STRING},
+    System::WindowsProgramming::OBJECT_ATTRIBUTES,
 };
-use winapi::um::winnt::ACCESS_MASK;
-pub const REG_INIT_BOOT_SM: USHORT = 0x0000;
-pub const REG_INIT_BOOT_SETUP: USHORT = 0x0001;
-pub const REG_INIT_BOOT_ACCEPTED_BASE: USHORT = 0x0002;
-pub const REG_INIT_BOOT_ACCEPTED_MAX: USHORT = REG_INIT_BOOT_ACCEPTED_BASE;
+
+use crate::{
+    ctypes::{c_uchar, c_ulong, c_ushort, c_void, wchar_t},
+    ntioapi::{PIO_APC_ROUTINE, PIO_STATUS_BLOCK},
+    windows_local::shared::ntdef::LARGE_INTEGER,
+};
+
+pub const REG_INIT_BOOT_SM: c_ushort = 0x0000;
+pub const REG_INIT_BOOT_SETUP: c_ushort = 0x0001;
+pub const REG_INIT_BOOT_ACCEPTED_BASE: c_ushort = 0x0002;
+pub const REG_INIT_BOOT_ACCEPTED_MAX: c_ushort = REG_INIT_BOOT_ACCEPTED_BASE;
 pub const REG_MAX_KEY_VALUE_NAME_LENGTH: u32 = 32767;
 pub const REG_MAX_KEY_NAME_LENGTH: u32 = 512;
-ENUM!{enum KEY_INFORMATION_CLASS {
+ENUM! {enum KEY_INFORMATION_CLASS {
     KeyBasicInformation = 0,
     KeyNodeInformation = 1,
     KeyFullInformation = 2,
@@ -23,61 +28,61 @@ ENUM!{enum KEY_INFORMATION_CLASS {
     KeyLayerInformation = 9,
     MaxKeyInfoClass = 10,
 }}
-STRUCT!{struct KEY_BASIC_INFORMATION {
+STRUCT! {struct KEY_BASIC_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
-    TitleIndex: ULONG,
-    NameLength: ULONG,
-    Name: [WCHAR; 1],
+    TitleIndex: c_ulong,
+    NameLength: c_ulong,
+    Name: [wchar_t; 1],
 }}
 pub type PKEY_BASIC_INFORMATION = *mut KEY_BASIC_INFORMATION;
-STRUCT!{struct KEY_NODE_INFORMATION {
+STRUCT! {struct KEY_NODE_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
-    TitleIndex: ULONG,
-    ClassOffset: ULONG,
-    ClassLength: ULONG,
-    NameLength: ULONG,
-    Name: [WCHAR; 1],
+    TitleIndex: c_ulong,
+    ClassOffset: c_ulong,
+    ClassLength: c_ulong,
+    NameLength: c_ulong,
+    Name: [wchar_t; 1],
 }}
 pub type PKEY_NODE_INFORMATION = *mut KEY_NODE_INFORMATION;
-STRUCT!{struct KEY_FULL_INFORMATION {
+STRUCT! {struct KEY_FULL_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
-    TitleIndex: ULONG,
-    ClassOffset: ULONG,
-    ClassLength: ULONG,
-    SubKeys: ULONG,
-    MaxNameLen: ULONG,
-    MaxClassLen: ULONG,
-    Values: ULONG,
-    MaxValueNameLen: ULONG,
-    MaxValueDataLen: ULONG,
-    Class: [WCHAR; 1],
+    TitleIndex: c_ulong,
+    ClassOffset: c_ulong,
+    ClassLength: c_ulong,
+    SubKeys: c_ulong,
+    MaxNameLen: c_ulong,
+    MaxClassLen: c_ulong,
+    Values: c_ulong,
+    MaxValueNameLen: c_ulong,
+    MaxValueDataLen: c_ulong,
+    Class: [wchar_t; 1],
 }}
 pub type PKEY_FULL_INFORMATION = *mut KEY_FULL_INFORMATION;
-STRUCT!{struct KEY_NAME_INFORMATION {
-    NameLength: ULONG,
-    Name: [WCHAR; 1],
+STRUCT! {struct KEY_NAME_INFORMATION {
+    NameLength: c_ulong,
+    Name: [wchar_t; 1],
 }}
 pub type PKEY_NAME_INFORMATION = *mut KEY_NAME_INFORMATION;
-STRUCT!{struct KEY_CACHED_INFORMATION {
+STRUCT! {struct KEY_CACHED_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
-    TitleIndex: ULONG,
-    SubKeys: ULONG,
-    MaxNameLen: ULONG,
-    Values: ULONG,
-    MaxValueNameLen: ULONG,
-    MaxValueDataLen: ULONG,
-    NameLength: ULONG,
-    Name: [WCHAR; 1],
+    TitleIndex: c_ulong,
+    SubKeys: c_ulong,
+    MaxNameLen: c_ulong,
+    Values: c_ulong,
+    MaxValueNameLen: c_ulong,
+    MaxValueDataLen: c_ulong,
+    NameLength: c_ulong,
+    Name: [wchar_t; 1],
 }}
 pub type PKEY_CACHED_INFORMATION = *mut KEY_CACHED_INFORMATION;
-STRUCT!{struct KEY_FLAGS_INFORMATION {
-    UserFlags: ULONG,
+STRUCT! {struct KEY_FLAGS_INFORMATION {
+    UserFlags: c_ulong,
 }}
 pub type PKEY_FLAGS_INFORMATION = *mut KEY_FLAGS_INFORMATION;
-STRUCT!{struct KEY_VIRTUALIZATION_INFORMATION {
-    Bitfields: ULONG,
+STRUCT! {struct KEY_VIRTUALIZATION_INFORMATION {
+    Bitfields: c_ulong,
 }}
-BITFIELD!{KEY_VIRTUALIZATION_INFORMATION Bitfields: ULONG [
+BITFIELD! {KEY_VIRTUALIZATION_INFORMATION Bitfields: c_ulong [
     VirtualizationCandidate set_VirtualizationCandidate[0..1],
     VirtualizationEnabled set_VirtualizationEnabled[1..2],
     VirtualTarget set_VirtualTarget[2..3],
@@ -86,23 +91,23 @@ BITFIELD!{KEY_VIRTUALIZATION_INFORMATION Bitfields: ULONG [
     Reserved set_Reserved[5..32],
 ]}
 pub type PKEY_VIRTUALIZATION_INFORMATION = *mut KEY_VIRTUALIZATION_INFORMATION;
-STRUCT!{struct KEY_TRUST_INFORMATION {
-    Bitfields: ULONG,
+STRUCT! {struct KEY_TRUST_INFORMATION {
+    Bitfields: c_ulong,
 }}
-BITFIELD!{KEY_TRUST_INFORMATION Bitfields: ULONG [
+BITFIELD! {KEY_TRUST_INFORMATION Bitfields: c_ulong [
     TrustedKey set_TrustedKey[0..1],
     Reserved set_Reserved[1..32],
 ]}
 pub type PKEY_TRUST_INFORMATION = *mut KEY_TRUST_INFORMATION;
-STRUCT!{struct KEY_LAYER_INFORMATION {
-    IsTombstone: ULONG,
-    IsSupersedeLocal: ULONG,
-    IsSupersedeTree: ULONG,
-    ClassIsInherited: ULONG,
-    Reserved: ULONG,
+STRUCT! {struct KEY_LAYER_INFORMATION {
+    IsTombstone: c_ulong,
+    IsSupersedeLocal: c_ulong,
+    IsSupersedeTree: c_ulong,
+    ClassIsInherited: c_ulong,
+    Reserved: c_ulong,
 }}
 pub type PKEY_LAYER_INFORMATION = *mut KEY_LAYER_INFORMATION;
-ENUM!{enum KEY_SET_INFORMATION_CLASS {
+ENUM! {enum KEY_SET_INFORMATION_CLASS {
     KeyWriteTimeInformation = 0,
     KeyWow64FlagsInformation = 1,
     KeyControlFlagsInformation = 2,
@@ -112,22 +117,22 @@ ENUM!{enum KEY_SET_INFORMATION_CLASS {
     KeySetLayerInformation = 6,
     MaxKeySetInfoClass = 7,
 }}
-STRUCT!{struct KEY_WRITE_TIME_INFORMATION {
+STRUCT! {struct KEY_WRITE_TIME_INFORMATION {
     LastWriteTime: LARGE_INTEGER,
 }}
 pub type PKEY_WRITE_TIME_INFORMATION = *mut KEY_WRITE_TIME_INFORMATION;
-STRUCT!{struct KEY_WOW64_FLAGS_INFORMATION {
-    UserFlags: ULONG,
+STRUCT! {struct KEY_WOW64_FLAGS_INFORMATION {
+    UserFlags: c_ulong,
 }}
 pub type PKEY_WOW64_FLAGS_INFORMATION = *mut KEY_WOW64_FLAGS_INFORMATION;
-STRUCT!{struct KEY_HANDLE_TAGS_INFORMATION {
-    HandleTags: ULONG,
+STRUCT! {struct KEY_HANDLE_TAGS_INFORMATION {
+    HandleTags: c_ulong,
 }}
 pub type PKEY_HANDLE_TAGS_INFORMATION = *mut KEY_HANDLE_TAGS_INFORMATION;
-STRUCT!{struct KEY_SET_LAYER_INFORMATION {
-    Bitfields: ULONG,
+STRUCT! {struct KEY_SET_LAYER_INFORMATION {
+    Bitfields: c_ulong,
 }}
-BITFIELD!{KEY_SET_LAYER_INFORMATION Bitfields: ULONG [
+BITFIELD! {KEY_SET_LAYER_INFORMATION Bitfields: c_ulong [
     IsTombstone set_IsTombstone[0..1],
     IsSupersedeLocal set_IsSupersedeLocal[1..2],
     IsSupersedeTree set_IsSupersedeTree[2..3],
@@ -135,21 +140,22 @@ BITFIELD!{KEY_SET_LAYER_INFORMATION Bitfields: ULONG [
     Reserved set_Reserved[4..32],
 ]}
 pub type PKEY_SET_LAYER_INFORMATION = *mut KEY_SET_LAYER_INFORMATION;
-STRUCT!{struct KEY_CONTROL_FLAGS_INFORMATION {
-    ControlFlags: ULONG,
+STRUCT! {struct KEY_CONTROL_FLAGS_INFORMATION {
+    ControlFlags: c_ulong,
 }}
 pub type PKEY_CONTROL_FLAGS_INFORMATION = *mut KEY_CONTROL_FLAGS_INFORMATION;
-STRUCT!{struct KEY_SET_VIRTUALIZATION_INFORMATION {
-    HandleTags: ULONG,
+STRUCT! {struct KEY_SET_VIRTUALIZATION_INFORMATION {
+    HandleTags: c_ulong,
 }}
-BITFIELD!{KEY_SET_VIRTUALIZATION_INFORMATION HandleTags: ULONG [
+BITFIELD! {KEY_SET_VIRTUALIZATION_INFORMATION HandleTags: c_ulong [
     VirtualTarget set_VirtualTarget[0..1],
     VirtualStore set_VirtualStore[1..2],
     VirtualSource set_VirtualSource[2..3],
     Reserved set_Reserved[3..32],
 ]}
-pub type PKEY_SET_VIRTUALIZATION_INFORMATION = *mut KEY_SET_VIRTUALIZATION_INFORMATION;
-ENUM!{enum KEY_VALUE_INFORMATION_CLASS {
+pub type PKEY_SET_VIRTUALIZATION_INFORMATION =
+    *mut KEY_SET_VIRTUALIZATION_INFORMATION;
+ENUM! {enum KEY_VALUE_INFORMATION_CLASS {
     KeyValueBasicInformation = 0,
     KeyValueFullInformation = 1,
     KeyValuePartialInformation = 2,
@@ -158,111 +164,112 @@ ENUM!{enum KEY_VALUE_INFORMATION_CLASS {
     KeyValueLayerInformation = 5,
     MaxKeyValueInfoClass = 6,
 }}
-STRUCT!{struct KEY_VALUE_BASIC_INFORMATION {
-    TitleIndex: ULONG,
-    Type: ULONG,
-    NameLength: ULONG,
-    Name: [WCHAR; 1],
+STRUCT! {struct KEY_VALUE_BASIC_INFORMATION {
+    TitleIndex: c_ulong,
+    Type: c_ulong,
+    NameLength: c_ulong,
+    Name: [wchar_t; 1],
 }}
 pub type PKEY_VALUE_BASIC_INFORMATION = *mut KEY_VALUE_BASIC_INFORMATION;
-STRUCT!{struct KEY_VALUE_FULL_INFORMATION {
-    TitleIndex: ULONG,
-    Type: ULONG,
-    DataOffset: ULONG,
-    DataLength: ULONG,
-    NameLength: ULONG,
-    Name: [WCHAR; 1],
+STRUCT! {struct KEY_VALUE_FULL_INFORMATION {
+    TitleIndex: c_ulong,
+    Type: c_ulong,
+    DataOffset: c_ulong,
+    DataLength: c_ulong,
+    NameLength: c_ulong,
+    Name: [wchar_t; 1],
 }}
 pub type PKEY_VALUE_FULL_INFORMATION = *mut KEY_VALUE_FULL_INFORMATION;
-STRUCT!{struct KEY_VALUE_PARTIAL_INFORMATION {
-    TitleIndex: ULONG,
-    Type: ULONG,
-    DataLength: ULONG,
-    Data: [UCHAR; 1],
+STRUCT! {struct KEY_VALUE_PARTIAL_INFORMATION {
+    TitleIndex: c_ulong,
+    Type: c_ulong,
+    DataLength: c_ulong,
+    Data: [c_uchar; 1],
 }}
 pub type PKEY_VALUE_PARTIAL_INFORMATION = *mut KEY_VALUE_PARTIAL_INFORMATION;
-STRUCT!{struct KEY_VALUE_PARTIAL_INFORMATION_ALIGN64 {
-    Type: ULONG,
-    DataLength: ULONG,
-    Data: [UCHAR; 1],
+STRUCT! {struct KEY_VALUE_PARTIAL_INFORMATION_ALIGN64 {
+    Type: c_ulong,
+    DataLength: c_ulong,
+    Data: [c_uchar; 1],
 }}
-pub type PKEY_VALUE_PARTIAL_INFORMATION_ALIGN64 = *mut KEY_VALUE_PARTIAL_INFORMATION_ALIGN64;
-STRUCT!{struct KEY_VALUE_LAYER_INFORMATION {
-    IsTombstone: ULONG,
-    Reserved: ULONG,
+pub type PKEY_VALUE_PARTIAL_INFORMATION_ALIGN64 =
+    *mut KEY_VALUE_PARTIAL_INFORMATION_ALIGN64;
+STRUCT! {struct KEY_VALUE_LAYER_INFORMATION {
+    IsTombstone: c_ulong,
+    Reserved: c_ulong,
 }}
 pub type PKEY_VALUE_LAYER_INFORMATION = *mut KEY_VALUE_LAYER_INFORMATION;
-STRUCT!{struct KEY_VALUE_ENTRY {
-    ValueName: PUNICODE_STRING,
-    DataLength: ULONG,
-    DataOffset: ULONG,
-    Type: ULONG,
+STRUCT! {struct KEY_VALUE_ENTRY {
+    ValueName: *mut UNICODE_STRING,
+    DataLength: c_ulong,
+    DataOffset: c_ulong,
+    Type: c_ulong,
 }}
 pub type PKEY_VALUE_ENTRY = *mut KEY_VALUE_ENTRY;
-ENUM!{enum REG_ACTION {
+ENUM! {enum REG_ACTION {
     KeyAdded = 0,
     KeyRemoved = 1,
     KeyModified = 2,
 }}
-STRUCT!{struct REG_NOTIFY_INFORMATION {
-    NextEntryOffset: ULONG,
+STRUCT! {struct REG_NOTIFY_INFORMATION {
+    NextEntryOffset: c_ulong,
     Action: REG_ACTION,
-    KeyLength: ULONG,
-    Key: [WCHAR; 1],
+    KeyLength: c_ulong,
+    Key: [wchar_t; 1],
 }}
 pub type PREG_NOTIFY_INFORMATION = *mut REG_NOTIFY_INFORMATION;
-STRUCT!{struct KEY_PID_ARRAY {
+STRUCT! {struct KEY_PID_ARRAY {
     PID: HANDLE,
     KeyName: UNICODE_STRING,
 }}
 pub type PKEY_PID_ARRAY = *mut KEY_PID_ARRAY;
-STRUCT!{struct KEY_OPEN_SUBKEYS_INFORMATION {
-    Count: ULONG,
+STRUCT! {struct KEY_OPEN_SUBKEYS_INFORMATION {
+    Count: c_ulong,
     KeyArray: [KEY_PID_ARRAY; 1],
 }}
 pub type PKEY_OPEN_SUBKEYS_INFORMATION = *mut KEY_OPEN_SUBKEYS_INFORMATION;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtCreateKey(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        TitleIndex: ULONG,
-        Class: PUNICODE_STRING,
-        CreateOptions: ULONG,
-        Disposition: PULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        TitleIndex: c_ulong,
+        Class: *mut UNICODE_STRING,
+        CreateOptions: c_ulong,
+        Disposition: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtCreateKeyTransacted(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        TitleIndex: ULONG,
-        Class: PUNICODE_STRING,
-        CreateOptions: ULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        TitleIndex: c_ulong,
+        Class: *mut UNICODE_STRING,
+        CreateOptions: c_ulong,
         TransactionHandle: HANDLE,
-        Disposition: PULONG,
+        Disposition: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtOpenKey(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn NtOpenKeyTransacted(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
         TransactionHandle: HANDLE,
     ) -> NTSTATUS;
     fn NtOpenKeyEx(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        OpenOptions: ULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        OpenOptions: c_ulong,
     ) -> NTSTATUS;
     fn NtOpenKeyTransactedEx(
-        KeyHandle: PHANDLE,
-        DesiredAccess: ACCESS_MASK,
-        ObjectAttributes: POBJECT_ATTRIBUTES,
-        OpenOptions: ULONG,
+        KeyHandle: *mut HANDLE,
+        DesiredAccess: c_ulong,
+        ObjectAttributes: *mut OBJECT_ATTRIBUTES,
+        OpenOptions: c_ulong,
         TransactionHandle: HANDLE,
     ) -> NTSTATUS;
     fn NtDeleteKey(
@@ -270,98 +277,98 @@ EXTERN!{extern "system" {
     ) -> NTSTATUS;
     fn NtRenameKey(
         KeyHandle: HANDLE,
-        NewName: PUNICODE_STRING,
+        NewName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn NtDeleteValueKey(
         KeyHandle: HANDLE,
-        ValueName: PUNICODE_STRING,
+        ValueName: *mut UNICODE_STRING,
     ) -> NTSTATUS;
     fn NtQueryKey(
         KeyHandle: HANDLE,
         KeyInformationClass: KEY_INFORMATION_CLASS,
-        KeyInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtSetInformationKey(
         KeyHandle: HANDLE,
         KeySetInformationClass: KEY_SET_INFORMATION_CLASS,
-        KeySetInformation: PVOID,
-        KeySetInformationLength: ULONG,
+        KeySetInformation: *mut c_void,
+        KeySetInformationLength: c_ulong,
     ) -> NTSTATUS;
     fn NtQueryValueKey(
         KeyHandle: HANDLE,
-        ValueName: PUNICODE_STRING,
+        ValueName: *mut UNICODE_STRING,
         KeyValueInformationClass: KEY_VALUE_INFORMATION_CLASS,
-        KeyValueInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyValueInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtSetValueKey(
         KeyHandle: HANDLE,
-        ValueName: PUNICODE_STRING,
-        TitleIndex: ULONG,
-        Type: ULONG,
-        Data: PVOID,
-        DataSize: ULONG,
+        ValueName: *mut UNICODE_STRING,
+        TitleIndex: c_ulong,
+        Type: c_ulong,
+        Data: *mut c_void,
+        DataSize: c_ulong,
     ) -> NTSTATUS;
     fn NtQueryMultipleValueKey(
         KeyHandle: HANDLE,
         ValueEntries: PKEY_VALUE_ENTRY,
-        EntryCount: ULONG,
-        ValueBuffer: PVOID,
-        BufferLength: PULONG,
-        RequiredBufferLength: PULONG,
+        EntryCount: c_ulong,
+        ValueBuffer: *mut c_void,
+        BufferLength: *mut c_ulong,
+        RequiredBufferLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtEnumerateKey(
         KeyHandle: HANDLE,
-        Index: ULONG,
+        Index: c_ulong,
         KeyInformationClass: KEY_INFORMATION_CLASS,
-        KeyInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtEnumerateValueKey(
         KeyHandle: HANDLE,
-        Index: ULONG,
+        Index: c_ulong,
         KeyValueInformationClass: KEY_VALUE_INFORMATION_CLASS,
-        KeyValueInformation: PVOID,
-        Length: ULONG,
-        ResultLength: PULONG,
+        KeyValueInformation: *mut c_void,
+        Length: c_ulong,
+        ResultLength: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtFlushKey(
         KeyHandle: HANDLE,
     ) -> NTSTATUS;
     fn NtCompactKeys(
-        Count: ULONG,
+        Count: c_ulong,
         KeyArray: *mut HANDLE,
     ) -> NTSTATUS;
     fn NtCompressKey(
         Key: HANDLE,
     ) -> NTSTATUS;
     fn NtLoadKey(
-        TargetKey: POBJECT_ATTRIBUTES,
-        SourceFile: POBJECT_ATTRIBUTES,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        SourceFile: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn NtLoadKey2(
-        TargetKey: POBJECT_ATTRIBUTES,
-        SourceFile: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        SourceFile: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn NtLoadKeyEx(
-        TargetKey: POBJECT_ATTRIBUTES,
-        SourceFile: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        SourceFile: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
         TrustClassKey: HANDLE,
         Event: HANDLE,
-        DesiredAccess: ACCESS_MASK,
-        RootHandle: PHANDLE,
+        DesiredAccess: c_ulong,
+        RootHandle: *mut HANDLE,
         IoStatus: PIO_STATUS_BLOCK,
     ) -> NTSTATUS;
     fn NtReplaceKey(
-        NewFile: POBJECT_ATTRIBUTES,
+        NewFile: *mut OBJECT_ATTRIBUTES,
         TargetHandle: HANDLE,
-        OldFile: POBJECT_ATTRIBUTES,
+        OldFile: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
     fn NtSaveKey(
         KeyHandle: HANDLE,
@@ -370,7 +377,7 @@ EXTERN!{extern "system" {
     fn NtSaveKeyEx(
         KeyHandle: HANDLE,
         FileHandle: HANDLE,
-        Format: ULONG,
+        Format: c_ulong,
     ) -> NTSTATUS;
     fn NtSaveMergedKeys(
         HighPrecedenceKeyHandle: HANDLE,
@@ -380,71 +387,71 @@ EXTERN!{extern "system" {
     fn NtRestoreKey(
         KeyHandle: HANDLE,
         FileHandle: HANDLE,
-        Flags: ULONG,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn NtUnloadKey(
-        TargetKey: POBJECT_ATTRIBUTES,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
     ) -> NTSTATUS;
 }}
-pub const REG_FORCE_UNLOAD: ULONG = 1;
-pub const REG_UNLOAD_LEGAL_FLAGS: ULONG = REG_FORCE_UNLOAD;
-EXTERN!{extern "system" {
+pub const REG_FORCE_UNLOAD: c_ulong = 1;
+pub const REG_UNLOAD_LEGAL_FLAGS: c_ulong = REG_FORCE_UNLOAD;
+EXTERN! {extern "system" {
     fn NtUnloadKey2(
-        TargetKey: POBJECT_ATTRIBUTES,
-        Flags: ULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        Flags: c_ulong,
     ) -> NTSTATUS;
     fn NtUnloadKeyEx(
-        TargetKey: POBJECT_ATTRIBUTES,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
         Event: HANDLE,
     ) -> NTSTATUS;
     fn NtNotifyChangeKey(
         KeyHandle: HANDLE,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        CompletionFilter: ULONG,
-        WatchTree: BOOLEAN,
-        Buffer: PVOID,
-        BufferSize: ULONG,
-        Asynchronous: BOOLEAN,
+        CompletionFilter: c_ulong,
+        WatchTree: c_uchar,
+        Buffer: *mut c_void,
+        BufferSize: c_ulong,
+        Asynchronous: c_uchar,
     ) -> NTSTATUS;
     fn NtNotifyChangeMultipleKeys(
         MasterKeyHandle: HANDLE,
-        Count: ULONG,
+        Count: c_ulong,
         SubordinateObjects: *mut OBJECT_ATTRIBUTES,
         Event: HANDLE,
         ApcRoutine: PIO_APC_ROUTINE,
-        ApcContext: PVOID,
+        ApcContext: *mut c_void,
         IoStatusBlock: PIO_STATUS_BLOCK,
-        CompletionFilter: ULONG,
-        WatchTree: BOOLEAN,
-        Buffer: PVOID,
-        BufferSize: ULONG,
-        Asynchronous: BOOLEAN,
+        CompletionFilter: c_ulong,
+        WatchTree: c_uchar,
+        Buffer: *mut c_void,
+        BufferSize: c_ulong,
+        Asynchronous: c_uchar,
     ) -> NTSTATUS;
     fn NtQueryOpenSubKeys(
-        TargetKey: POBJECT_ATTRIBUTES,
-        HandleCount: PULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        HandleCount: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtQueryOpenSubKeysEx(
-        TargetKey: POBJECT_ATTRIBUTES,
-        BufferLength: ULONG,
-        Buffer: PVOID,
-        RequiredSize: PULONG,
+        TargetKey: *mut OBJECT_ATTRIBUTES,
+        BufferLength: c_ulong,
+        Buffer: *mut c_void,
+        RequiredSize: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtInitializeRegistry(
-        BootCondition: USHORT,
+        BootCondition: c_ushort,
     ) -> NTSTATUS;
     fn NtLockRegistryKey(
         KeyHandle: HANDLE,
     ) -> NTSTATUS;
     fn NtLockProductActivationKeys(
-        pPrivateVer: *mut ULONG,
-        pSafeMode: *mut ULONG,
+        pPrivateVer: *mut c_ulong,
+        pSafeMode: *mut c_ulong,
     ) -> NTSTATUS;
     fn NtFreezeRegistry(
-        TimeOutInSeconds: ULONG,
+        TimeOutInSeconds: c_ulong,
     ) -> NTSTATUS;
     fn NtThawRegistry() -> NTSTATUS;
 }}

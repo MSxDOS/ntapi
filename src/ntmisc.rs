@@ -1,8 +1,13 @@
-use winapi::shared::ntdef::{HANDLE, NTSTATUS, PULONG, PVOID, ULONG};
-use winapi::um::winnt::STANDARD_RIGHTS_ALL;
+use windows_sys::Win32::{
+    Foundation::{HANDLE, NTSTATUS},
+    Storage::FileSystem::STANDARD_RIGHTS_ALL,
+};
+
+use crate::ctypes::{c_ulong, c_void};
+
 pub const FLT_PORT_CONNECT: u32 = 0x0001;
 pub const FLT_PORT_ALL_ACCESS: u32 = FLT_PORT_CONNECT | STANDARD_RIGHTS_ALL;
-ENUM!{enum VDMSERVICECLASS {
+ENUM! {enum VDMSERVICECLASS {
     VdmStartExecution = 0,
     VdmQueueInterrupt = 1,
     VdmDelayInterrupt = 2,
@@ -20,23 +25,23 @@ ENUM!{enum VDMSERVICECLASS {
     VdmQueryVdmProcess = 14,
 }}
 pub type PVDMSERVICECLASS = *mut VDMSERVICECLASS;
-EXTERN!{extern "system" {
+EXTERN! {extern "system" {
     fn NtVdmControl(
         Service: VDMSERVICECLASS,
-        ServiceData: PVOID,
+        ServiceData: *mut c_void,
     ) -> NTSTATUS;
     fn NtTraceEvent(
         TraceHandle: HANDLE,
-        Flags: ULONG,
-        FieldSize: ULONG,
-        Fields: PVOID,
+        Flags: c_ulong,
+        FieldSize: c_ulong,
+        Fields: *mut c_void,
     ) -> NTSTATUS;
     fn NtTraceControl(
-        FunctionCode: ULONG,
-        InBuffer: PVOID,
-        InBufferLen: ULONG,
-        OutBuffer: PVOID,
-        OutBufferLen: ULONG,
-        ReturnLength: PULONG,
+        FunctionCode: c_ulong,
+        InBuffer: *mut c_void,
+        InBufferLen: c_ulong,
+        OutBuffer: *mut c_void,
+        OutBufferLen: c_ulong,
+        ReturnLength: *mut c_ulong,
     ) -> NTSTATUS;
 }}

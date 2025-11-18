@@ -129,8 +129,14 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_DPC_BEHAVIOR_INFORMATION>(), 4);
     assert_eq!(size_of::<SYSTEM_QUERY_TIME_ADJUST_INFORMATION>(), 12);
     assert_eq!(align_of::<SYSTEM_QUERY_TIME_ADJUST_INFORMATION>(), 4);
-    assert_eq!(size_of::<SYSTEM_QUERY_TIME_ADJUST_INFORMATION_PRECISE>(), 24);
-    assert_eq!(align_of::<SYSTEM_QUERY_TIME_ADJUST_INFORMATION_PRECISE>(), 8);
+    assert_eq!(
+        size_of::<SYSTEM_QUERY_TIME_ADJUST_INFORMATION_PRECISE>(),
+        24
+    );
+    assert_eq!(
+        align_of::<SYSTEM_QUERY_TIME_ADJUST_INFORMATION_PRECISE>(),
+        8
+    );
     assert_eq!(size_of::<SYSTEM_SET_TIME_ADJUST_INFORMATION>(), 8);
     assert_eq!(align_of::<SYSTEM_SET_TIME_ADJUST_INFORMATION>(), 4);
     assert_eq!(size_of::<SYSTEM_SET_TIME_ADJUST_INFORMATION_PRECISE>(), 16);
@@ -216,15 +222,24 @@ fn ntexapi() {
     assert_eq!(size_of::<SYSTEM_THREAD_CID_PRIORITY_INFORMATION>(), 24);
     assert_eq!(align_of::<SYSTEM_THREAD_CID_PRIORITY_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSTEM_PROCESSOR_IDLE_CYCLE_TIME_INFORMATION>(), 8);
-    assert_eq!(align_of::<SYSTEM_PROCESSOR_IDLE_CYCLE_TIME_INFORMATION>(), 8);
+    assert_eq!(
+        align_of::<SYSTEM_PROCESSOR_IDLE_CYCLE_TIME_INFORMATION>(),
+        8
+    );
     assert_eq!(size_of::<SYSTEM_REF_TRACE_INFORMATION>(), 40);
     assert_eq!(align_of::<SYSTEM_REF_TRACE_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSTEM_PROCESS_ID_INFORMATION>(), 24);
     assert_eq!(align_of::<SYSTEM_PROCESS_ID_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSTEM_BOOT_ENVIRONMENT_INFORMATION>(), 32);
     assert_eq!(align_of::<SYSTEM_BOOT_ENVIRONMENT_INFORMATION>(), 8);
-    assert_eq!(size_of::<SYSTEM_IMAGE_FILE_EXECUTION_OPTIONS_INFORMATION>(), 8);
-    assert_eq!(align_of::<SYSTEM_IMAGE_FILE_EXECUTION_OPTIONS_INFORMATION>(), 4);
+    assert_eq!(
+        size_of::<SYSTEM_IMAGE_FILE_EXECUTION_OPTIONS_INFORMATION>(),
+        8
+    );
+    assert_eq!(
+        align_of::<SYSTEM_IMAGE_FILE_EXECUTION_OPTIONS_INFORMATION>(),
+        4
+    );
     assert_eq!(size_of::<SYSTEM_VERIFIER_INFORMATION_EX>(), 40);
     assert_eq!(align_of::<SYSTEM_VERIFIER_INFORMATION_EX>(), 8);
     assert_eq!(size_of::<SYSTEM_SYSTEM_PARTITION_INFORMATION>(), 16);
@@ -235,8 +250,14 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_PROCESSOR_PERFORMANCE_HITCOUNT>(), 8);
     assert_eq!(size_of::<SYSTEM_PROCESSOR_PERFORMANCE_HITCOUNT_WIN8>(), 8);
     assert_eq!(align_of::<SYSTEM_PROCESSOR_PERFORMANCE_HITCOUNT_WIN8>(), 4);
-    assert_eq!(size_of::<SYSTEM_PROCESSOR_PERFORMANCE_STATE_DISTRIBUTION>(), 24);
-    assert_eq!(align_of::<SYSTEM_PROCESSOR_PERFORMANCE_STATE_DISTRIBUTION>(), 8);
+    assert_eq!(
+        size_of::<SYSTEM_PROCESSOR_PERFORMANCE_STATE_DISTRIBUTION>(),
+        24
+    );
+    assert_eq!(
+        align_of::<SYSTEM_PROCESSOR_PERFORMANCE_STATE_DISTRIBUTION>(),
+        8
+    );
     assert_eq!(size_of::<SYSTEM_PROCESSOR_PERFORMANCE_DISTRIBUTION>(), 8);
     assert_eq!(align_of::<SYSTEM_PROCESSOR_PERFORMANCE_DISTRIBUTION>(), 4);
     assert_eq!(size_of::<SYSTEM_CODEINTEGRITY_INFORMATION>(), 8);
@@ -259,8 +280,14 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_BASIC_PERFORMANCE_INFORMATION>(), 8);
     assert_eq!(size_of::<QUERY_PERFORMANCE_COUNTER_FLAGS>(), 4);
     assert_eq!(align_of::<QUERY_PERFORMANCE_COUNTER_FLAGS>(), 4);
-    assert_eq!(size_of::<SYSTEM_QUERY_PERFORMANCE_COUNTER_INFORMATION>(), 12);
-    assert_eq!(align_of::<SYSTEM_QUERY_PERFORMANCE_COUNTER_INFORMATION>(), 4);
+    assert_eq!(
+        size_of::<SYSTEM_QUERY_PERFORMANCE_COUNTER_INFORMATION>(),
+        12
+    );
+    assert_eq!(
+        align_of::<SYSTEM_QUERY_PERFORMANCE_COUNTER_INFORMATION>(),
+        4
+    );
     assert_eq!(size_of::<SYSTEM_BOOT_GRAPHICS_INFORMATION>(), 32);
     assert_eq!(align_of::<SYSTEM_BOOT_GRAPHICS_INFORMATION>(), 8);
     assert_eq!(size_of::<MEMORY_SCRUB_INFORMATION>(), 16);
@@ -281,8 +308,14 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_CONSOLE_INFORMATION>(), 4);
     assert_eq!(size_of::<SYSTEM_PLATFORM_BINARY_INFORMATION>(), 32);
     assert_eq!(align_of::<SYSTEM_PLATFORM_BINARY_INFORMATION>(), 8);
-    assert_eq!(size_of::<SYSTEM_HYPERVISOR_PROCESSOR_COUNT_INFORMATION>(), 8);
-    assert_eq!(align_of::<SYSTEM_HYPERVISOR_PROCESSOR_COUNT_INFORMATION>(), 4);
+    assert_eq!(
+        size_of::<SYSTEM_HYPERVISOR_PROCESSOR_COUNT_INFORMATION>(),
+        8
+    );
+    assert_eq!(
+        align_of::<SYSTEM_HYPERVISOR_PROCESSOR_COUNT_INFORMATION>(),
+        4
+    );
     assert_eq!(size_of::<SYSTEM_DEVICE_DATA_INFORMATION>(), 48);
     assert_eq!(align_of::<SYSTEM_DEVICE_DATA_INFORMATION>(), 8);
     assert_eq!(size_of::<PHYSICAL_CHANNEL_RUN>(), 32);
@@ -315,8 +348,14 @@ fn ntexapi() {
     assert_eq!(align_of::<PROCESS_EXTENDED_ENERGY_VALUES>(), 8);
     assert_eq!(size_of::<SYSTEM_PROCESS_INFORMATION_EXTENSION>(), 368);
     assert_eq!(align_of::<SYSTEM_PROCESS_INFORMATION_EXTENSION>(), 8);
-    assert_eq!(size_of::<SYSTEM_PORTABLE_WORKSPACE_EFI_LAUNCHER_INFORMATION>(), 1);
-    assert_eq!(align_of::<SYSTEM_PORTABLE_WORKSPACE_EFI_LAUNCHER_INFORMATION>(), 1);
+    assert_eq!(
+        size_of::<SYSTEM_PORTABLE_WORKSPACE_EFI_LAUNCHER_INFORMATION>(),
+        1
+    );
+    assert_eq!(
+        align_of::<SYSTEM_PORTABLE_WORKSPACE_EFI_LAUNCHER_INFORMATION>(),
+        1
+    );
     assert_eq!(size_of::<SYSTEM_KERNEL_DEBUGGER_INFORMATION_EX>(), 3);
     assert_eq!(align_of::<SYSTEM_KERNEL_DEBUGGER_INFORMATION_EX>(), 1);
     assert_eq!(size_of::<SYSTEM_ELAM_CERTIFICATE_INFORMATION>(), 8);
@@ -351,14 +390,32 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_ROOT_SILO_INFORMATION>(), 4);
     assert_eq!(size_of::<SYSTEM_CPU_SET_TAG_INFORMATION>(), 16);
     assert_eq!(align_of::<SYSTEM_CPU_SET_TAG_INFORMATION>(), 8);
-    assert_eq!(size_of::<SYSTEM_SECURE_KERNEL_HYPERGUARD_PROFILE_INFORMATION>(), 144);
-    assert_eq!(align_of::<SYSTEM_SECURE_KERNEL_HYPERGUARD_PROFILE_INFORMATION>(), 8);
-    assert_eq!(size_of::<SYSTEM_SECUREBOOT_PLATFORM_MANIFEST_INFORMATION>(), 8);
-    assert_eq!(align_of::<SYSTEM_SECUREBOOT_PLATFORM_MANIFEST_INFORMATION>(), 4);
+    assert_eq!(
+        size_of::<SYSTEM_SECURE_KERNEL_HYPERGUARD_PROFILE_INFORMATION>(),
+        144
+    );
+    assert_eq!(
+        align_of::<SYSTEM_SECURE_KERNEL_HYPERGUARD_PROFILE_INFORMATION>(),
+        8
+    );
+    assert_eq!(
+        size_of::<SYSTEM_SECUREBOOT_PLATFORM_MANIFEST_INFORMATION>(),
+        8
+    );
+    assert_eq!(
+        align_of::<SYSTEM_SECUREBOOT_PLATFORM_MANIFEST_INFORMATION>(),
+        4
+    );
     assert_eq!(size_of::<SYSTEM_MEMORY_USAGE_INFORMATION>(), 56);
     assert_eq!(align_of::<SYSTEM_MEMORY_USAGE_INFORMATION>(), 8);
-    assert_eq!(size_of::<SYSTEM_CODEINTEGRITY_CERTIFICATE_INFORMATION>(), 16);
-    assert_eq!(align_of::<SYSTEM_CODEINTEGRITY_CERTIFICATE_INFORMATION>(), 8);
+    assert_eq!(
+        size_of::<SYSTEM_CODEINTEGRITY_CERTIFICATE_INFORMATION>(),
+        16
+    );
+    assert_eq!(
+        align_of::<SYSTEM_CODEINTEGRITY_CERTIFICATE_INFORMATION>(),
+        8
+    );
     assert_eq!(size_of::<SYSTEM_PHYSICAL_MEMORY_INFORMATION>(), 24);
     assert_eq!(align_of::<SYSTEM_PHYSICAL_MEMORY_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSTEM_ACTIVITY_MODERATION_INFO>(), 24);
@@ -373,8 +430,14 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_WRITE_CONSTRAINT_INFORMATION>(), 4);
     assert_eq!(size_of::<SYSTEM_KERNEL_VA_SHADOW_INFORMATION>(), 4);
     assert_eq!(align_of::<SYSTEM_KERNEL_VA_SHADOW_INFORMATION>(), 4);
-    assert_eq!(size_of::<SYSTEM_CODEINTEGRITYVERIFICATION_INFORMATION>(), 24);
-    assert_eq!(align_of::<SYSTEM_CODEINTEGRITYVERIFICATION_INFORMATION>(), 8);
+    assert_eq!(
+        size_of::<SYSTEM_CODEINTEGRITYVERIFICATION_INFORMATION>(),
+        24
+    );
+    assert_eq!(
+        align_of::<SYSTEM_CODEINTEGRITYVERIFICATION_INFORMATION>(),
+        8
+    );
     assert_eq!(size_of::<SYSTEM_HYPERVISOR_SHARED_PAGE_INFORMATION>(), 8);
     assert_eq!(align_of::<SYSTEM_HYPERVISOR_SHARED_PAGE_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSTEM_SPECULATION_CONTROL_INFORMATION>(), 4);
@@ -405,7 +468,7 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSDBG_LIVEDUMP_CONTROL_ADDPAGES>(), 4);
     assert_eq!(size_of::<SYSDBG_LIVEDUMP_CONTROL>(), 64);
     assert_eq!(align_of::<SYSDBG_LIVEDUMP_CONTROL>(), 8);
-    assert_eq!(size_of::<KUSER_SHARED_DATA>(), 1800);
+    assert_eq!(size_of::<KUSER_SHARED_DATA>(), 1824);
     assert_eq!(align_of::<KUSER_SHARED_DATA>(), 4);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TickCountLowDeprecated), 0);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TickCountMultiplier), 4);
@@ -422,20 +485,29 @@ fn ntexapi() {
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, AitSamplingValue), 584);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, AppCompatFlag), 588);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, RNGSeedVersion), 592);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, GlobalValidationRunlevel), 600);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, GlobalValidationRunlevel),
+        600
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TimeZoneBiasStamp), 604);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, NtBuildNumber), 608);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, NtProductType), 612);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, ProductTypeIsValid), 616);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, Reserved0), 617);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, NativeProcessorArchitecture), 618);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, NativeProcessorArchitecture),
+        618
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, NtMajorVersion), 620);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, NtMinorVersion), 624);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, ProcessorFeatures), 628);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, Reserved1), 692);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, Reserved3), 696);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TimeSlip), 700);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, AlternativeArchitecture), 704);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, AlternativeArchitecture),
+        704
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, BootId), 708);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, SystemExpirationDate), 712);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, SuiteMask), 720);
@@ -445,7 +517,10 @@ fn ntexapi() {
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, ActiveConsoleId), 728);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, DismountCount), 732);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, ComPlusPackage), 736);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, LastSystemRITEventTickCount), 740);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, LastSystemRITEventTickCount),
+        740
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, NumberOfPhysicalPages), 744);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, SafeBootMode), 748);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, VirtualizationFlags), 749);
@@ -461,19 +536,46 @@ fn ntexapi() {
     // assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TickCountPad), 812);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, Cookie), 816);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, CookiePad), 820);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, ConsoleSessionForegroundProcessId), 824);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, ConsoleSessionForegroundProcessId),
+        824
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TimeUpdateLock), 832);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, BaselineSystemTimeQpc), 840);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, BaselineInterruptTimeQpc), 848);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, QpcSystemTimeIncrement), 856);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, QpcInterruptTimeIncrement), 864);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, QpcSystemTimeIncrementShift), 872);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, QpcInterruptTimeIncrementShift), 873);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, UnparkedProcessorCount), 874);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, BaselineInterruptTimeQpc),
+        848
+    );
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, QpcSystemTimeIncrement),
+        856
+    );
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, QpcInterruptTimeIncrement),
+        864
+    );
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, QpcSystemTimeIncrementShift),
+        872
+    );
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, QpcInterruptTimeIncrementShift),
+        873
+    );
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, UnparkedProcessorCount),
+        874
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, EnclaveFeatureMask), 876);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TelemetryCoverageRound), 892);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, TelemetryCoverageRound),
+        892
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, UserModeGlobalLogger), 896);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, ImageFileExecutionOptions), 928);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, ImageFileExecutionOptions),
+        928
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, LangGenerationCount), 932);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, Reserved4), 936);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, InterruptTimeBias), 944);
@@ -482,8 +584,14 @@ fn ntexapi() {
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, ActiveGroupCount), 964);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, Reserved9), 965);
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, QpcData), 966);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TimeZoneBiasEffectiveStart), 968);
-    assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, TimeZoneBiasEffectiveEnd), 976);
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, TimeZoneBiasEffectiveStart),
+        968
+    );
+    assert_eq!(
+        FIELD_OFFSET!(KUSER_SHARED_DATA, TimeZoneBiasEffectiveEnd),
+        976
+    );
     assert_eq!(FIELD_OFFSET!(KUSER_SHARED_DATA, XState), 984);
     assert_eq!(size_of::<ATOM_BASIC_INFORMATION>(), 8);
     assert_eq!(align_of::<ATOM_BASIC_INFORMATION>(), 2);
@@ -769,14 +877,29 @@ fn ntlpcapi() {
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, BitmapSize), 24);
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, DataOffset), 28);
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, DataSize), 32);
-    assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, AttributeFlags), 36);
-    assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, AttributeSize), 40);
+    assert_eq!(
+        FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, AttributeFlags),
+        36
+    );
+    assert_eq!(
+        FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, AttributeSize),
+        40
+    );
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, State), 128);
-    assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, LastMessageId), 136);
-    assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, LastCallbackId), 140);
+    assert_eq!(
+        FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, LastMessageId),
+        136
+    );
+    assert_eq!(
+        FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, LastCallbackId),
+        140
+    );
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, PostCount), 256);
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, ReturnCount), 384);
-    assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, LogSequenceNumber), 512);
+    assert_eq!(
+        FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, LogSequenceNumber),
+        512
+    );
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, UserLock), 640);
     assert_eq!(FIELD_OFFSET!(ALPC_COMPLETION_LIST_HEADER, EndMagic), 648);
     assert_eq!(size_of::<ALPC_CONTEXT_ATTR>(), 32);
@@ -895,7 +1018,7 @@ fn ntpebteb() {
     assert_eq!(align_of::<API_SET_NAMESPACE_ENTRY>(), 4);
     assert_eq!(size_of::<API_SET_VALUE_ENTRY>(), 20);
     assert_eq!(align_of::<API_SET_VALUE_ENTRY>(), 4);
-    assert_eq!(size_of::<PEB>(), 1992);
+    assert_eq!(size_of::<PEB>(), 2480);
     assert_eq!(align_of::<PEB>(), 8);
     assert_eq!(FIELD_OFFSET!(PEB, InheritedAddressSpace), 0);
     assert_eq!(FIELD_OFFSET!(PEB, ReadImageFileExecOptions), 1);
@@ -963,24 +1086,27 @@ fn ntpebteb() {
     assert_eq!(FIELD_OFFSET!(PEB, FlsListHead), 808);
     assert_eq!(FIELD_OFFSET!(PEB, FlsBitmap), 824);
     assert_eq!(FIELD_OFFSET!(PEB, FlsBitmapBits), 832);
-    assert_eq!(FIELD_OFFSET!(PEB, FlsHighIndex), 848);
-    assert_eq!(FIELD_OFFSET!(PEB, WerRegistrationData), 856);
-    assert_eq!(FIELD_OFFSET!(PEB, WerShipAssertPtr), 864);
-    assert_eq!(FIELD_OFFSET!(PEB, pUnused), 872);
-    assert_eq!(FIELD_OFFSET!(PEB, pImageHeaderHash), 880);
-    assert_eq!(FIELD_OFFSET!(PEB, TracingFlags), 888);
-    assert_eq!(FIELD_OFFSET!(PEB, CsrServerReadOnlySharedMemoryBase), 896);
-    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpListLock), 904);
-    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpList), 912);
-    assert_eq!(FIELD_OFFSET!(PEB, WaitOnAddressHashTable), 928);
-    assert_eq!(FIELD_OFFSET!(PEB, TelemetryCoverageHeader), 1952);
-    assert_eq!(FIELD_OFFSET!(PEB, CloudFileFlags), 1960);
-    assert_eq!(FIELD_OFFSET!(PEB, CloudFileDiagFlags), 1964);
-    assert_eq!(FIELD_OFFSET!(PEB, PlaceholderCompatibilityMode), 1968);
-    assert_eq!(FIELD_OFFSET!(PEB, PlaceholderCompatibilityModeReserved), 1969);
-    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondData), 1976);
-    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondFlags), 1984);
-    assert_eq!(FIELD_OFFSET!(PEB, NtGlobalFlag2), 1988);
+    assert_eq!(FIELD_OFFSET!(PEB, FlsHighIndex), 1340);
+    assert_eq!(FIELD_OFFSET!(PEB, WerRegistrationData), 1344);
+    assert_eq!(FIELD_OFFSET!(PEB, WerShipAssertPtr), 1352);
+    assert_eq!(FIELD_OFFSET!(PEB, pUnused), 1360);
+    assert_eq!(FIELD_OFFSET!(PEB, pImageHeaderHash), 1368);
+    assert_eq!(FIELD_OFFSET!(PEB, TracingFlags), 1376);
+    assert_eq!(FIELD_OFFSET!(PEB, CsrServerReadOnlySharedMemoryBase), 1384);
+    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpListLock), 1392);
+    assert_eq!(FIELD_OFFSET!(PEB, TppWorkerpList), 1400);
+    assert_eq!(FIELD_OFFSET!(PEB, WaitOnAddressHashTable), 1416);
+    assert_eq!(FIELD_OFFSET!(PEB, TelemetryCoverageHeader), 2440);
+    assert_eq!(FIELD_OFFSET!(PEB, CloudFileFlags), 2448);
+    assert_eq!(FIELD_OFFSET!(PEB, CloudFileDiagFlags), 2452);
+    assert_eq!(FIELD_OFFSET!(PEB, PlaceholderCompatibilityMode), 2456);
+    assert_eq!(
+        FIELD_OFFSET!(PEB, PlaceholderCompatibilityModeReserved),
+        2457
+    );
+    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondData), 2464);
+    assert_eq!(FIELD_OFFSET!(PEB, LeapSecondFlags), 2472);
+    assert_eq!(FIELD_OFFSET!(PEB, NtGlobalFlag2), 2476);
     assert_eq!(size_of::<GDI_TEB_BATCH>(), 1256);
     assert_eq!(align_of::<GDI_TEB_BATCH>(), 8);
     assert_eq!(size_of::<TEB_ACTIVE_FRAME_CONTEXT>(), 16);
@@ -1211,8 +1337,14 @@ fn ntpsapi() {
     assert_eq!(align_of::<THREAD_TLS_INFORMATION>(), 8);
     assert_eq!(size_of::<PROCESS_TLS_INFORMATION>(), 56);
     assert_eq!(align_of::<PROCESS_TLS_INFORMATION>(), 8);
-    assert_eq!(size_of::<PROCESS_INSTRUMENTATION_CALLBACK_INFORMATION>(), 16);
-    assert_eq!(align_of::<PROCESS_INSTRUMENTATION_CALLBACK_INFORMATION>(), 8);
+    assert_eq!(
+        size_of::<PROCESS_INSTRUMENTATION_CALLBACK_INFORMATION>(),
+        16
+    );
+    assert_eq!(
+        align_of::<PROCESS_INSTRUMENTATION_CALLBACK_INFORMATION>(),
+        8
+    );
     assert_eq!(size_of::<PROCESS_STACK_ALLOCATION_INFORMATION>(), 24);
     assert_eq!(align_of::<PROCESS_STACK_ALLOCATION_INFORMATION>(), 8);
     assert_eq!(size_of::<PROCESS_STACK_ALLOCATION_INFORMATION_EX>(), 40);
@@ -1266,7 +1398,10 @@ fn ntpsapi() {
     assert_eq!(size_of::<PROCESS_SECURITY_DOMAIN_INFORMATION>(), 8);
     assert_eq!(align_of::<PROCESS_SECURITY_DOMAIN_INFORMATION>(), 8);
     assert_eq!(size_of::<PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION>(), 8);
-    assert_eq!(align_of::<PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION>(), 8);
+    assert_eq!(
+        align_of::<PROCESS_COMBINE_SECURITY_DOMAINS_INFORMATION>(),
+        8
+    );
     assert_eq!(size_of::<PROCESS_LOGGING_INFORMATION>(), 8);
     assert_eq!(align_of::<PROCESS_LOGGING_INFORMATION>(), 4);
     assert_eq!(size_of::<PROCESS_LEAP_SECOND_INFORMATION>(), 8);
@@ -1297,7 +1432,10 @@ fn ntpsapi() {
     assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, Terminated), 1276);
     assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, DebugActive), 1280);
     assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, RunningOnSelfThread), 1284);
-    assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, DenyRunningOnSelfThread), 1288);
+    assert_eq!(
+        FIELD_OFFSET!(RTL_UMS_CONTEXT, DenyRunningOnSelfThread),
+        1288
+    );
     assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, Flags), 1292);
     assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, KernelUpdateLock), 1296);
     assert_eq!(FIELD_OFFSET!(RTL_UMS_CONTEXT, PrimaryClientID), 1304);
@@ -1439,8 +1577,14 @@ fn ntrtl() {
     assert_eq!(align_of::<RTL_USER_PROCESS_PARAMETERS>(), 8);
     assert_eq!(size_of::<RTL_USER_PROCESS_INFORMATION>(), 104);
     assert_eq!(align_of::<RTL_USER_PROCESS_INFORMATION>(), 8);
-    assert_eq!(size_of::<RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION>(), 32);
-    assert_eq!(align_of::<RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION>(), 8);
+    assert_eq!(
+        size_of::<RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION>(),
+        32
+    );
+    assert_eq!(
+        align_of::<RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION>(),
+        8
+    );
     assert_eq!(size_of::<CONTEXT_CHUNK>(), 8);
     assert_eq!(align_of::<CONTEXT_CHUNK>(), 4);
     assert_eq!(size_of::<CONTEXT_EX>(), 24);
@@ -1519,22 +1663,58 @@ fn ntrtl() {
     assert_eq!(align_of::<RTL_IMAGE_MITIGATION_ASLR_POLICY>(), 8);
     assert_eq!(size_of::<RTL_IMAGE_MITIGATION_DYNAMIC_CODE_POLICY>(), 8);
     assert_eq!(align_of::<RTL_IMAGE_MITIGATION_DYNAMIC_CODE_POLICY>(), 8);
-    assert_eq!(size_of::<RTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY>(), 8);
-    assert_eq!(align_of::<RTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY>(), 8);
-    assert_eq!(size_of::<RTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY>(), 8);
-    assert_eq!(align_of::<RTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY>(), 8);
-    assert_eq!(size_of::<RTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY>(), 8);
-    assert_eq!(align_of::<RTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY>(), 8);
-    assert_eq!(size_of::<RTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY>(), 16);
-    assert_eq!(align_of::<RTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY>(), 8);
-    assert_eq!(size_of::<RTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY>(), 16);
-    assert_eq!(align_of::<RTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY>(), 8);
+    assert_eq!(
+        size_of::<RTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY>(),
+        8
+    );
+    assert_eq!(
+        align_of::<RTL_IMAGE_MITIGATION_STRICT_HANDLE_CHECK_POLICY>(),
+        8
+    );
+    assert_eq!(
+        size_of::<RTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY>(),
+        8
+    );
+    assert_eq!(
+        align_of::<RTL_IMAGE_MITIGATION_SYSTEM_CALL_DISABLE_POLICY>(),
+        8
+    );
+    assert_eq!(
+        size_of::<RTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY>(),
+        8
+    );
+    assert_eq!(
+        align_of::<RTL_IMAGE_MITIGATION_EXTENSION_POINT_DISABLE_POLICY>(),
+        8
+    );
+    assert_eq!(
+        size_of::<RTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY>(),
+        16
+    );
+    assert_eq!(
+        align_of::<RTL_IMAGE_MITIGATION_CONTROL_FLOW_GUARD_POLICY>(),
+        8
+    );
+    assert_eq!(
+        size_of::<RTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY>(),
+        16
+    );
+    assert_eq!(
+        align_of::<RTL_IMAGE_MITIGATION_BINARY_SIGNATURE_POLICY>(),
+        8
+    );
     assert_eq!(size_of::<RTL_IMAGE_MITIGATION_FONT_DISABLE_POLICY>(), 8);
     assert_eq!(align_of::<RTL_IMAGE_MITIGATION_FONT_DISABLE_POLICY>(), 8);
     assert_eq!(size_of::<RTL_IMAGE_MITIGATION_IMAGE_LOAD_POLICY>(), 24);
     assert_eq!(align_of::<RTL_IMAGE_MITIGATION_IMAGE_LOAD_POLICY>(), 8);
-    assert_eq!(size_of::<RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY>(), 48);
-    assert_eq!(align_of::<RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY>(), 8);
+    assert_eq!(
+        size_of::<RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY>(),
+        48
+    );
+    assert_eq!(
+        align_of::<RTL_IMAGE_MITIGATION_PAYLOAD_RESTRICTION_POLICY>(),
+        8
+    );
     assert_eq!(size_of::<RTL_IMAGE_MITIGATION_CHILD_PROCESS_POLICY>(), 8);
     assert_eq!(align_of::<RTL_IMAGE_MITIGATION_CHILD_PROCESS_POLICY>(), 8);
     assert_eq!(size_of::<RTL_IMAGE_MITIGATION_SEHOP_POLICY>(), 8);
@@ -1562,20 +1742,44 @@ fn ntsam() {
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, ForceLogoff), 0);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, OemInformation), 8);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainName), 24);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, ReplicaSourceNodeName), 40);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainModifiedCount), 56);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainServerState), 64);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainServerRole), 68);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, UasCompatibilityRequired), 72);
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, ReplicaSourceNodeName),
+        40
+    );
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainModifiedCount),
+        56
+    );
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainServerState),
+        64
+    );
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, DomainServerRole),
+        68
+    );
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, UasCompatibilityRequired),
+        72
+    );
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, UserCount), 76);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, GroupCount), 80);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION, AliasCount), 84);
     assert_eq!(size_of::<DOMAIN_GENERAL_INFORMATION2>(), 108);
     assert_eq!(align_of::<DOMAIN_GENERAL_INFORMATION2>(), 4);
     assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, I1), 0);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutDuration), 88);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutObservationWindow), 96);
-    assert_eq!(FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutThreshold), 104);
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutDuration),
+        88
+    );
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutObservationWindow),
+        96
+    );
+    assert_eq!(
+        FIELD_OFFSET!(DOMAIN_GENERAL_INFORMATION2, LockoutThreshold),
+        104
+    );
     assert_eq!(size_of::<DOMAIN_UAS_INFORMATION>(), 1);
     assert_eq!(align_of::<DOMAIN_UAS_INFORMATION>(), 1);
     assert_eq!(size_of::<DOMAIN_LOGOFF_INFORMATION>(), 8);
@@ -1643,19 +1847,31 @@ fn ntsam() {
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, UserId), 32);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, PrimaryGroupId), 36);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, HomeDirectory), 40);
-    assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, HomeDirectoryDrive), 56);
+    assert_eq!(
+        FIELD_OFFSET!(USER_LOGON_INFORMATION, HomeDirectoryDrive),
+        56
+    );
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, ScriptPath), 72);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, ProfilePath), 88);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, WorkStations), 104);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, LastLogon), 120);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, LastLogoff), 128);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, PasswordLastSet), 136);
-    assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, PasswordCanChange), 144);
-    assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, PasswordMustChange), 152);
+    assert_eq!(
+        FIELD_OFFSET!(USER_LOGON_INFORMATION, PasswordCanChange),
+        144
+    );
+    assert_eq!(
+        FIELD_OFFSET!(USER_LOGON_INFORMATION, PasswordMustChange),
+        152
+    );
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, LogonHours), 160);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, BadPasswordCount), 176);
     assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, LogonCount), 178);
-    assert_eq!(FIELD_OFFSET!(USER_LOGON_INFORMATION, UserAccountControl), 180);
+    assert_eq!(
+        FIELD_OFFSET!(USER_LOGON_INFORMATION, UserAccountControl),
+        180
+    );
     assert_eq!(size_of::<USER_ACCOUNT_INFORMATION>(), 192);
     assert_eq!(align_of::<USER_ACCOUNT_INFORMATION>(), 4);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, UserName), 0);
@@ -1663,7 +1879,10 @@ fn ntsam() {
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, UserId), 32);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, PrimaryGroupId), 36);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, HomeDirectory), 40);
-    assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, HomeDirectoryDrive), 56);
+    assert_eq!(
+        FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, HomeDirectoryDrive),
+        56
+    );
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, ScriptPath), 72);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, ProfilePath), 88);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, AdminComment), 104);
@@ -1671,11 +1890,20 @@ fn ntsam() {
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, LastLogon), 136);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, LastLogoff), 144);
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, LogonHours), 152);
-    assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, BadPasswordCount), 168);
+    assert_eq!(
+        FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, BadPasswordCount),
+        168
+    );
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, LogonCount), 170);
-    assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, PasswordLastSet), 172);
+    assert_eq!(
+        FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, PasswordLastSet),
+        172
+    );
     assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, AccountExpires), 180);
-    assert_eq!(FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, UserAccountControl), 188);
+    assert_eq!(
+        FIELD_OFFSET!(USER_ACCOUNT_INFORMATION, UserAccountControl),
+        188
+    );
     assert_eq!(size_of::<USER_ACCOUNT_NAME_INFORMATION>(), 16);
     assert_eq!(align_of::<USER_ACCOUNT_NAME_INFORMATION>(), 8);
     assert_eq!(size_of::<USER_FULL_NAME_INFORMATION>(), 16);
@@ -1773,7 +2001,10 @@ fn ntwow64() {
     assert_eq!(FIELD_OFFSET!(PEB_LDR_DATA32, SsHandle), 8);
     assert_eq!(FIELD_OFFSET!(PEB_LDR_DATA32, InLoadOrderModuleList), 12);
     assert_eq!(FIELD_OFFSET!(PEB_LDR_DATA32, InMemoryOrderModuleList), 20);
-    assert_eq!(FIELD_OFFSET!(PEB_LDR_DATA32, InInitializationOrderModuleList), 28);
+    assert_eq!(
+        FIELD_OFFSET!(PEB_LDR_DATA32, InInitializationOrderModuleList),
+        28
+    );
     assert_eq!(FIELD_OFFSET!(PEB_LDR_DATA32, EntryInProgress), 36);
     assert_eq!(FIELD_OFFSET!(PEB_LDR_DATA32, ShutdownInProgress), 40);
     assert_eq!(FIELD_OFFSET!(PEB_LDR_DATA32, ShutdownThreadId), 44);
@@ -1800,8 +2031,14 @@ fn ntwow64() {
     assert_eq!(align_of::<LDR_DATA_TABLE_ENTRY32>(), 8);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, InLoadOrderLinks), 0);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, InMemoryOrderLinks), 8);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, u1.InInitializationOrderLinks), 16);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, u1.InProgressLinks), 16);
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, u1.InInitializationOrderLinks),
+        16
+    );
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, u1.InProgressLinks),
+        16
+    );
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, DllBase), 24);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, EntryPoint), 28);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, SizeOfImage), 32);
@@ -1813,22 +2050,43 @@ fn ntwow64() {
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, TlsIndex), 58);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, HashLinks), 60);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, TimeDateStamp), 68);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, EntryPointActivationContext), 72);
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, EntryPointActivationContext),
+        72
+    );
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, Lock), 76);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, DdagNode), 80);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, NodeModuleLink), 84);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, LoadContext), 92);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, ParentDllBase), 96);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, SwitchBackContext), 100);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, BaseAddressIndexNode), 104);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, MappingInfoIndexNode), 116);
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, SwitchBackContext),
+        100
+    );
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, BaseAddressIndexNode),
+        104
+    );
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, MappingInfoIndexNode),
+        116
+    );
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, OriginalBase), 128);
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, LoadTime), 136);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, BaseNameHashValue), 144);
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, BaseNameHashValue),
+        144
+    );
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, LoadReason), 148);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, ImplicitPathOptions), 152);
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, ImplicitPathOptions),
+        152
+    );
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, ReferenceCount), 156);
-    assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, DependentLoadFlags), 160);
+    assert_eq!(
+        FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, DependentLoadFlags),
+        160
+    );
     assert_eq!(FIELD_OFFSET!(LDR_DATA_TABLE_ENTRY32, SigningLevel), 164);
     assert_eq!(size_of::<CURDIR32>(), 12);
     assert_eq!(align_of::<CURDIR32>(), 4);
@@ -1842,40 +2100,112 @@ fn ntwow64() {
     assert_eq!(FIELD_OFFSET!(RTL_DRIVE_LETTER_CURDIR32, DosPath), 8);
     assert_eq!(size_of::<RTL_USER_PROCESS_PARAMETERS32>(), 676);
     assert_eq!(align_of::<RTL_USER_PROCESS_PARAMETERS32>(), 4);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, MaximumLength), 0);
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, MaximumLength),
+        0
+    );
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, Length), 4);
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, Flags), 8);
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, DebugFlags), 12);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ConsoleHandle), 16);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ConsoleFlags), 20);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StandardInput), 24);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StandardOutput), 28);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StandardError), 32);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CurrentDirectory), 36);
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ConsoleHandle),
+        16
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ConsoleFlags),
+        20
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StandardInput),
+        24
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StandardOutput),
+        28
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StandardError),
+        32
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CurrentDirectory),
+        36
+    );
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, DllPath), 48);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ImagePathName), 56);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CommandLine), 64);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, Environment), 72);
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ImagePathName),
+        56
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CommandLine),
+        64
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, Environment),
+        72
+    );
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StartingX), 76);
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, StartingY), 80);
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CountX), 84);
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CountY), 88);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CountCharsX), 92);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CountCharsY), 96);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, FillAttribute), 100);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, WindowFlags), 104);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ShowWindowFlags), 108);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, WindowTitle), 112);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, DesktopInfo), 120);
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CountCharsX),
+        92
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CountCharsY),
+        96
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, FillAttribute),
+        100
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, WindowFlags),
+        104
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ShowWindowFlags),
+        108
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, WindowTitle),
+        112
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, DesktopInfo),
+        120
+    );
     assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ShellInfo), 128);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, RuntimeData), 136);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CurrentDirectories), 144);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, EnvironmentSize), 656);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, EnvironmentVersion), 660);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, PackageDependencyData), 664);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ProcessGroupId), 668);
-    assert_eq!(FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, LoaderThreads), 672);
-    assert_eq!(size_of::<PEB32>(), 1136);
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, RuntimeData),
+        136
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, CurrentDirectories),
+        144
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, EnvironmentSize),
+        656
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, EnvironmentVersion),
+        660
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, PackageDependencyData),
+        664
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, ProcessGroupId),
+        668
+    );
+    assert_eq!(
+        FIELD_OFFSET!(RTL_USER_PROCESS_PARAMETERS32, LoaderThreads),
+        672
+    );
+    assert_eq!(size_of::<PEB32>(), 1624);
     assert_eq!(align_of::<PEB32>(), 8);
     assert_eq!(FIELD_OFFSET!(PEB32, InheritedAddressSpace), 0);
     assert_eq!(FIELD_OFFSET!(PEB32, ReadImageFileExecOptions), 1);
@@ -1939,28 +2269,37 @@ fn ntwow64() {
     assert_eq!(FIELD_OFFSET!(PEB32, CSDVersion), 496);
     assert_eq!(FIELD_OFFSET!(PEB32, ActivationContextData), 504);
     assert_eq!(FIELD_OFFSET!(PEB32, ProcessAssemblyStorageMap), 508);
-    assert_eq!(FIELD_OFFSET!(PEB32, SystemDefaultActivationContextData), 512);
+    assert_eq!(
+        FIELD_OFFSET!(PEB32, SystemDefaultActivationContextData),
+        512
+    );
     assert_eq!(FIELD_OFFSET!(PEB32, SystemAssemblyStorageMap), 516);
     assert_eq!(FIELD_OFFSET!(PEB32, MinimumStackCommit), 520);
     assert_eq!(FIELD_OFFSET!(PEB32, FlsCallback), 524);
     assert_eq!(FIELD_OFFSET!(PEB32, FlsListHead), 528);
     assert_eq!(FIELD_OFFSET!(PEB32, FlsBitmap), 536);
     assert_eq!(FIELD_OFFSET!(PEB32, FlsBitmapBits), 540);
-    assert_eq!(FIELD_OFFSET!(PEB32, FlsHighIndex), 556);
-    assert_eq!(FIELD_OFFSET!(PEB32, WerRegistrationData), 560);
-    assert_eq!(FIELD_OFFSET!(PEB32, WerShipAssertPtr), 564);
-    assert_eq!(FIELD_OFFSET!(PEB32, pContextData), 568);
-    assert_eq!(FIELD_OFFSET!(PEB32, pImageHeaderHash), 572);
-    assert_eq!(FIELD_OFFSET!(PEB32, TracingFlags), 576);
-    assert_eq!(FIELD_OFFSET!(PEB32, CsrServerReadOnlySharedMemoryBase), 584);
-    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpListLock), 592);
-    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpList), 596);
-    assert_eq!(FIELD_OFFSET!(PEB32, WaitOnAddressHashTable), 604);
-    assert_eq!(FIELD_OFFSET!(PEB32, TelemetryCoverageHeader), 1116);
-    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileFlags), 1120);
-    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileDiagFlags), 1124);
-    assert_eq!(FIELD_OFFSET!(PEB32, PlaceholderCompatibilityMode), 1128);
-    assert_eq!(FIELD_OFFSET!(PEB32, PlaceholderCompatibilityModeReserved), 1129);
+    assert_eq!(FIELD_OFFSET!(PEB32, FlsHighIndex), 1048);
+    assert_eq!(FIELD_OFFSET!(PEB32, WerRegistrationData), 1052);
+    assert_eq!(FIELD_OFFSET!(PEB32, WerShipAssertPtr), 1056);
+    assert_eq!(FIELD_OFFSET!(PEB32, pContextData), 1060);
+    assert_eq!(FIELD_OFFSET!(PEB32, pImageHeaderHash), 1064);
+    assert_eq!(FIELD_OFFSET!(PEB32, TracingFlags), 1068);
+    assert_eq!(
+        FIELD_OFFSET!(PEB32, CsrServerReadOnlySharedMemoryBase),
+        1072
+    );
+    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpListLock), 1080);
+    assert_eq!(FIELD_OFFSET!(PEB32, TppWorkerpList), 1084);
+    assert_eq!(FIELD_OFFSET!(PEB32, WaitOnAddressHashTable), 1092);
+    assert_eq!(FIELD_OFFSET!(PEB32, TelemetryCoverageHeader), 1604);
+    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileFlags), 1608);
+    assert_eq!(FIELD_OFFSET!(PEB32, CloudFileDiagFlags), 1612);
+    assert_eq!(FIELD_OFFSET!(PEB32, PlaceholderCompatibilityMode), 1616);
+    assert_eq!(
+        FIELD_OFFSET!(PEB32, PlaceholderCompatibilityModeReserved),
+        1617
+    );
     assert_eq!(size_of::<GDI_TEB_BATCH32>(), 1248);
     assert_eq!(align_of::<GDI_TEB_BATCH32>(), 4);
     assert_eq!(FIELD_OFFSET!(GDI_TEB_BATCH32, Offset), 0);
@@ -1983,7 +2322,10 @@ fn ntwow64() {
     assert_eq!(FIELD_OFFSET!(TEB32, WOW32Reserved), 192);
     assert_eq!(FIELD_OFFSET!(TEB32, CurrentLocale), 196);
     assert_eq!(FIELD_OFFSET!(TEB32, FpSoftwareStatusRegister), 200);
-    assert_eq!(FIELD_OFFSET!(TEB32, ReservedForDebuggerInstrumentation), 204);
+    assert_eq!(
+        FIELD_OFFSET!(TEB32, ReservedForDebuggerInstrumentation),
+        204
+    );
     assert_eq!(FIELD_OFFSET!(TEB32, SystemReserved1), 268);
     assert_eq!(FIELD_OFFSET!(TEB32, WorkingOnBehalfTicket), 412);
     assert_eq!(FIELD_OFFSET!(TEB32, ExceptionCode), 420);
@@ -2075,8 +2417,14 @@ fn subprocesstag() {
     assert_eq!(align_of::<TAG_INFO_NAME_FROM_TAG>(), 8);
     assert_eq!(size_of::<TAG_INFO_NAMES_REFERENCING_MODULE_IN_PARAMS>(), 16);
     assert_eq!(align_of::<TAG_INFO_NAMES_REFERENCING_MODULE_IN_PARAMS>(), 8);
-    assert_eq!(size_of::<TAG_INFO_NAMES_REFERENCING_MODULE_OUT_PARAMS>(), 16);
-    assert_eq!(align_of::<TAG_INFO_NAMES_REFERENCING_MODULE_OUT_PARAMS>(), 8);
+    assert_eq!(
+        size_of::<TAG_INFO_NAMES_REFERENCING_MODULE_OUT_PARAMS>(),
+        16
+    );
+    assert_eq!(
+        align_of::<TAG_INFO_NAMES_REFERENCING_MODULE_OUT_PARAMS>(),
+        8
+    );
     assert_eq!(size_of::<TAG_INFO_NAMES_REFERENCING_MODULE>(), 32);
     assert_eq!(align_of::<TAG_INFO_NAMES_REFERENCING_MODULE>(), 8);
     assert_eq!(size_of::<TAG_INFO_NAME_TAG_MAPPING_IN_PARAMS>(), 4);
@@ -2273,8 +2621,14 @@ fn winsta() {
     assert_eq!(align_of::<CACHE_STATISTICS>(), 4);
     assert_eq!(FIELD_OFFSET!(CACHE_STATISTICS, ProtocolType), 0);
     assert_eq!(FIELD_OFFSET!(CACHE_STATISTICS, Length), 2);
-    assert_eq!(FIELD_OFFSET!(CACHE_STATISTICS, Specific.ReservedCacheStats), 4);
-    assert_eq!(FIELD_OFFSET!(CACHE_STATISTICS, Specific.TShareCacheStats), 4);
+    assert_eq!(
+        FIELD_OFFSET!(CACHE_STATISTICS, Specific.ReservedCacheStats),
+        4
+    );
+    assert_eq!(
+        FIELD_OFFSET!(CACHE_STATISTICS, Specific.TShareCacheStats),
+        4
+    );
     assert_eq!(FIELD_OFFSET!(CACHE_STATISTICS, Specific.Reserved), 4);
     assert_eq!(FIELD_OFFSET!(CACHE_STATISTICS, Specific), 4);
     assert_eq!(size_of::<PROTOCOLSTATUS>(), 1012);
@@ -2319,13 +2673,22 @@ fn winsta() {
     assert_eq!(FIELD_OFFSET!(WINSTATIONCLIENTDATA, fUnicodeData), 8);
     assert_eq!(size_of::<WINSTATIONLOADINDICATORDATA>(), 72);
     assert_eq!(align_of::<WINSTATIONLOADINDICATORDATA>(), 8);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, RemainingSessionCapacity), 0);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, RemainingSessionCapacity),
+        0
+    );
     assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, LoadFactor), 4);
     assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, TotalSessions), 8);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, DisconnectedSessions), 12);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, DisconnectedSessions),
+        12
+    );
     assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, IdleCPU), 16);
     assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, TotalCPU), 24);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, RawSessionCapacity), 32);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, RawSessionCapacity),
+        32
+    );
     assert_eq!(FIELD_OFFSET!(WINSTATIONLOADINDICATORDATA, reserved), 36);
     assert_eq!(size_of::<WINSTATIONSHADOW>(), 16);
     assert_eq!(align_of::<WINSTATIONSHADOW>(), 4);
@@ -2348,39 +2711,114 @@ fn winsta() {
     assert_eq!(FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv4.sin_addr), 8);
     assert_eq!(FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv4.sin_zero), 12);
     assert_eq!(FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv6.sin6_port), 4);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv6.sin6_flowinfo), 8);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv6.sin6_flowinfo),
+        8
+    );
     assert_eq!(FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv6.sin6_addr), 12);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv6.sin6_scope_id), 28);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONREMOTEADDRESS, u.ipv6.sin6_scope_id),
+        28
+    );
     assert_eq!(size_of::<WINSTATIONINFORMATIONEX_LEVEL1>(), 1216);
     assert_eq!(align_of::<WINSTATIONINFORMATIONEX_LEVEL1>(), 8);
     assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, SessionId), 0);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, SessionState), 4);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, SessionFlags), 8);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, WinStationName), 12);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, SessionState),
+        4
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, SessionFlags),
+        8
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, WinStationName),
+        12
+    );
     assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, UserName), 78);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, DomainName), 120);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, LogonTime), 160);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, ConnectTime), 168);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, DisconnectTime), 176);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, LastInputTime), 184);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, CurrentTime), 192);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, ProtocolStatus), 200);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, DomainName),
+        120
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, LogonTime),
+        160
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, ConnectTime),
+        168
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, DisconnectTime),
+        176
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, LastInputTime),
+        184
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, CurrentTime),
+        192
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL1, ProtocolStatus),
+        200
+    );
     assert_eq!(size_of::<WINSTATIONINFORMATIONEX_LEVEL2>(), 2240);
     assert_eq!(align_of::<WINSTATIONINFORMATIONEX_LEVEL2>(), 8);
     assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SessionId), 0);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SessionState), 4);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SessionFlags), 8);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, WinStationName), 12);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SamCompatibleUserName), 78);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SamCompatibleDomainName), 120);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, LogonTime), 160);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, ConnectTime), 168);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, DisconnectTime), 176);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, LastInputTime), 184);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, CurrentTime), 192);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, ProtocolStatus), 200);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, UserName), 1212);
-    assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, DomainName), 1726);
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SessionState),
+        4
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SessionFlags),
+        8
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, WinStationName),
+        12
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SamCompatibleUserName),
+        78
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, SamCompatibleDomainName),
+        120
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, LogonTime),
+        160
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, ConnectTime),
+        168
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, DisconnectTime),
+        176
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, LastInputTime),
+        184
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, CurrentTime),
+        192
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, ProtocolStatus),
+        200
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, UserName),
+        1212
+    );
+    assert_eq!(
+        FIELD_OFFSET!(WINSTATIONINFORMATIONEX_LEVEL2, DomainName),
+        1726
+    );
     assert_eq!(size_of::<WINSTATIONINFORMATIONEX>(), 2248);
     assert_eq!(align_of::<WINSTATIONINFORMATIONEX>(), 8);
     assert_eq!(FIELD_OFFSET!(WINSTATIONINFORMATIONEX, Level), 0);
@@ -2393,8 +2831,14 @@ fn winsta() {
     assert_eq!(FIELD_OFFSET!(TS_PROCESS_INFORMATION_NT4, Pad), 16);
     assert_eq!(size_of::<TS_SYS_PROCESS_INFORMATION>(), 184);
     assert_eq!(align_of::<TS_SYS_PROCESS_INFORMATION>(), 8);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, NextEntryOffset), 0);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, NumberOfThreads), 4);
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, NextEntryOffset),
+        0
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, NumberOfThreads),
+        4
+    );
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, SpareLi1), 8);
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, SpareLi2), 16);
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, SpareLi3), 24);
@@ -2403,23 +2847,62 @@ fn winsta() {
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, KernelTime), 48);
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, ImageName), 56);
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, BasePriority), 72);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, UniqueProcessId), 76);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, InheritedFromUniqueProcessId), 80);
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, UniqueProcessId),
+        76
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, InheritedFromUniqueProcessId),
+        80
+    );
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, HandleCount), 84);
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, SessionId), 88);
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, SpareUl3), 92);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PeakVirtualSize), 96);
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PeakVirtualSize),
+        96
+    );
     assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, VirtualSize), 104);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PageFaultCount), 112);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PeakWorkingSetSize), 116);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, WorkingSetSize), 120);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaPeakPagedPoolUsage), 128);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaPagedPoolUsage), 136);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaPeakNonPagedPoolUsage), 144);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaNonPagedPoolUsage), 152);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PagefileUsage), 160);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PeakPagefileUsage), 168);
-    assert_eq!(FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PrivatePageCount), 176);
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PageFaultCount),
+        112
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PeakWorkingSetSize),
+        116
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, WorkingSetSize),
+        120
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaPeakPagedPoolUsage),
+        128
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaPagedPoolUsage),
+        136
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaPeakNonPagedPoolUsage),
+        144
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, QuotaNonPagedPoolUsage),
+        152
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PagefileUsage),
+        160
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PeakPagefileUsage),
+        168
+    );
+    assert_eq!(
+        FIELD_OFFSET!(TS_SYS_PROCESS_INFORMATION, PrivatePageCount),
+        176
+    );
     assert_eq!(size_of::<TS_ALL_PROCESSES_INFO>(), 24);
     assert_eq!(align_of::<TS_ALL_PROCESSES_INFO>(), 8);
     assert_eq!(FIELD_OFFSET!(TS_ALL_PROCESSES_INFO, pTsProcessInfo), 0);

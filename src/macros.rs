@@ -88,6 +88,58 @@ macro_rules! UNION {
             fn default() -> $name { unsafe { $crate::_core::mem::zeroed() } }
         }
     );
+    ($(#[$attrs:meta])* union $name:ident {
+        [$stype:ty; $ssize:expr],
+        $($variant:ident $variant_mut:ident: $ftype:ty,)+
+    }) => (
+        #[repr(C)] $(#[$attrs])*
+        pub struct $name([$stype; $ssize]);
+        impl Copy for $name {}
+        impl Clone for $name {
+            #[inline]
+            fn clone(&self) -> $name { *self }
+        }
+        #[cfg(feature = "impl-default")]
+        impl Default for $name {
+            #[inline]
+            fn default() -> $name { unsafe { $crate::_core::mem::zeroed() } }
+        }
+        impl $name {$(
+            #[inline]
+            pub unsafe fn $variant(&self) -> &$ftype {
+                &*(self as *const _ as *const $ftype)
+            }
+            #[inline]
+            pub unsafe fn $variant_mut(&mut self) -> &mut $ftype {
+                &mut *(self as *mut _ as *mut $ftype)
+            }
+        )+}
+    );
+}
+macro_rules! ENUM {
+    {enum $name:ident { $($variant:ident = $value:expr,)+ }} => {
+        pub type $name = u32;
+        $(pub const $variant: $name = $value;)+
+    };
+}
+macro_rules! STRUCT {
+    ($(#[$attrs:meta])* struct $name:ident {
+        $($field:ident: $ftype:ty,)+
+    }) => (
+        #[repr(C)] #[derive(Copy, Clone)] $(#[$attrs])*
+        pub struct $name {
+            $(pub $field: $ftype,)+
+        }
+        // impl Clone for $name {
+        //     #[inline]
+        //     fn clone(&self) -> $name { *self }
+        // }
+        #[cfg(feature = "impl-default")]
+        impl Default for $name {
+            #[inline]
+            fn default() -> $name { unsafe { $crate::_core::mem::zeroed() } }
+        }
+    );
 }
 macro_rules! FN {
     (stdcall $func:ident($($p:ident: $t:ty,)*) -> $ret:ty) => (

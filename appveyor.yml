@@ -12,9 +12,9 @@ environment:
     - host: i686-pc-windows-gnu
       channel: nightly
     - host: x86_64-pc-windows-gnu
-      channel: 1.64.0
+      channel: 1.70.0
     - host: i686-pc-windows-gnu
-      channel: 1.64.0
+      channel: 1.70.0
 
 install:
   - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
@@ -24,11 +24,11 @@ install:
   - rustc -vV
   - cargo -vV
   - if defined aarch64 (
-      rustup target add aarch64-pc-windows-msvc
+    rustup target add aarch64-pc-windows-msvc
     )
 
 build_script:
   - cargo test --verbose --color always --features "func-types impl-default user"
   - if defined aarch64 (
-      cargo test --verbose --color always --features "func-types impl-default user" --target aarch64-pc-windows-msvc --no-run
+    cargo test --verbose --color always --features "func-types impl-default user" --target aarch64-pc-windows-msvc --no-run
     )

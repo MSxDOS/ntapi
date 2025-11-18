@@ -1,13 +1,16 @@
 use core::ptr::null_mut;
-use crate::ntrtl::RTL_TIME_ZONE_INFORMATION;
-use winapi::shared::basetsd::SIZE_T;
-use winapi::shared::minwindef::{BYTE, DWORD, FILETIME};
-use winapi::shared::ntdef::{
-    BOOLEAN, CHAR, HANDLE, LARGE_INTEGER, LONG, PULONG, PVOID, PWSTR, UCHAR, ULONG, UNICODE_STRING,
-    USHORT, WCHAR,
+
+use windows_sys::Win32::{
+    Foundation::{FILETIME, HANDLE, HWND, PSID, UNICODE_STRING},
+    Storage::FileSystem::STANDARD_RIGHTS_REQUIRED,
 };
-use winapi::shared::windef::HWND;
-use winapi::um::winnt::{PSID, STANDARD_RIGHTS_REQUIRED};
+
+use crate::{
+    ctypes::{c_char, c_long, c_uchar, c_ulong, c_ushort, c_void, wchar_t},
+    ntrtl::RTL_TIME_ZONE_INFORMATION,
+    windows_local::shared::ntdef::LARGE_INTEGER,
+};
+
 pub const WINSTATION_QUERY: u32 = 0x00000001;
 pub const WINSTATION_SET: u32 = 0x00000002;
 pub const WINSTATION_RESET: u32 = 0x00000004;
@@ -19,14 +22,25 @@ pub const WINSTATION_MSG: u32 = 0x00000080;
 pub const WINSTATION_CONNECT: u32 = 0x00000100;
 pub const WINSTATION_DISCONNECT: u32 = 0x00000200;
 pub const WINSTATION_GUEST_ACCESS: u32 = WINSTATION_LOGON;
-pub const WINSTATION_CURRENT_GUEST_ACCESS: u32 = WINSTATION_VIRTUAL | WINSTATION_LOGOFF;
+pub const WINSTATION_CURRENT_GUEST_ACCESS: u32 =
+    WINSTATION_VIRTUAL | WINSTATION_LOGOFF;
 pub const WINSTATION_USER_ACCESS: u32 =
     WINSTATION_GUEST_ACCESS | WINSTATION_QUERY | WINSTATION_CONNECT;
-pub const WINSTATION_CURRENT_USER_ACCESS: u32 = WINSTATION_SET | WINSTATION_RESET
-    | WINSTATION_VIRTUAL | WINSTATION_LOGOFF | WINSTATION_DISCONNECT;
-pub const WINSTATION_ALL_ACCESS: u32 = STANDARD_RIGHTS_REQUIRED | WINSTATION_QUERY | WINSTATION_SET
-    | WINSTATION_RESET | WINSTATION_VIRTUAL | WINSTATION_SHADOW | WINSTATION_LOGON | WINSTATION_MSG
-    | WINSTATION_CONNECT | WINSTATION_DISCONNECT;
+pub const WINSTATION_CURRENT_USER_ACCESS: u32 = WINSTATION_SET
+    | WINSTATION_RESET
+    | WINSTATION_VIRTUAL
+    | WINSTATION_LOGOFF
+    | WINSTATION_DISCONNECT;
+pub const WINSTATION_ALL_ACCESS: u32 = STANDARD_RIGHTS_REQUIRED
+    | WINSTATION_QUERY
+    | WINSTATION_SET
+    | WINSTATION_RESET
+    | WINSTATION_VIRTUAL
+    | WINSTATION_SHADOW
+    | WINSTATION_LOGON
+    | WINSTATION_MSG
+    | WINSTATION_CONNECT
+    | WINSTATION_DISCONNECT;
 pub const WDPREFIX_LENGTH: usize = 12;
 pub const CALLBACK_LENGTH: usize = 50;
 pub const DLLNAME_LENGTH: usize = 32;
@@ -70,13 +84,13 @@ pub const TERMSRV_CURRENT_TERMINATING_SESSIONS: u32 = 11;
 pub const TERMSRV_CURRENT_LOGGEDON_SESSIONS: u32 = 12;
 pub type PTS_TIME_ZONE_INFORMATION = *mut RTL_TIME_ZONE_INFORMATION;
 pub type TS_TIME_ZONE_INFORMATION = RTL_TIME_ZONE_INFORMATION;
-pub type WINSTATIONNAME = [WCHAR; WINSTATIONNAME_LENGTH + 1];
-STRUCT!{struct VARDATA_WIRE {
-    Size: USHORT,
-    Offset: USHORT,
+pub type WINSTATIONNAME = [wchar_t; WINSTATIONNAME_LENGTH + 1];
+STRUCT! {struct VARDATA_WIRE {
+    Size: c_ushort,
+    Offset: c_ushort,
 }}
 pub type PVARDATA_WIRE = *mut VARDATA_WIRE;
-ENUM!{enum WINSTATIONSTATECLASS {
+ENUM! {enum WINSTATIONSTATECLASS {
     State_Active = 0,
     State_Connected = 1,
     State_ConnectQuery = 2,
@@ -88,17 +102,17 @@ ENUM!{enum WINSTATIONSTATECLASS {
     State_Down = 8,
     State_Init = 9,
 }}
-UNION!{union SESSIONIDW_u {
-    SessionId: ULONG,
-    LogonId: ULONG,
+UNION! {union SESSIONIDW_u {
+    SessionId: c_ulong,
+    LogonId: c_ulong,
 }}
-STRUCT!{struct SESSIONIDW {
+STRUCT! {struct SESSIONIDW {
     u: SESSIONIDW_u,
     WinStationName: WINSTATIONNAME,
     State: WINSTATIONSTATECLASS,
 }}
 pub type PSESSIONIDW = *mut SESSIONIDW;
-ENUM!{enum WINSTATIONINFOCLASS {
+ENUM! {enum WINSTATIONINFOCLASS {
     WinStationCreateData = 0,
     WinStationConfiguration = 1,
     WinStationPdParams = 2,
@@ -142,56 +156,56 @@ ENUM!{enum WINSTATIONINFOCLASS {
     WinStationInformationEx = 40,
     WinStationValidationInfo = 41,
 }}
-STRUCT!{struct WINSTATIONCREATE {
-    Bitfields: ULONG,
-    MaxInstanceCount: ULONG,
+STRUCT! {struct WINSTATIONCREATE {
+    Bitfields: c_ulong,
+    MaxInstanceCount: c_ulong,
 }}
-BITFIELD!{WINSTATIONCREATE Bitfields: ULONG [
+BITFIELD! {WINSTATIONCREATE Bitfields: c_ulong [
     fEnableWinStation set_fEnableWinStation[0..1],
 ]}
 pub type PWINSTATIONCREATE = *mut WINSTATIONCREATE;
-STRUCT!{struct WINSTACONFIGWIRE {
-    Comment: [WCHAR; 61],
-    OEMId: [CHAR; 4],
+STRUCT! {struct WINSTACONFIGWIRE {
+    Comment: [wchar_t; 61],
+    OEMId: [c_char; 4],
     UserConfig: VARDATA_WIRE,
     NewFields: VARDATA_WIRE,
 }}
 pub type PWINSTACONFIGWIRE = *mut WINSTACONFIGWIRE;
-ENUM!{enum CALLBACKCLASS {
+ENUM! {enum CALLBACKCLASS {
     Callback_Disable = 0,
     Callback_Roving = 1,
     Callback_Fixed = 2,
 }}
-ENUM!{enum SHADOWCLASS {
+ENUM! {enum SHADOWCLASS {
     Shadow_Disable = 0,
     Shadow_EnableInputNotify = 1,
     Shadow_EnableInputNoNotify = 2,
     Shadow_EnableNoInputNotify = 3,
     Shadow_EnableNoInputNoNotify = 4,
 }}
-STRUCT!{struct USERCONFIG {
-    Bitfields: ULONG,
-    Bitfields2: ULONG,
-    UserName: [WCHAR; USERNAME_LENGTH + 1],
-    Domain: [WCHAR; DOMAIN_LENGTH + 1],
-    Password: [WCHAR; PASSWORD_LENGTH + 1],
-    WorkDirectory: [WCHAR; DIRECTORY_LENGTH + 1],
-    InitialProgram: [WCHAR; INITIALPROGRAM_LENGTH + 1],
-    CallbackNumber: [WCHAR; CALLBACK_LENGTH + 1],
+STRUCT! {struct USERCONFIG {
+    Bitfields: c_ulong,
+    Bitfields2: c_ulong,
+    UserName: [wchar_t; USERNAME_LENGTH + 1],
+    Domain: [wchar_t; DOMAIN_LENGTH + 1],
+    Password: [wchar_t; PASSWORD_LENGTH + 1],
+    WorkDirectory: [wchar_t; DIRECTORY_LENGTH + 1],
+    InitialProgram: [wchar_t; INITIALPROGRAM_LENGTH + 1],
+    CallbackNumber: [wchar_t; CALLBACK_LENGTH + 1],
     Callback: CALLBACKCLASS,
     Shadow: SHADOWCLASS,
-    MaxConnectionTime: ULONG,
-    MaxDisconnectionTime: ULONG,
-    MaxIdleTime: ULONG,
-    KeyboardLayout: ULONG,
-    MinEncryptionLevel: BYTE,
-    NWLogonServer: [WCHAR; NASIFILESERVER_LENGTH + 1],
-    PublishedName: [WCHAR; MAX_BR_NAME],
-    WFProfilePath: [WCHAR; DIRECTORY_LENGTH + 1],
-    WFHomeDir: [WCHAR; DIRECTORY_LENGTH + 1],
-    WFHomeDirDrive: [WCHAR; 4],
+    MaxConnectionTime: c_ulong,
+    MaxDisconnectionTime: c_ulong,
+    MaxIdleTime: c_ulong,
+    KeyboardLayout: c_ulong,
+    MinEncryptionLevel: c_uchar,
+    NWLogonServer: [wchar_t; NASIFILESERVER_LENGTH + 1],
+    PublishedName: [wchar_t; MAX_BR_NAME],
+    WFProfilePath: [wchar_t; DIRECTORY_LENGTH + 1],
+    WFHomeDir: [wchar_t; DIRECTORY_LENGTH + 1],
+    WFHomeDirDrive: [wchar_t; 4],
 }}
-BITFIELD!{USERCONFIG Bitfields: ULONG [
+BITFIELD! {USERCONFIG Bitfields: c_ulong [
     fInheritAutoLogon set_fInheritAutoLogon[0..1],
     fInheritResetBroken set_fInheritResetBroken[1..2],
     fInheritReconnectSame set_fInheritReconnectSame[2..3],
@@ -225,7 +239,7 @@ BITFIELD!{USERCONFIG Bitfields: ULONG [
     fDisableCdm set_fDisableCdm[30..31],
     fDisableCcm set_fDisableCcm[31..32],
 ]}
-BITFIELD!{USERCONFIG Bitfields2: ULONG [
+BITFIELD! {USERCONFIG Bitfields2: c_ulong [
     fDisableLPT set_fDisableLPT[0..1],
     fDisableClip set_fDisableClip[1..2],
     fDisableExe set_fDisableExe[2..3],
@@ -238,47 +252,47 @@ BITFIELD!{USERCONFIG Bitfields2: ULONG [
     fDisablePNPRedir set_fDisablePNPRedir[9..10],
 ]}
 pub type PUSERCONFIG = *mut USERCONFIG;
-ENUM!{enum SDCLASS {
+ENUM! {enum SDCLASS {
     SdNone = 0,
     SdConsole = 1,
     SdNetwork = 2,
     SdAsync = 3,
     SdOemTransport = 4,
 }}
-pub type DEVICENAME = [WCHAR; DEVICENAME_LENGTH + 1];
-pub type MODEMNAME = [WCHAR; MODEMNAME_LENGTH + 1];
-pub type NASISPECIFICNAME = [WCHAR; NASISPECIFICNAME_LENGTH + 1];
-pub type NASIUSERNAME = [WCHAR; NASIUSERNAME_LENGTH + 1];
-pub type NASIPASSWORD = [WCHAR; NASIPASSWORD_LENGTH + 1];
-pub type NASISESIONNAME = [WCHAR; NASISESSIONNAME_LENGTH + 1];
-pub type NASIFILESERVER = [WCHAR; NASIFILESERVER_LENGTH + 1];
-pub type WDNAME = [WCHAR; WDNAME_LENGTH + 1];
-pub type WDPREFIX = [WCHAR; WDPREFIX_LENGTH + 1];
-pub type CDNAME = [WCHAR; CDNAME_LENGTH + 1];
-pub type DLLNAME = [WCHAR; DLLNAME_LENGTH + 1];
-pub type PDNAME = [WCHAR; PDNAME_LENGTH + 1];
-STRUCT!{struct NETWORKCONFIG {
-    LanAdapter: LONG,
+pub type DEVICENAME = [wchar_t; DEVICENAME_LENGTH + 1];
+pub type MODEMNAME = [wchar_t; MODEMNAME_LENGTH + 1];
+pub type NASISPECIFICNAME = [wchar_t; NASISPECIFICNAME_LENGTH + 1];
+pub type NASIUSERNAME = [wchar_t; NASIUSERNAME_LENGTH + 1];
+pub type NASIPASSWORD = [wchar_t; NASIPASSWORD_LENGTH + 1];
+pub type NASISESIONNAME = [wchar_t; NASISESSIONNAME_LENGTH + 1];
+pub type NASIFILESERVER = [wchar_t; NASIFILESERVER_LENGTH + 1];
+pub type WDNAME = [wchar_t; WDNAME_LENGTH + 1];
+pub type WDPREFIX = [wchar_t; WDPREFIX_LENGTH + 1];
+pub type CDNAME = [wchar_t; CDNAME_LENGTH + 1];
+pub type DLLNAME = [wchar_t; DLLNAME_LENGTH + 1];
+pub type PDNAME = [wchar_t; PDNAME_LENGTH + 1];
+STRUCT! {struct NETWORKCONFIG {
+    LanAdapter: c_long,
     NetworkName: DEVICENAME,
-    Flags: ULONG,
+    Flags: c_ulong,
 }}
 pub type PNETWORKCONFIG = *mut NETWORKCONFIG;
-ENUM!{enum FLOWCONTROLCLASS {
+ENUM! {enum FLOWCONTROLCLASS {
     FlowControl_None = 0,
     FlowControl_Hardware = 1,
     FlowControl_Software = 2,
 }}
-ENUM!{enum RECEIVEFLOWCONTROLCLASS {
+ENUM! {enum RECEIVEFLOWCONTROLCLASS {
     ReceiveFlowControl_None = 0,
     ReceiveFlowControl_RTS = 1,
     ReceiveFlowControl_DTR = 2,
 }}
-ENUM!{enum TRANSMITFLOWCONTROLCLASS {
+ENUM! {enum TRANSMITFLOWCONTROLCLASS {
     TransmitFlowControl_None = 0,
     TransmitFlowControl_CTS = 1,
     TransmitFlowControl_DSR = 2,
 }}
-ENUM!{enum ASYNCCONNECTCLASS {
+ENUM! {enum ASYNCCONNECTCLASS {
     Connect_CTS = 0,
     Connect_DSR = 1,
     Connect_RI = 2,
@@ -286,132 +300,132 @@ ENUM!{enum ASYNCCONNECTCLASS {
     Connect_FirstChar = 4,
     Connect_Perm = 5,
 }}
-STRUCT!{struct FLOWCONTROLCONFIG {
-    Bitfields: ULONG,
-    XonChar: CHAR,
-    XoffChar: CHAR,
+STRUCT! {struct FLOWCONTROLCONFIG {
+    Bitfields: c_ulong,
+    XonChar: c_char,
+    XoffChar: c_char,
     Type: FLOWCONTROLCLASS,
     HardwareReceive: RECEIVEFLOWCONTROLCLASS,
     HardwareTransmit: TRANSMITFLOWCONTROLCLASS,
 }}
-BITFIELD!{FLOWCONTROLCONFIG Bitfields: ULONG [
+BITFIELD! {FLOWCONTROLCONFIG Bitfields: c_ulong [
     fEnableSoftwareTx set_fEnableSoftwareTx[0..1],
     fEnableSoftwareRx set_fEnableSoftwareRx[1..2],
     fEnableDTR set_fEnableDTR[2..3],
     fEnableRTS set_fEnableRTS[3..4],
 ]}
 pub type PFLOWCONTROLCONFIG = *mut FLOWCONTROLCONFIG;
-STRUCT!{struct CONNECTCONFIG {
+STRUCT! {struct CONNECTCONFIG {
     Type: ASYNCCONNECTCLASS,
-    Bitfields: ULONG,
+    Bitfields: c_ulong,
 }}
-BITFIELD!{CONNECTCONFIG Bitfields: ULONG [
+BITFIELD! {CONNECTCONFIG Bitfields: c_ulong [
     fEnableBreakDisconnect set_fEnableBreakDisconnect[0..1],
 ]}
 pub type PCONNECTCONFIG = *mut CONNECTCONFIG;
-STRUCT!{struct ASYNCCONFIG {
+STRUCT! {struct ASYNCCONFIG {
     DeviceName: DEVICENAME,
     ModemName: MODEMNAME,
-    BaudRate: ULONG,
-    Parity: ULONG,
-    StopBits: ULONG,
-    ByteSize: ULONG,
-    Bitfields: ULONG,
+    BaudRate: c_ulong,
+    Parity: c_ulong,
+    StopBits: c_ulong,
+    ByteSize: c_ulong,
+    Bitfields: c_ulong,
     FlowControl: FLOWCONTROLCONFIG,
     Connect: CONNECTCONFIG,
 }}
-BITFIELD!{ASYNCCONFIG Bitfields: ULONG [
+BITFIELD! {ASYNCCONFIG Bitfields: c_ulong [
     fEnableDsrSensitivity set_fEnableDsrSensitivity[0..1],
     fConnectionDriver set_fConnectionDriver[1..2],
 ]}
 pub type PASYNCCONFIG = *mut ASYNCCONFIG;
-STRUCT!{struct NASICONFIG {
+STRUCT! {struct NASICONFIG {
     SpecificName: NASISPECIFICNAME,
     UserName: NASIUSERNAME,
     PassWord: NASIPASSWORD,
     SessionName: NASISESIONNAME,
     FileServer: NASIFILESERVER,
-    GlobalSession: BOOLEAN,
+    GlobalSession: c_uchar,
 }}
 pub type PNASICONFIG = *mut NASICONFIG;
-STRUCT!{struct OEMTDCONFIG {
-    Adapter: LONG,
+STRUCT! {struct OEMTDCONFIG {
+    Adapter: c_long,
     DeviceName: DEVICENAME,
-    Flags: ULONG,
+    Flags: c_ulong,
 }}
 pub type POEMTDCONFIG = *mut OEMTDCONFIG;
-UNION!{union PDPARAMS_u {
+UNION! {union PDPARAMS_u {
     Network: NETWORKCONFIG,
     Async: ASYNCCONFIG,
     Nasi: NASICONFIG,
     OemTd: OEMTDCONFIG,
 }}
-STRUCT!{struct PDPARAMS {
+STRUCT! {struct PDPARAMS {
     SdClass: SDCLASS,
     u: PDPARAMS_u,
 }}
 pub type PPDPARAMS = *mut PDPARAMS;
-STRUCT!{struct WDCONFIG {
+STRUCT! {struct WDCONFIG {
     WdName: WDNAME,
     WdDLL: DLLNAME,
     WsxDLL: DLLNAME,
-    WdFlag: ULONG,
-    WdInputBufferLength: ULONG,
+    WdFlag: c_ulong,
+    WdInputBufferLength: c_ulong,
     CfgDLL: DLLNAME,
     WdPrefix: WDPREFIX,
 }}
 pub type PWDCONFIG = *mut WDCONFIG;
-STRUCT!{struct PDCONFIG2 {
+STRUCT! {struct PDCONFIG2 {
     PdName: PDNAME,
     SdClass: SDCLASS,
     PdDLL: DLLNAME,
-    PdFlag: ULONG,
-    OutBufLength: ULONG,
-    OutBufCount: ULONG,
-    OutBufDelay: ULONG,
-    InteractiveDelay: ULONG,
-    PortNumber: ULONG,
-    KeepAliveTimeout: ULONG,
+    PdFlag: c_ulong,
+    OutBufLength: c_ulong,
+    OutBufCount: c_ulong,
+    OutBufDelay: c_ulong,
+    InteractiveDelay: c_ulong,
+    PortNumber: c_ulong,
+    KeepAliveTimeout: c_ulong,
 }}
 pub type PPDCONFIG2 = *mut PDCONFIG2;
-STRUCT!{struct WINSTATIONCLIENT {
-    Bitfields: ULONG,
-    ClientName: [WCHAR; CLIENTNAME_LENGTH + 1],
-    Domain: [WCHAR; DOMAIN_LENGTH + 1],
-    UserName: [WCHAR; USERNAME_LENGTH + 1],
-    Password: [WCHAR; PASSWORD_LENGTH + 1],
-    WorkDirectory: [WCHAR; DIRECTORY_LENGTH + 1],
-    InitialProgram: [WCHAR; INITIALPROGRAM_LENGTH + 1],
-    SerialNumber: ULONG,
-    EncryptionLevel: BYTE,
-    ClientAddressFamily: ULONG,
-    ClientAddress: [WCHAR; CLIENTADDRESS_LENGTH + 1],
-    HRes: USHORT,
-    VRes: USHORT,
-    ColorDepth: USHORT,
-    ProtocolType: USHORT,
-    KeyboardLayout: ULONG,
-    KeyboardType: ULONG,
-    KeyboardSubType: ULONG,
-    KeyboardFunctionKey: ULONG,
-    ImeFileName: [WCHAR; IMEFILENAME_LENGTH + 1],
-    ClientDirectory: [WCHAR; DIRECTORY_LENGTH + 1],
-    ClientLicense: [WCHAR; CLIENTLICENSE_LENGTH + 1],
-    ClientModem: [WCHAR; CLIENTMODEM_LENGTH + 1],
-    ClientBuildNumber: ULONG,
-    ClientHardwareId: ULONG,
-    ClientProductId: USHORT,
-    OutBufCountHost: USHORT,
-    OutBufCountClient: USHORT,
-    OutBufLength: USHORT,
-    AudioDriverName: [WCHAR; 9],
+STRUCT! {struct WINSTATIONCLIENT {
+    Bitfields: c_ulong,
+    ClientName: [wchar_t; CLIENTNAME_LENGTH + 1],
+    Domain: [wchar_t; DOMAIN_LENGTH + 1],
+    UserName: [wchar_t; USERNAME_LENGTH + 1],
+    Password: [wchar_t; PASSWORD_LENGTH + 1],
+    WorkDirectory: [wchar_t; DIRECTORY_LENGTH + 1],
+    InitialProgram: [wchar_t; INITIALPROGRAM_LENGTH + 1],
+    SerialNumber: c_ulong,
+    EncryptionLevel: c_uchar,
+    ClientAddressFamily: c_ulong,
+    ClientAddress: [wchar_t; CLIENTADDRESS_LENGTH + 1],
+    HRes: c_ushort,
+    VRes: c_ushort,
+    ColorDepth: c_ushort,
+    ProtocolType: c_ushort,
+    KeyboardLayout: c_ulong,
+    KeyboardType: c_ulong,
+    KeyboardSubType: c_ulong,
+    KeyboardFunctionKey: c_ulong,
+    ImeFileName: [wchar_t; IMEFILENAME_LENGTH + 1],
+    ClientDirectory: [wchar_t; DIRECTORY_LENGTH + 1],
+    ClientLicense: [wchar_t; CLIENTLICENSE_LENGTH + 1],
+    ClientModem: [wchar_t; CLIENTMODEM_LENGTH + 1],
+    ClientBuildNumber: c_ulong,
+    ClientHardwareId: c_ulong,
+    ClientProductId: c_ushort,
+    OutBufCountHost: c_ushort,
+    OutBufCountClient: c_ushort,
+    OutBufLength: c_ushort,
+    AudioDriverName: [wchar_t; 9],
     ClientTimeZone: TS_TIME_ZONE_INFORMATION,
-    ClientSessionId: ULONG,
-    ClientDigProductId: [WCHAR; CLIENT_PRODUCT_ID_LENGTH],
-    PerformanceFlags: ULONG,
-    ActiveInputLocale: ULONG,
+    ClientSessionId: c_ulong,
+    ClientDigProductId: [wchar_t; CLIENT_PRODUCT_ID_LENGTH],
+    PerformanceFlags: c_ulong,
+    ActiveInputLocale: c_ulong,
 }}
-BITFIELD!{WINSTATIONCLIENT Bitfields: ULONG [
+BITFIELD! {WINSTATIONCLIENT Bitfields: c_ulong [
     fTextOnly set_fTextOnly[0..1],
     fDisableCtrlAltDel set_fDisableCtrlAltDel[1..2],
     fMouse set_fMouse[2..3],
@@ -426,113 +440,113 @@ BITFIELD!{WINSTATIONCLIENT Bitfields: ULONG [
     fUsingSavedCreds set_fUsingSavedCreds[11..12],
 ]}
 pub type PWINSTATIONCLIENT = *mut WINSTATIONCLIENT;
-STRUCT!{struct TSHARE_COUNTERS {
-    Reserved: ULONG,
+STRUCT! {struct TSHARE_COUNTERS {
+    Reserved: c_ulong,
 }}
 pub type PTSHARE_COUNTERS = *mut TSHARE_COUNTERS;
-UNION!{union PROTOCOLCOUNTERS_Specific {
+UNION! {union PROTOCOLCOUNTERS_Specific {
     TShareCounters: TSHARE_COUNTERS,
-    Reserved: [ULONG; 100],
+    Reserved: [c_ulong; 100],
 }}
-STRUCT!{struct PROTOCOLCOUNTERS {
-    WdBytes: ULONG,
-    WdFrames: ULONG,
-    WaitForOutBuf: ULONG,
-    Frames: ULONG,
-    Bytes: ULONG,
-    CompressedBytes: ULONG,
-    CompressFlushes: ULONG,
-    Errors: ULONG,
-    Timeouts: ULONG,
-    AsyncFramingError: ULONG,
-    AsyncOverrunError: ULONG,
-    AsyncOverflowError: ULONG,
-    AsyncParityError: ULONG,
-    TdErrors: ULONG,
-    ProtocolType: USHORT,
-    Length: USHORT,
+STRUCT! {struct PROTOCOLCOUNTERS {
+    WdBytes: c_ulong,
+    WdFrames: c_ulong,
+    WaitForOutBuf: c_ulong,
+    Frames: c_ulong,
+    Bytes: c_ulong,
+    CompressedBytes: c_ulong,
+    CompressFlushes: c_ulong,
+    Errors: c_ulong,
+    Timeouts: c_ulong,
+    AsyncFramingError: c_ulong,
+    AsyncOverrunError: c_ulong,
+    AsyncOverflowError: c_ulong,
+    AsyncParityError: c_ulong,
+    TdErrors: c_ulong,
+    ProtocolType: c_ushort,
+    Length: c_ushort,
     Specific: PROTOCOLCOUNTERS_Specific,
 }}
 pub type PPROTOCOLCOUNTERS = *mut PROTOCOLCOUNTERS;
-STRUCT!{struct THINWIRECACHE {
-    CacheReads: ULONG,
-    CacheHits: ULONG,
+STRUCT! {struct THINWIRECACHE {
+    CacheReads: c_ulong,
+    CacheHits: c_ulong,
 }}
 pub type PTHINWIRECACHE = *mut THINWIRECACHE;
 pub const MAX_THINWIRECACHE: usize = 4;
-STRUCT!{struct RESERVED_CACHE {
+STRUCT! {struct RESERVED_CACHE {
     ThinWireCache: [THINWIRECACHE; MAX_THINWIRECACHE],
 }}
 pub type PRESERVED_CACHE = *mut RESERVED_CACHE;
-STRUCT!{struct TSHARE_CACHE {
-    Reserved: ULONG,
+STRUCT! {struct TSHARE_CACHE {
+    Reserved: c_ulong,
 }}
 pub type PTSHARE_CACHE = *mut TSHARE_CACHE;
-UNION!{union CACHE_STATISTICS_Specific {
+UNION! {union CACHE_STATISTICS_Specific {
     ReservedCacheStats: RESERVED_CACHE,
     TShareCacheStats: TSHARE_CACHE,
-    Reserved: [ULONG; 20],
+    Reserved: [c_ulong; 20],
 }}
-STRUCT!{struct CACHE_STATISTICS {
-    ProtocolType: USHORT,
-    Length: USHORT,
+STRUCT! {struct CACHE_STATISTICS {
+    ProtocolType: c_ushort,
+    Length: c_ushort,
     Specific: CACHE_STATISTICS_Specific,
 }}
 pub type PCACHE_STATISTICS = *mut CACHE_STATISTICS;
-STRUCT!{struct PROTOCOLSTATUS {
+STRUCT! {struct PROTOCOLSTATUS {
     Output: PROTOCOLCOUNTERS,
     Input: PROTOCOLCOUNTERS,
     Cache: CACHE_STATISTICS,
-    AsyncSignal: ULONG,
-    AsyncSignalMask: ULONG,
+    AsyncSignal: c_ulong,
+    AsyncSignalMask: c_ulong,
 }}
 pub type PPROTOCOLSTATUS = *mut PROTOCOLSTATUS;
-STRUCT!{struct WINSTATIONINFORMATION {
+STRUCT! {struct WINSTATIONINFORMATION {
     ConnectState: WINSTATIONSTATECLASS,
     WinStationName: WINSTATIONNAME,
-    LogonId: ULONG,
+    LogonId: c_ulong,
     ConnectTime: LARGE_INTEGER,
     DisconnectTime: LARGE_INTEGER,
     LastInputTime: LARGE_INTEGER,
     LogonTime: LARGE_INTEGER,
     Status: PROTOCOLSTATUS,
-    Domain: [WCHAR; DOMAIN_LENGTH + 1],
-    UserName: [WCHAR; USERNAME_LENGTH + 1],
+    Domain: [wchar_t; DOMAIN_LENGTH + 1],
+    UserName: [wchar_t; USERNAME_LENGTH + 1],
     CurrentTime: LARGE_INTEGER,
 }}
 pub type PWINSTATIONINFORMATION = *mut WINSTATIONINFORMATION;
-STRUCT!{struct WINSTATIONUSERTOKEN {
+STRUCT! {struct WINSTATIONUSERTOKEN {
     ProcessId: HANDLE,
     ThreadId: HANDLE,
     UserToken: HANDLE,
 }}
 pub type PWINSTATIONUSERTOKEN = *mut WINSTATIONUSERTOKEN;
-STRUCT!{struct WINSTATIONVIDEODATA {
-    HResolution: USHORT,
-    VResolution: USHORT,
-    fColorDepth: USHORT,
+STRUCT! {struct WINSTATIONVIDEODATA {
+    HResolution: c_ushort,
+    VResolution: c_ushort,
+    fColorDepth: c_ushort,
 }}
 pub type PWINSTATIONVIDEODATA = *mut WINSTATIONVIDEODATA;
-ENUM!{enum CDCLASS {
+ENUM! {enum CDCLASS {
     CdNone = 0,
     CdModem = 1,
     CdClass_Maximum = 2,
 }}
-STRUCT!{struct CDCONFIG {
+STRUCT! {struct CDCONFIG {
     CdClass: CDCLASS,
     CdName: CDNAME,
     CdDLL: DLLNAME,
-    CdFlag: ULONG,
+    CdFlag: c_ulong,
 }}
 pub type PCDCONFIG = *mut CDCONFIG;
-pub type CLIENTDATANAME = [CHAR; CLIENTDATANAME_LENGTH + 1];
-pub type PCLIENTDATANAME = *mut CHAR;
-STRUCT!{struct WINSTATIONCLIENTDATA {
+pub type CLIENTDATANAME = [c_char; CLIENTDATANAME_LENGTH + 1];
+pub type PCLIENTDATANAME = *mut c_char;
+STRUCT! {struct WINSTATIONCLIENTDATA {
     DataName: CLIENTDATANAME,
-    fUnicodeData: BOOLEAN,
+    fUnicodeData: c_uchar,
 }}
 pub type PWINSTATIONCLIENTDATA = *mut WINSTATIONCLIENTDATA;
-ENUM!{enum LOADFACTORTYPE {
+ENUM! {enum LOADFACTORTYPE {
     ErrorConstraint = 0,
     PagedPoolConstraint = 1,
     NonPagedPoolConstraint = 2,
@@ -540,65 +554,65 @@ ENUM!{enum LOADFACTORTYPE {
     SystemPtesConstraint = 4,
     CPUConstraint = 5,
 }}
-STRUCT!{struct WINSTATIONLOADINDICATORDATA {
-    RemainingSessionCapacity: ULONG,
+STRUCT! {struct WINSTATIONLOADINDICATORDATA {
+    RemainingSessionCapacity: c_ulong,
     LoadFactor: LOADFACTORTYPE,
-    TotalSessions: ULONG,
-    DisconnectedSessions: ULONG,
+    TotalSessions: c_ulong,
+    DisconnectedSessions: c_ulong,
     IdleCPU: LARGE_INTEGER,
     TotalCPU: LARGE_INTEGER,
-    RawSessionCapacity: ULONG,
-    reserved: [ULONG; 9],
+    RawSessionCapacity: c_ulong,
+    reserved: [c_ulong; 9],
 }}
 pub type PWINSTATIONLOADINDICATORDATA = *mut WINSTATIONLOADINDICATORDATA;
-ENUM!{enum SHADOWSTATECLASS {
+ENUM! {enum SHADOWSTATECLASS {
     State_NoShadow = 0,
     State_Shadowing = 1,
     State_Shadowed = 2,
 }}
-STRUCT!{struct WINSTATIONSHADOW {
+STRUCT! {struct WINSTATIONSHADOW {
     ShadowState: SHADOWSTATECLASS,
     ShadowClass: SHADOWCLASS,
-    SessionId: ULONG,
-    ProtocolType: ULONG,
+    SessionId: c_ulong,
+    ProtocolType: c_ulong,
 }}
 pub type PWINSTATIONSHADOW = *mut WINSTATIONSHADOW;
-STRUCT!{struct WINSTATIONPRODID {
-    DigProductId: [WCHAR; CLIENT_PRODUCT_ID_LENGTH],
-    ClientDigProductId: [WCHAR; CLIENT_PRODUCT_ID_LENGTH],
-    OuterMostDigProductId: [WCHAR; CLIENT_PRODUCT_ID_LENGTH],
-    CurrentSessionId: ULONG,
-    ClientSessionId: ULONG,
-    OuterMostSessionId: ULONG,
+STRUCT! {struct WINSTATIONPRODID {
+    DigProductId: [wchar_t; CLIENT_PRODUCT_ID_LENGTH],
+    ClientDigProductId: [wchar_t; CLIENT_PRODUCT_ID_LENGTH],
+    OuterMostDigProductId: [wchar_t; CLIENT_PRODUCT_ID_LENGTH],
+    CurrentSessionId: c_ulong,
+    ClientSessionId: c_ulong,
+    OuterMostSessionId: c_ulong,
 }}
 pub type PWINSTATIONPRODID = *mut WINSTATIONPRODID;
-STRUCT!{struct WINSTATIONREMOTEADDRESS_u_ipv4 {
-    sin_port: USHORT,
-    sin_addr: ULONG,
-    sin_zero: [UCHAR; 8],
+STRUCT! {struct WINSTATIONREMOTEADDRESS_u_ipv4 {
+    sin_port: c_ushort,
+    sin_addr: c_ulong,
+    sin_zero: [c_uchar; 8],
 }}
-STRUCT!{struct WINSTATIONREMOTEADDRESS_u_ipv6 {
-    sin6_port: USHORT,
-    sin6_flowinfo: ULONG,
-    sin6_addr: [USHORT; 8],
-    sin6_scope_id: ULONG,
+STRUCT! {struct WINSTATIONREMOTEADDRESS_u_ipv6 {
+    sin6_port: c_ushort,
+    sin6_flowinfo: c_ulong,
+    sin6_addr: [c_ushort; 8],
+    sin6_scope_id: c_ulong,
 }}
-UNION!{union WINSTATIONREMOTEADDRESS_u {
+UNION! {union WINSTATIONREMOTEADDRESS_u {
     ipv4: WINSTATIONREMOTEADDRESS_u_ipv4,
     ipv6: WINSTATIONREMOTEADDRESS_u_ipv6,
 }}
-STRUCT!{struct WINSTATIONREMOTEADDRESS {
-    sin_family: USHORT,
+STRUCT! {struct WINSTATIONREMOTEADDRESS {
+    sin_family: c_ushort,
     u: WINSTATIONREMOTEADDRESS_u,
 }}
 pub type PWINSTATIONREMOTEADDRESS = *mut WINSTATIONREMOTEADDRESS;
-STRUCT!{struct WINSTATIONINFORMATIONEX_LEVEL1 {
-    SessionId: ULONG,
+STRUCT! {struct WINSTATIONINFORMATIONEX_LEVEL1 {
+    SessionId: c_ulong,
     SessionState: WINSTATIONSTATECLASS,
-    SessionFlags: LONG,
+    SessionFlags: c_long,
     WinStationName: WINSTATIONNAME,
-    UserName: [WCHAR; USERNAME_LENGTH + 1],
-    DomainName: [WCHAR; DOMAIN_LENGTH + 1],
+    UserName: [wchar_t; USERNAME_LENGTH + 1],
+    DomainName: [wchar_t; DOMAIN_LENGTH + 1],
     LogonTime: LARGE_INTEGER,
     ConnectTime: LARGE_INTEGER,
     DisconnectTime: LARGE_INTEGER,
@@ -607,46 +621,46 @@ STRUCT!{struct WINSTATIONINFORMATIONEX_LEVEL1 {
     ProtocolStatus: PROTOCOLSTATUS,
 }}
 pub type PWINSTATIONINFORMATIONEX_LEVEL1 = *mut WINSTATIONINFORMATIONEX_LEVEL1;
-STRUCT!{struct WINSTATIONINFORMATIONEX_LEVEL2 {
-    SessionId: ULONG,
+STRUCT! {struct WINSTATIONINFORMATIONEX_LEVEL2 {
+    SessionId: c_ulong,
     SessionState: WINSTATIONSTATECLASS,
-    SessionFlags: LONG,
+    SessionFlags: c_long,
     WinStationName: WINSTATIONNAME,
-    SamCompatibleUserName: [WCHAR; USERNAME_LENGTH + 1],
-    SamCompatibleDomainName: [WCHAR; DOMAIN_LENGTH + 1],
+    SamCompatibleUserName: [wchar_t; USERNAME_LENGTH + 1],
+    SamCompatibleDomainName: [wchar_t; DOMAIN_LENGTH + 1],
     LogonTime: LARGE_INTEGER,
     ConnectTime: LARGE_INTEGER,
     DisconnectTime: LARGE_INTEGER,
     LastInputTime: LARGE_INTEGER,
     CurrentTime: LARGE_INTEGER,
     ProtocolStatus: PROTOCOLSTATUS,
-    UserName: [WCHAR; 257],
-    DomainName: [WCHAR; 256],
+    UserName: [wchar_t; 257],
+    DomainName: [wchar_t; 256],
 }}
 pub type PWINSTATIONINFORMATIONEX_LEVEL2 = *mut WINSTATIONINFORMATIONEX_LEVEL2;
-UNION!{union WINSTATIONINFORMATIONEX_LEVEL {
+UNION! {union WINSTATIONINFORMATIONEX_LEVEL {
     WinStationInfoExLevel1: WINSTATIONINFORMATIONEX_LEVEL1,
     WinStationInfoExLevel2: WINSTATIONINFORMATIONEX_LEVEL2,
 }}
 pub type PWINSTATIONINFORMATIONEX_LEVEL = *mut WINSTATIONINFORMATIONEX_LEVEL;
-STRUCT!{struct WINSTATIONINFORMATIONEX {
-    Level: ULONG,
+STRUCT! {struct WINSTATIONINFORMATIONEX {
+    Level: c_ulong,
     Data: WINSTATIONINFORMATIONEX_LEVEL,
 }}
 pub type PWINSTATIONINFORMATIONEX = *mut WINSTATIONINFORMATIONEX;
 pub const TS_PROCESS_INFO_MAGIC_NT4: u32 = 0x23495452;
-STRUCT!{struct TS_PROCESS_INFORMATION_NT4 {
-    MagicNumber: ULONG,
-    LogonId: ULONG,
-    ProcessSid: PVOID,
-    Pad: ULONG,
+STRUCT! {struct TS_PROCESS_INFORMATION_NT4 {
+    MagicNumber: c_ulong,
+    LogonId: c_ulong,
+    ProcessSid: *mut c_void,
+    Pad: c_ulong,
 }}
 pub type PTS_PROCESS_INFORMATION_NT4 = *mut TS_PROCESS_INFORMATION_NT4;
 pub const SIZEOF_TS4_SYSTEM_THREAD_INFORMATION: u32 = 64;
 pub const SIZEOF_TS4_SYSTEM_PROCESS_INFORMATION: u32 = 136;
-STRUCT!{struct TS_SYS_PROCESS_INFORMATION {
-    NextEntryOffset: ULONG,
-    NumberOfThreads: ULONG,
+STRUCT! {struct TS_SYS_PROCESS_INFORMATION {
+    NextEntryOffset: c_ulong,
+    NumberOfThreads: c_ulong,
     SpareLi1: LARGE_INTEGER,
     SpareLi2: LARGE_INTEGER,
     SpareLi3: LARGE_INTEGER,
@@ -654,195 +668,195 @@ STRUCT!{struct TS_SYS_PROCESS_INFORMATION {
     UserTime: LARGE_INTEGER,
     KernelTime: LARGE_INTEGER,
     ImageName: UNICODE_STRING,
-    BasePriority: LONG,
-    UniqueProcessId: ULONG,
-    InheritedFromUniqueProcessId: ULONG,
-    HandleCount: ULONG,
-    SessionId: ULONG,
-    SpareUl3: ULONG,
-    PeakVirtualSize: SIZE_T,
-    VirtualSize: SIZE_T,
-    PageFaultCount: ULONG,
-    PeakWorkingSetSize: ULONG,
-    WorkingSetSize: ULONG,
-    QuotaPeakPagedPoolUsage: SIZE_T,
-    QuotaPagedPoolUsage: SIZE_T,
-    QuotaPeakNonPagedPoolUsage: SIZE_T,
-    QuotaNonPagedPoolUsage: SIZE_T,
-    PagefileUsage: SIZE_T,
-    PeakPagefileUsage: SIZE_T,
-    PrivatePageCount: SIZE_T,
+    BasePriority: c_long,
+    UniqueProcessId: c_ulong,
+    InheritedFromUniqueProcessId: c_ulong,
+    HandleCount: c_ulong,
+    SessionId: c_ulong,
+    SpareUl3: c_ulong,
+    PeakVirtualSize: usize,
+    VirtualSize: usize,
+    PageFaultCount: c_ulong,
+    PeakWorkingSetSize: c_ulong,
+    WorkingSetSize: c_ulong,
+    QuotaPeakPagedPoolUsage: usize,
+    QuotaPagedPoolUsage: usize,
+    QuotaPeakNonPagedPoolUsage: usize,
+    QuotaNonPagedPoolUsage: usize,
+    PagefileUsage: usize,
+    PeakPagefileUsage: usize,
+    PrivatePageCount: usize,
 }}
 pub type PTS_SYS_PROCESS_INFORMATION = *mut TS_SYS_PROCESS_INFORMATION;
-STRUCT!{struct TS_ALL_PROCESSES_INFO {
+STRUCT! {struct TS_ALL_PROCESSES_INFO {
     pTsProcessInfo: PTS_SYS_PROCESS_INFORMATION,
-    SizeOfSid: ULONG,
+    SizeOfSid: c_ulong,
     pSid: PSID,
 }}
 pub type PTS_ALL_PROCESSES_INFO = *mut TS_ALL_PROCESSES_INFO;
-STRUCT!{struct TS_COUNTER_HEADER {
-    dwCounterID: DWORD,
-    bResult: BOOLEAN,
+STRUCT! {struct TS_COUNTER_HEADER {
+    dwCounterID: c_ulong,
+    bResult: c_uchar,
 }}
 pub type PTS_COUNTER_HEADER = *mut TS_COUNTER_HEADER;
-STRUCT!{struct TS_COUNTER {
+STRUCT! {struct TS_COUNTER {
     CounterHead: TS_COUNTER_HEADER,
-    dwValue: DWORD,
+    dwValue: c_ulong,
     StartTime: LARGE_INTEGER,
 }}
 pub type PTS_COUNTER = *mut TS_COUNTER;
-pub const WSD_LOGOFF: ULONG = 0x1;
-pub const WSD_SHUTDOWN: ULONG = 0x2;
-pub const WSD_REBOOT: ULONG = 0x4;
-pub const WSD_POWEROFF: ULONG = 0x8;
-pub const WEVENT_NONE: ULONG = 0x0;
-pub const WEVENT_CREATE: ULONG = 0x1;
-pub const WEVENT_DELETE: ULONG = 0x2;
-pub const WEVENT_RENAME: ULONG = 0x4;
-pub const WEVENT_CONNECT: ULONG = 0x8;
-pub const WEVENT_DISCONNECT: ULONG = 0x10;
-pub const WEVENT_LOGON: ULONG = 0x20;
-pub const WEVENT_LOGOFF: ULONG = 0x40;
-pub const WEVENT_STATECHANGE: ULONG = 0x80;
-pub const WEVENT_LICENSE: ULONG = 0x100;
-pub const WEVENT_ALL: ULONG = 0x7fffffff;
-pub const WEVENT_FLUSH: ULONG = 0x80000000;
-pub const KBDSHIFT: USHORT = 0x1;
-pub const KBDCTRL: USHORT = 0x2;
-pub const KBDALT: USHORT = 0x4;
-pub const WNOTIFY_ALL_SESSIONS: ULONG = 0x1;
+pub const WSD_LOGOFF: c_ulong = 0x1;
+pub const WSD_SHUTDOWN: c_ulong = 0x2;
+pub const WSD_REBOOT: c_ulong = 0x4;
+pub const WSD_POWEROFF: c_ulong = 0x8;
+pub const WEVENT_NONE: c_ulong = 0x0;
+pub const WEVENT_CREATE: c_ulong = 0x1;
+pub const WEVENT_DELETE: c_ulong = 0x2;
+pub const WEVENT_RENAME: c_ulong = 0x4;
+pub const WEVENT_CONNECT: c_ulong = 0x8;
+pub const WEVENT_DISCONNECT: c_ulong = 0x10;
+pub const WEVENT_LOGON: c_ulong = 0x20;
+pub const WEVENT_LOGOFF: c_ulong = 0x40;
+pub const WEVENT_STATECHANGE: c_ulong = 0x80;
+pub const WEVENT_LICENSE: c_ulong = 0x100;
+pub const WEVENT_ALL: c_ulong = 0x7fffffff;
+pub const WEVENT_FLUSH: c_ulong = 0x80000000;
+pub const KBDSHIFT: c_ushort = 0x1;
+pub const KBDCTRL: c_ushort = 0x2;
+pub const KBDALT: c_ushort = 0x4;
+pub const WNOTIFY_ALL_SESSIONS: c_ulong = 0x1;
 pub const LOGONID_CURRENT: i32 = -1;
-pub const SERVERNAME_CURRENT: PWSTR = null_mut();
-EXTERN!{extern "system" {
+pub const SERVERNAME_CURRENT: *mut wchar_t = null_mut();
+EXTERN! {extern "system" {
     fn WinStationFreeMemory(
-        Buffer: PVOID,
-    ) -> BOOLEAN;
+        Buffer: *mut c_void,
+    ) -> c_uchar;
     fn WinStationOpenServerW(
-        ServerName: PWSTR,
+        ServerName: *mut wchar_t,
     ) -> HANDLE;
     fn WinStationCloseServer(
         ServerHandle: HANDLE,
-    ) -> BOOLEAN;
+    ) -> c_uchar;
     fn WinStationServerPing(
         ServerHandle: HANDLE,
-    ) -> BOOLEAN;
+    ) -> c_uchar;
     fn WinStationGetTermSrvCountersValue(
         ServerHandle: HANDLE,
-        Count: ULONG,
+        Count: c_ulong,
         Counters: PTS_COUNTER,
-    ) -> BOOLEAN;
+    ) -> c_uchar;
     fn WinStationShutdownSystem(
         ServerHandle: HANDLE,
-        ShutdownFlags: ULONG,
-    ) -> BOOLEAN;
+        ShutdownFlags: c_ulong,
+    ) -> c_uchar;
     fn WinStationWaitSystemEvent(
         ServerHandle: HANDLE,
-        EventMask: ULONG,
-        EventFlags: PULONG,
-    ) -> BOOLEAN;
+        EventMask: c_ulong,
+        EventFlags: *mut c_ulong,
+    ) -> c_uchar;
     fn WinStationRegisterConsoleNotification(
         ServerHandle: HANDLE,
         WindowHandle: HWND,
-        Flags: ULONG,
-    ) -> BOOLEAN;
+        Flags: c_ulong,
+    ) -> c_uchar;
     fn WinStationUnRegisterConsoleNotification(
         ServerHandle: HANDLE,
         WindowHandle: HWND,
-    ) -> BOOLEAN;
+    ) -> c_uchar;
     fn WinStationEnumerateW(
         ServerHandle: HANDLE,
         SessionIds: *mut PSESSIONIDW,
-        Count: PULONG,
-    ) -> BOOLEAN;
+        Count: *mut c_ulong,
+    ) -> c_uchar;
     fn WinStationQueryInformationW(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
+        SessionId: c_ulong,
         WinStationInformationClass: WINSTATIONINFOCLASS,
-        pWinStationInformation: PVOID,
-        WinStationInformationLength: ULONG,
-        pReturnLength: PULONG,
-    ) -> BOOLEAN;
+        pWinStationInformation: *mut c_void,
+        WinStationInformationLength: c_ulong,
+        pReturnLength: *mut c_ulong,
+    ) -> c_uchar;
     fn WinStationSetInformationW(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
+        SessionId: c_ulong,
         WinStationInformationClass: WINSTATIONINFOCLASS,
-        pWinStationInformation: PVOID,
-        WinStationInformationLength: ULONG,
-    ) -> BOOLEAN;
+        pWinStationInformation: *mut c_void,
+        WinStationInformationLength: c_ulong,
+    ) -> c_uchar;
     fn WinStationNameFromLogonIdW(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
-        pWinStationName: PWSTR,
-    ) -> BOOLEAN;
+        SessionId: c_ulong,
+        pWinStationName: *mut wchar_t,
+    ) -> c_uchar;
     fn WinStationSendMessageW(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
-        Title: PWSTR,
-        TitleLength: ULONG,
-        Message: PWSTR,
-        MessageLength: ULONG,
-        Style: ULONG,
-        Timeout: ULONG,
-        Response: PULONG,
-        DoNotWait: BOOLEAN,
-    ) -> BOOLEAN;
+        SessionId: c_ulong,
+        Title: *mut wchar_t,
+        TitleLength: c_ulong,
+        Message: *mut wchar_t,
+        MessageLength: c_ulong,
+        Style: c_ulong,
+        Timeout: c_ulong,
+        Response: *mut c_ulong,
+        DoNotWait: c_uchar,
+    ) -> c_uchar;
     fn WinStationConnectW(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
-        TargetSessionId: ULONG,
-        pPassword: PWSTR,
-        bWait: BOOLEAN,
-    ) -> BOOLEAN;
+        SessionId: c_ulong,
+        TargetSessionId: c_ulong,
+        pPassword: *mut wchar_t,
+        bWait: c_uchar,
+    ) -> c_uchar;
     fn WinStationDisconnect(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
-        bWait: BOOLEAN,
-    ) -> BOOLEAN;
+        SessionId: c_ulong,
+        bWait: c_uchar,
+    ) -> c_uchar;
     fn WinStationReset(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
-        bWait: BOOLEAN,
-    ) -> BOOLEAN;
+        SessionId: c_ulong,
+        bWait: c_uchar,
+    ) -> c_uchar;
     fn WinStationShadow(
         ServerHandle: HANDLE,
-        TargetServerName: PWSTR,
-        TargetSessionId: ULONG,
-        HotKeyVk: UCHAR,
-        HotkeyModifiers: USHORT,
-    ) -> BOOLEAN;
+        TargetServerName: *mut wchar_t,
+        TargetSessionId: c_ulong,
+        HotKeyVk: c_uchar,
+        HotkeyModifiers: c_ushort,
+    ) -> c_uchar;
     fn WinStationShadowStop(
         ServerHandle: HANDLE,
-        SessionId: ULONG,
-        bWait: BOOLEAN,
-    ) -> BOOLEAN;
+        SessionId: c_ulong,
+        bWait: c_uchar,
+    ) -> c_uchar;
     fn WinStationEnumerateProcesses(
         ServerHandle: HANDLE,
-        Processes: *mut PVOID,
-    ) -> BOOLEAN;
+        Processes: *mut *mut c_void,
+    ) -> c_uchar;
     fn WinStationGetAllProcesses(
         ServerHandle: HANDLE,
-        Level: ULONG,
-        NumberOfProcesses: PULONG,
+        Level: c_ulong,
+        NumberOfProcesses: *mut c_ulong,
         Processes: *mut PTS_ALL_PROCESSES_INFO,
-    ) -> BOOLEAN;
+    ) -> c_uchar;
     fn WinStationFreeGAPMemory(
-        Level: ULONG,
+        Level: c_ulong,
         Processes: PTS_ALL_PROCESSES_INFO,
-        NumberOfProcesses: ULONG,
-    ) -> BOOLEAN;
+        NumberOfProcesses: c_ulong,
+    ) -> c_uchar;
     fn WinStationTerminateProcess(
         ServerHandle: HANDLE,
-        ProcessId: ULONG,
-        ExitCode: ULONG,
-    ) -> BOOLEAN;
+        ProcessId: c_ulong,
+        ExitCode: c_ulong,
+    ) -> c_uchar;
     fn WinStationGetProcessSid(
         ServerHandle: HANDLE,
-        ProcessId: ULONG,
+        ProcessId: c_ulong,
         ProcessStartTime: FILETIME,
-        pProcessUserSid: PVOID,
-        dwSidSize: PULONG,
-    ) -> BOOLEAN;
-    fn WinStationSwitchToServicesSession() -> BOOLEAN;
-    fn WinStationRevertFromServicesSession() -> BOOLEAN;
-    fn _WinStationWaitForConnect() -> BOOLEAN;
+        pProcessUserSid: *mut c_void,
+        dwSidSize: *mut c_ulong,
+    ) -> c_uchar;
+    fn WinStationSwitchToServicesSession() -> c_uchar;
+    fn WinStationRevertFromServicesSession() -> c_uchar;
+    fn _WinStationWaitForConnect() -> c_uchar;
 }}
