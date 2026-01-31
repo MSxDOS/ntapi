@@ -87,6 +87,8 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_EXTENDED_THREAD_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSTEM_PROCESS_INFORMATION>(), 248);
     assert_eq!(align_of::<SYSTEM_PROCESS_INFORMATION>(), 8);
+    assert_eq!(size_of::<SYSTEM_BASICPROCESS_INFORMATION>(), 32);
+    assert_eq!(align_of::<SYSTEM_BASICPROCESS_INFORMATION>(), 8);
     assert_eq!(size_of::<SYSTEM_CALL_COUNT_INFORMATION>(), 8);
     assert_eq!(align_of::<SYSTEM_CALL_COUNT_INFORMATION>(), 4);
     assert_eq!(size_of::<SYSTEM_DEVICE_INFORMATION>(), 24);
@@ -97,6 +99,8 @@ fn ntexapi() {
     assert_eq!(align_of::<SYSTEM_FLAGS_INFORMATION>(), 4);
     assert_eq!(size_of::<SYSTEM_CALL_TIME_INFORMATION>(), 16);
     assert_eq!(align_of::<SYSTEM_CALL_TIME_INFORMATION>(), 8);
+    assert_eq!(size_of::<SYSTEM_SHADOW_STACK_INFORMATION>(), 4);
+    assert_eq!(align_of::<SYSTEM_SHADOW_STACK_INFORMATION>(), 4);
     assert_eq!(size_of::<RTL_PROCESS_LOCK_INFORMATION>(), 36);
     assert_eq!(align_of::<RTL_PROCESS_LOCK_INFORMATION>(), 4);
     assert_eq!(size_of::<RTL_PROCESS_LOCKS>(), 40);
