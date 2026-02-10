@@ -10,6 +10,8 @@ fn main() {
             } else {
                 println!("cargo:rustc-link-lib=winapi_ntdll");
             }
+        } else {
+            println!("cargo:rustc-link-lib=ntdll");
         }
     }
 }
